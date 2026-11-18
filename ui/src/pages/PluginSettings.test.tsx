@@ -7,6 +7,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "@/api/client";
 import { queryKeys } from "../lib/queryKeys";
 import { PluginSettings } from "./PluginSettings";
+import { setLocale } from "@/i18n";
 
 const mockPluginsApi = vi.hoisted(() => ({
   get: vi.fn(),
@@ -196,6 +197,19 @@ describe("PluginSettings", () => {
     await act(async () => {
       root.unmount();
     });
+  });
+
+  it("renders the plugin settings shell in Simplified Chinese", async () => {
+    await setLocale("zh-CN");
+    try {
+      const root = await renderSettings(container);
+      expect(container.textContent).toContain("配置");
+      expect(container.textContent).toContain("设置");
+      expect(container.textContent).toContain("关于");
+      await act(async () => root.unmount());
+    } finally {
+      await setLocale("en");
+    }
   });
 
   describe("generated configuration saves", () => {
