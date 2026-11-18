@@ -290,6 +290,26 @@
     "archiveOrganization": "归档组织",
     "ownerSaveError": "无法保存负责人。"
   },
+  "profileSettings": {
+    "title": "个人资料",
+    "description": "控制您的账户在侧栏和其他控制台界面中的显示方式。",
+    "loading": "正在加载个人资料…",
+    "loadError": "加载您的个人资料",
+    "failed": "个人资料加载失败。",
+    "changePhoto": "更换照片",
+    "uploadPhoto": "上传照片",
+    "remove": "移除",
+    "uploadInstruction": "点击头像上传新图片。",
+    "storedIn": "已存储到 Paperclip 文件存储：{{company}}。",
+    "selectOrganization": "请选择组织，将头像上传到 Paperclip 存储。",
+    "noEmail": "无邮箱",
+    "displayName": "显示名称",
+    "displayNamePlaceholder": "Board",
+    "displayNameHint": "显示在侧栏账户页脚和评论作者信息中。",
+    "email": "邮箱",
+    "emailHint": "邮箱由登录会话管理，此处为只读。",
+    "save": "保存个人资料"
+  },
   "onboarding": {
     "steps": {
       "organization": "命名组织",

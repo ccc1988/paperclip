@@ -290,6 +290,26 @@
     "archiveOrganization": "Archive organization",
     "ownerSaveError": "Couldn’t save this owner."
   },
+  "profileSettings": {
+    "title": "Profile",
+    "description": "Control how your account appears in the sidebar and other board surfaces.",
+    "loading": "Loading profile…",
+    "loadError": "load your profile",
+    "failed": "Failed to load profile.",
+    "changePhoto": "Change photo",
+    "uploadPhoto": "Upload photo",
+    "remove": "Remove",
+    "uploadInstruction": "Click the avatar to upload a new image.",
+    "storedIn": "Stored in Paperclip file storage for {{company}}.",
+    "selectOrganization": "Select an organization to upload an avatar into Paperclip storage.",
+    "noEmail": "No email",
+    "displayName": "Display name",
+    "displayNamePlaceholder": "Board",
+    "displayNameHint": "Shown in the sidebar account footer and comment author surfaces.",
+    "email": "Email",
+    "emailHint": "Email is managed by your auth session and is read-only here.",
+    "save": "Save profile"
+  },
   "onboarding": {
     "steps": {
       "organization": "Name your organization",
