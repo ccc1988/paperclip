@@ -1149,6 +1149,23 @@
     "checking": "正在检查……",
     "checkLink": "检查链接"
   },
+  "googleWorkspace": {
+    "readOnly": "仅查看",
+    "readWrite": "查看和编辑",
+    "connectTitle": "连接 Google Workspace",
+    "loadSavedFailed": "无法加载已保存的服务访问权限，现有连接未被修改。",
+    "loadingSaved": "正在加载已保存的服务访问权限……",
+    "cancel": "取消",
+    "tryAgain": "重试",
+    "dataUseLabel": "Paperclip 如何使用你的 Google 数据",
+    "whatAgentsCanDo": "Agent 可以做什么",
+    "howDataUsed": "你的数据如何被使用",
+    "privacyPolicy": "阅读我们的隐私政策，了解我们如何满足 Google Limited Use 要求",
+    "opensNewTab": "（在新标签页中打开）",
+    "chooseServices": "选择要连接的 Google 服务。",
+    "selectOneService": "请至少选择一项服务后继续。",
+    "continue": "继续"
+  },
   "connectionIntent": {
     "status": {
       "accessGranted": "已授予 {{service}} 访问权限",

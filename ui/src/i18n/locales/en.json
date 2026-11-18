@@ -1149,6 +1149,23 @@
     "checking": "Checking…",
     "checkLink": "Check link"
   },
+  "googleWorkspace": {
+    "readOnly": "Read only",
+    "readWrite": "Read & write",
+    "connectTitle": "Connect Google Workspace",
+    "loadSavedFailed": "Could not load your saved service access. Your connection has not changed.",
+    "loadingSaved": "Loading your saved service access…",
+    "cancel": "Cancel",
+    "tryAgain": "Try again",
+    "dataUseLabel": "How Paperclip uses your Google data",
+    "whatAgentsCanDo": "What agents can do",
+    "howDataUsed": "How your data is used",
+    "privacyPolicy": "Read our privacy policy, including how we meet Google's Limited Use requirements",
+    "opensNewTab": "(opens in a new tab)",
+    "chooseServices": "Choose the Google services to connect.",
+    "selectOneService": "Select at least one service to continue.",
+    "continue": "Continue"
+  },
   "connectionIntent": {
     "status": {
       "accessGranted": "{{service}} access granted",

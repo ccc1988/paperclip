@@ -11,6 +11,7 @@ import { AppLogo } from "@/pages/apps/AppLogo";
 import { GOOGLE_WORKSPACE_PRIVACY_POLICY_URL, googleWorkspaceDataUseDisclosure } from "./googleWorkspaceDisclosure";
 import { ANALYTICS_MASK_CLASS } from "@/lib/analytics/privacy";
 import { cn } from "@/lib/utils";
+import { t } from "@/i18n";
 
 export function GoogleWorkspaceServiceFields({ value, onChange }: {
   value: GoogleWorkspaceServiceSelection;
@@ -26,7 +27,7 @@ export function GoogleWorkspaceServiceFields({ value, onChange }: {
       <NativeSelect aria-label={`${group.name} access`} disabled={!value[group.id]} value={value[group.id] ?? "write"}
         className="w-auto shrink-0 disabled:opacity-50"
         onChange={event => onChange({ ...value, [group.id]: event.target.value as "read" | "write" })}>
-        <option value="read">Read only</option><option value="write">Read &amp; write</option>
+        <option value="read">{t("googleWorkspace.readOnly")}</option><option value="write">{t("googleWorkspace.readWrite")}</option>
       </NativeSelect>
       <ToggleSwitch id={`workspace-service-${group.id}`} aria-label={group.name} checked={Boolean(value[group.id])}
         onCheckedChange={checked => {
@@ -73,8 +74,8 @@ export function GoogleWorkspaceServicesDialog(props: DialogProps) {
   const grants = useQuery({ queryKey: ["workspace-service-consent", existing?.id], queryFn: () => toolsApi.listConnectionGrants(existing!.id), enabled: Boolean(existing) });
   const grantsView = useQueryView(grants);
   if (existing && !grants.data) return <Dialog open onOpenChange={open => { if (!open) props.onCancel(); }}><DialogContent className={ANALYTICS_MASK_CLASS}>
-    <DialogTitle>Connect Google Workspace</DialogTitle><DialogDescription>{(grantsView.kind === "error") ? "Could not load your saved service access. Your connection has not changed." : "Loading your saved service access…"}</DialogDescription>
-    <footer className="flex items-center justify-between gap-3"><Button variant="ghost" onClick={() => props.onCancel()}>Cancel</Button>{(grantsView.kind === "error") && <Button onClick={() => void grants.refetch()}>Try again</Button>}</footer>
+    <DialogTitle>{t("googleWorkspace.connectTitle")}</DialogTitle><DialogDescription>{(grantsView.kind === "error") ? t("googleWorkspace.loadSavedFailed") : t("googleWorkspace.loadingSaved")}</DialogDescription>
+    <footer className="flex items-center justify-between gap-3"><Button variant="ghost" onClick={() => props.onCancel()}>{t("googleWorkspace.cancel")}</Button>{(grantsView.kind === "error") && <Button onClick={() => void grants.refetch()}>{t("googleWorkspace.tryAgain")}</Button>}</footer>
   </DialogContent></Dialog>;
   const grant = grants.data?.grants.find(grant => existing?.credentialPolicy === "per_user"
     ? grant.kind === "user" && grant.subjectUserId === grants.data?.currentUserId
@@ -102,18 +103,18 @@ export function GoogleWorkspaceServicesDialog(props: DialogProps) {
 
 function DataUseDisclosure({ selection }: { selection: GoogleWorkspaceServiceSelection }) {
   const { access, use } = googleWorkspaceDataUseDisclosure(selection);
-  return <section aria-label="How Paperclip uses your Google data" className="space-y-3 text-sm">
+  return <section aria-label={t("googleWorkspace.dataUseLabel")} className="space-y-3 text-sm">
     <div className="space-y-1">
-      <h3 className="font-medium">What agents can do</h3>
+      <h3 className="font-medium">{t("googleWorkspace.whatAgentsCanDo")}</h3>
       <ul className="list-disc space-y-1 pl-5 text-muted-foreground">{access.map(line => <li key={line}>{line}</li>)}</ul>
     </div>
     <div className="space-y-1">
-      <h3 className="font-medium">How your data is used</h3>
+      <h3 className="font-medium">{t("googleWorkspace.howDataUsed")}</h3>
       <ul className="list-disc space-y-1 pl-5 text-muted-foreground">{use.map(line => <li key={line}>{line}</li>)}</ul>
     </div>
     <p className="text-muted-foreground">
       <a href={GOOGLE_WORKSPACE_PRIVACY_POLICY_URL} target="_blank" rel="noopener noreferrer" className="underline">
-        Read our privacy policy, including how we meet Google's Limited Use requirements<span className="sr-only"> (opens in a new tab)</span>
+        {t("googleWorkspace.privacyPolicy")}<span className="sr-only"> {t("googleWorkspace.opensNewTab")}</span>
       </a>
     </p>
   </section>;
@@ -125,16 +126,16 @@ function ServicePicker({ onContinue, onCancel, initial = GOOGLE_WORKSPACE_DEFAUL
   return <Dialog open onOpenChange={open => { if (!open) onCancel(selection); }}>
     <DialogContent className={cn("max-h-(--sz-85vh) overflow-y-auto sm:max-w-3xl", ANALYTICS_MASK_CLASS)}>
       <DialogHeader className="text-left">
-        <div className="flex items-center gap-3"><AppLogo name="Google Workspace" brandKey="google" size={40} /><DialogTitle>Connect Google Workspace</DialogTitle></div>
-        <DialogDescription className="sr-only">Choose the Google services to connect.</DialogDescription>
+        <div className="flex items-center gap-3"><AppLogo name="Google Workspace" brandKey="google" size={40} /><DialogTitle>{t("googleWorkspace.connectTitle")}</DialogTitle></div>
+        <DialogDescription className="sr-only">{t("googleWorkspace.chooseServices")}</DialogDescription>
       </DialogHeader>
       <GoogleWorkspaceServiceFields value={selection} onChange={setSelection} />
       {empty
-        ? <p role="status" className="text-xs text-muted-foreground">Select at least one service to continue.</p>
+        ? <p role="status" className="text-xs text-muted-foreground">{t("googleWorkspace.selectOneService")}</p>
         : <DataUseDisclosure selection={selection} />}
       <footer className="flex items-center justify-between gap-3 pt-4">
-        <Button variant="ghost" onClick={() => onCancel(selection)}>Cancel</Button>
-        <Button disabled={empty} onClick={() => onContinue(selection)}>Continue</Button>
+        <Button variant="ghost" onClick={() => onCancel(selection)}>{t("googleWorkspace.cancel")}</Button>
+        <Button disabled={empty} onClick={() => onContinue(selection)}>{t("googleWorkspace.continue")}</Button>
       </footer>
     </DialogContent>
   </Dialog>;
