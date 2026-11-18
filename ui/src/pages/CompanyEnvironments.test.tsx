@@ -2060,4 +2060,70 @@ describe("CompanyEnvironments — test provider button", () => {
       await setLocale("en");
     }
   });
+
+  it("renders custom image setup terminal copy in Simplified Chinese", async () => {
+    await setLocale("zh-CN");
+    try {
+      mockEnvironmentsApi.list.mockResolvedValue([
+        { id: "env-1", name: "Daytona", driver: "sandbox", description: null, config: { provider: "daytona" } },
+      ]);
+      mockEnvironmentsApi.capabilities.mockResolvedValue(supportedDaytonaCapabilities());
+      mockEnvironmentsApi.customImageTemplate.mockResolvedValue({
+        activeTemplate: null,
+        activeSession: createSession(),
+        latestSession: createSession(),
+      });
+      mockEnvironmentsApi.customImageSetupSession.mockResolvedValue({
+        session: createSession(),
+        connectionPayload: { type: "ssh", command: "ssh sandbox@setup.example.invalid" },
+      });
+
+      root = createRoot(container);
+      const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+      await act(async () => {
+        root!.render(renderCompanyEnvironments(queryClient, `${ENVIRONMENTS_PATH}/env-1/edit`));
+      });
+      await waitForAssertion(() => {
+        const form = getEnvironmentFormPage()!;
+        expect(form.textContent).toContain("自定义镜像");
+        expect(form.textContent).toContain("浏览器终端");
+        expect(form.textContent).toContain("SSH 命令备用方式");
+        expect(form.textContent).toContain("设置进行中");
+      });
+    } finally {
+      await setLocale("en");
+    }
+  });
+
+  it("renders environment delete impact copy in Simplified Chinese", async () => {
+    await setLocale("zh-CN");
+    try {
+      mockEnvironmentsApi.list.mockResolvedValue([
+        { id: "env-1", name: "Alpha", driver: "sandbox", description: null, config: { provider: "e2b" } },
+        { id: "env-2", name: "Beta", driver: "sandbox", description: null, config: { provider: "e2b" } },
+      ]);
+      mockAgentsApi.list.mockResolvedValue([
+        { id: "agent-1", name: "Iris", status: "active", defaultEnvironmentId: "env-1" },
+      ]);
+      mockEnvironmentsApi.deleteBlastRadius.mockResolvedValue(
+        createDeleteBlastRadius({ staticReferences: { agentDefaultCount: 1 } }),
+      );
+
+      root = createRoot(container);
+      const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+      await act(async () => {
+        root!.render(renderCompanyEnvironments(queryClient, `${ENVIRONMENTS_PATH}/env-1/edit`));
+      });
+      await waitForAssertion(() => expect(getEnvironmentFormPage()).not.toBeNull());
+      await act(async () => click(document.body.querySelector("[data-testid='environment-delete-button']")));
+      await waitForAssertion(() => {
+        const dialog = document.body.querySelector<HTMLElement>("[data-testid='environment-delete-dialog']")!;
+        expect(dialog.textContent).toContain("删除 Alpha？");
+        expect(dialog.textContent).toContain("1 个智能体将此环境设为默认环境");
+        expect(dialog.textContent).toContain("删除环境");
+      });
+    } finally {
+      await setLocale("en");
+    }
+  });
 });

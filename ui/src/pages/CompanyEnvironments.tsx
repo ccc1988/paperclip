@@ -69,7 +69,7 @@ import {
 } from "../components/agent-config-primitives";
 import { ANALYTICS_NO_CAPTURE_CLASS } from "@/lib/analytics/privacy";
 import { cn } from "@/lib/utils";
-import { useTranslation } from "@/i18n";
+import { t as translate, useTranslation } from "@/i18n";
 
 type EnvironmentFormState = {
   name: string;
@@ -110,19 +110,19 @@ function environmentEditPath(environmentId: string) {
 // the block before the user hits it.
 function environmentDeleteBlockMessage(impact: EnvironmentDeleteBlastRadius): string | null {
   if (impact.staticReferences.isManagedLocal) {
-    return "Cannot delete the managed local environment.";
+    return translate("environmentsPage.delete.managedLocalBlocked");
   }
   if (impact.staticReferences.isInstanceDefault) {
-    return "Cannot delete the current instance default environment. Set a new default environment before deleting this one.";
+    return translate("environmentsPage.delete.instanceDefaultBlocked");
   }
   if (impact.pendingCleanupLeaseCount > 0) {
-    return "Cannot delete this environment while a sandbox cleanup is pending. Wait for the cleanup sweep to destroy the orphan sandbox, then retry.";
+    return translate("environmentsPage.delete.cleanupPendingBlocked");
   }
   if (impact.reusableSandboxLeaseCount > 0) {
     if (impact.reusableSandboxLeaseHolders.some(holder => holder.leasePolicy === "retain_on_failure")) {
-      return "Cannot delete this environment while it keeps a failed run's workspace copy (a stopped sandbox kept for file recovery). Deleting the environment with consent destroys that sandbox and the files only it holds.";
+      return translate("environmentsPage.delete.failureWorkspaceBlocked");
     }
-    return "Cannot delete this environment while it has a reusable sandbox lease. Remove the associated execution workspace or issue so Paperclip can destroy the sandbox, then retry.";
+    return translate("environmentsPage.delete.reusableLeaseBlocked");
   }
   return null;
 }
@@ -382,7 +382,7 @@ function formatBootSourceDriftSummary(
         `${entry.path} \`${formatBootSourceDriftValue(entry.from)}\` -> \`${formatBootSourceDriftValue(entry.to)}\``,
     );
   if (parts.length === 0) return null;
-  return `Base image changed: ${parts.join("; ")}`;
+  return translate("environmentsPage.customImage.baseImageChanged", { details: parts.join("; ") });
 }
 
 function readConnectionCommand(payload: EnvironmentCustomImageConnectionPayload | null | undefined): string | null {
@@ -397,17 +397,17 @@ function setupConnectionFallbackMessage(input: {
   isLoading: boolean;
 }): string | null {
   if (input.refreshError) {
-    return "Setup connection details could not be refreshed. You can still finish or cancel this setup.";
+    return translate("environmentsPage.customImage.connectionRefreshFailed");
   }
   if (input.isLoading) return null;
   if (!input.payload) {
-    return "Connection details are not available yet. You can still finish or cancel this setup.";
+    return translate("environmentsPage.customImage.connectionDetailsUnavailable");
   }
   if (input.payload.type !== "ssh") {
-    return "Browser terminal is not available for this provider connection. Use the provider setup instructions, then finish or cancel here.";
+    return translate("environmentsPage.customImage.browserTerminalUnavailable");
   }
   if (!readConnectionCommand(input.payload)) {
-    return "Connection details are not available yet. You can still finish or cancel this setup.";
+    return translate("environmentsPage.customImage.connectionDetailsUnavailable");
   }
   return null;
 }
@@ -458,16 +458,16 @@ function parseTerminalFrame(raw: string): Record<string, unknown> | null {
 function customImageTerminalStatusCopy(state: CustomImageTerminalConnectionState) {
   switch (state) {
     case "connecting":
-      return "Connecting";
+      return translate("environmentsPage.customImage.terminal.connecting");
     case "connected":
-      return "Connected";
+      return translate("environmentsPage.customImage.terminal.connected");
     case "closed":
-      return "Closed";
+      return translate("environmentsPage.customImage.terminal.closed");
     case "error":
-      return "Connection failed";
+      return translate("environmentsPage.customImage.terminal.connectionFailed");
     case "idle":
     default:
-      return "Ready to connect";
+      return translate("environmentsPage.customImage.terminal.ready");
   }
 }
 
@@ -479,20 +479,22 @@ function customImageTerminalCloseReasonCopy(reason: unknown) {
     && reason !== "setup_finished"
     && reason !== "setup_cancelled"
   ) {
-    return typeof reason === "string" && reason.trim() ? "Terminal closed." : null;
+    return typeof reason === "string" && reason.trim()
+      ? translate("environmentsPage.customImage.terminal.closedMessage")
+      : null;
   }
 
   switch (reason) {
     case "expired":
-      return "Setup session expired.";
+      return translate("environmentsPage.customImage.terminal.setupExpired");
     case "ssh_closed":
-      return "SSH session closed.";
+      return translate("environmentsPage.customImage.terminal.sshClosed");
     case "server_shutdown":
-      return "Terminal server shut down.";
+      return translate("environmentsPage.customImage.terminal.serverShutdown");
     case "setup_finished":
-      return "Setup session finished.";
+      return translate("environmentsPage.customImage.terminal.setupFinished");
     case "setup_cancelled":
-      return "Setup session cancelled.";
+      return translate("environmentsPage.customImage.terminal.setupCancelled");
     default:
       return null;
   }
@@ -674,7 +676,7 @@ function EnvironmentCustomImageBrowserTerminal({
   const connectTerminal = useCallback(async () => {
     if (typeof WebSocket === "undefined") {
       setConnectionState("error");
-      setErrorMessage("Browser terminal is unavailable in this browser.");
+      setErrorMessage(translate("environmentsPage.customImage.terminal.browserUnavailable"));
       return;
     }
 
@@ -722,7 +724,11 @@ function EnvironmentCustomImageBrowserTerminal({
 
         if (frame.type === "error") {
           setConnectionState("error");
-          setErrorMessage(typeof frame.message === "string" ? frame.message : "Terminal connection failed.");
+          setErrorMessage(
+            typeof frame.message === "string"
+              ? frame.message
+              : translate("environmentsPage.customImage.terminal.connectionFailedMessage"),
+          );
           return;
         }
 
@@ -741,7 +747,7 @@ function EnvironmentCustomImageBrowserTerminal({
       socket.onerror = () => {
         if (socketRef.current !== socket) return;
         setConnectionState("error");
-        setErrorMessage("Terminal websocket connection failed.");
+        setErrorMessage(translate("environmentsPage.customImage.terminal.websocketFailed"));
       };
     } catch (error) {
       setConnectionState("error");
@@ -771,23 +777,25 @@ function EnvironmentCustomImageBrowserTerminal({
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-border/60 px-3 py-2">
         <div className="flex min-w-0 items-center gap-2 text-xs">
           <Terminal className="h-3.5 w-3.5 text-muted-foreground" />
-          <span className="font-medium">Browser terminal</span>
+          <span className="font-medium">{translate("environmentsPage.customImage.terminal.title")}</span>
           <span className="text-muted-foreground">{customImageTerminalStatusCopy(connectionState)}</span>
         </div>
         <div className="flex items-center gap-2">
           {terminalInteractive ? (
             <Button size="sm" variant="ghost" onClick={disconnectTerminal}>
-              Disconnect
+              {translate("environmentsPage.customImage.terminal.disconnect")}
             </Button>
           ) : (
-            <Button
+              <Button
               size="sm"
               variant="outline"
               onClick={() => void connectTerminal()}
               disabled={connectionState === "connecting"}
             >
               <Terminal className="mr-1.5 h-3.5 w-3.5" />
-              {connectionState === "closed" || connectionState === "error" ? "Reconnect" : "Open terminal"}
+              {connectionState === "closed" || connectionState === "error"
+                ? translate("environmentsPage.customImage.terminal.reconnect")
+                : translate("environmentsPage.customImage.terminal.open")}
             </Button>
           )}
         </div>
@@ -796,7 +804,7 @@ function EnvironmentCustomImageBrowserTerminal({
         <div
           ref={terminalElementRef}
           data-testid={`custom-image-terminal-screen-${sessionId}`}
-          aria-label="Custom image browser terminal"
+          aria-label={translate("environmentsPage.customImage.terminal.ariaLabel")}
           role="application"
           tabIndex={0}
           onFocus={() => xtermRef.current?.focus()}
@@ -817,22 +825,22 @@ function capabilityState(capability: EnvironmentProviderCapability | null | unde
   if (!capability || capability.status !== "supported" || !capability.supportsInteractiveSetup) {
     return {
       kind: "unsupported" as const,
-      label: "Unsupported provider",
-      reason: "This provider does not advertise interactive template setup.",
+      label: translate("environmentsPage.customImage.capability.unsupportedProvider"),
+      reason: translate("environmentsPage.customImage.capability.interactiveSetupUnavailable"),
     };
   }
 
   if (!capability.supportsTemplateCapture) {
     return {
       kind: "capture_unavailable" as const,
-      label: "Setup capture unavailable",
-      reason: "This provider advertises setup, but image capture is unavailable.",
+      label: translate("environmentsPage.customImage.capability.captureUnavailable"),
+      reason: translate("environmentsPage.customImage.capability.captureUnavailableReason"),
     };
   }
 
   return {
     kind: "supported" as const,
-    label: "Template setup",
+    label: translate("environmentsPage.customImage.capability.templateSetup"),
     reason: null,
   };
 }
@@ -840,21 +848,21 @@ function capabilityState(capability: EnvironmentProviderCapability | null | unde
 function sessionStatusCopy(status: EnvironmentCustomImageSetupSession["status"]) {
   switch (status) {
     case "starting":
-      return "Setup starting";
+      return translate("environmentsPage.customImage.status.starting");
     case "waiting_for_user":
-      return "Setup running";
+      return translate("environmentsPage.customImage.status.running");
     case "capturing":
-      return "Capturing template";
+      return translate("environmentsPage.customImage.status.capturing");
     case "promoted":
-      return "Template captured";
+      return translate("environmentsPage.customImage.status.captured");
     case "cancelled":
-      return "Setup cancelled";
+      return translate("environmentsPage.customImage.status.cancelled");
     case "timed_out":
-      return "Setup expired";
+      return translate("environmentsPage.customImage.status.expired");
     case "failed":
-      return "Setup failed";
+      return translate("environmentsPage.customImage.status.failed");
     default:
-      return "Setup status";
+      return translate("environmentsPage.customImage.status.unknown");
   }
 }
 
@@ -882,11 +890,15 @@ function relinkDriftWarning(conflict: EnvironmentCustomImageRelinkConflict): str
       (entry) => entry.from !== undefined || entry.to !== undefined,
     );
     if (valued) {
-      return `The base image changed: ${valued.path} ${formatRelinkDriftValue(valued.from)} -> ${formatRelinkDriftValue(valued.to)}.`;
+      return translate("environmentsPage.customImage.relinkWarning.baseImageChanged", {
+        path: valued.path,
+        from: formatRelinkDriftValue(valued.from),
+        to: formatRelinkDriftValue(valued.to),
+      });
     }
-    return "The base image changed since this image was captured.";
+    return translate("environmentsPage.customImage.relinkWarning.baseImageChangedGeneric");
   }
-  return "The server cannot verify the boot source; the snapshot will override the current base image.";
+  return translate("environmentsPage.customImage.relinkWarning.bootSourceUnverified");
 }
 
 function EnvironmentImageTemplatePanel({
@@ -900,6 +912,7 @@ function EnvironmentImageTemplatePanel({
   providerCapability: EnvironmentProviderCapability | null | undefined;
   providerDisplayName: string;
 }) {
+  const { t } = useTranslation();
   const { pushToast } = useToast();
   const queryClient = useQueryClient();
   const state = capabilityState(providerCapability);
@@ -948,14 +961,14 @@ function EnvironmentImageTemplatePanel({
       }));
       setSessionResult(result);
       pushToast({
-        title: "Setup session started",
-        body: "Connect details are available while the session is active.",
+        title: t("environmentsPage.customImage.toast.setupStarted"),
+        body: t("environmentsPage.customImage.toast.setupStartedBody"),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to start setup",
+        title: t("environmentsPage.customImage.toast.startFailed"),
         body: describeError(error).body,
         tone: "error",
       });
@@ -973,14 +986,14 @@ function EnvironmentImageTemplatePanel({
       setSessionResult({ session: result.session, connectionPayload: null });
       invalidateOverview();
       pushToast({
-        title: "Template captured",
-        body: "Future runs can use the promoted template.",
+        title: t("environmentsPage.customImage.toast.templateCaptured"),
+        body: t("environmentsPage.customImage.toast.templateCapturedBody"),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to capture template",
+        title: t("environmentsPage.customImage.toast.captureFailed"),
         body: describeError(error).body,
         tone: "error",
       });
@@ -999,14 +1012,14 @@ function EnvironmentImageTemplatePanel({
       setSessionResult({ session, connectionPayload: null });
       invalidateOverview();
       pushToast({
-        title: "Setup cancelled",
-        body: "The active template was not changed.",
+        title: t("environmentsPage.customImage.toast.setupCancelled"),
+        body: t("environmentsPage.customImage.toast.setupCancelledBody"),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to cancel setup",
+        title: t("environmentsPage.customImage.toast.cancelFailed"),
         body: describeError(error).body,
         tone: "error",
       });
@@ -1023,14 +1036,14 @@ function EnvironmentImageTemplatePanel({
       }));
       invalidateOverview();
       pushToast({
-        title: "Template rolled back",
-        body: "Future runs will use the previous template.",
+        title: t("environmentsPage.customImage.toast.templateRolledBack"),
+        body: t("environmentsPage.customImage.toast.templateRolledBackBody"),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to roll back template",
+        title: t("environmentsPage.customImage.toast.rollbackFailed"),
         body: describeError(error).body,
         tone: "error",
       });
@@ -1047,7 +1060,7 @@ function EnvironmentImageTemplatePanel({
         if (error instanceof ApiError && error.status === 409) {
           const conflict = (error.body as { details?: EnvironmentCustomImageRelinkConflict } | null)?.details;
           const warning = conflict ? relinkDriftWarning(conflict) : describeError(error).body;
-          if (!window.confirm(`${warning}\n\nRelink this image anyway?`)) {
+          if (!window.confirm(`${warning}\n\n${t("environmentsPage.customImage.relinkWarning.confirmAnyway")}`)) {
             throw new RelinkConfirmationDeclined();
           }
           return await environmentsApi.relinkCustomImageTemplate(environment.id, companyId, {
@@ -1066,15 +1079,15 @@ function EnvironmentImageTemplatePanel({
       }));
       invalidateOverview();
       pushToast({
-        title: "Template relinked",
-        body: "Runs use the captured image again.",
+        title: t("environmentsPage.customImage.toast.templateRelinked"),
+        body: t("environmentsPage.customImage.toast.templateRelinkedBody"),
         tone: "success",
       });
     },
     onError: (error) => {
       if (error instanceof RelinkConfirmationDeclined) return;
       pushToast({
-        title: "Failed to relink template",
+        title: t("environmentsPage.customImage.toast.relinkFailed"),
         body: describeError(error).body,
         tone: "error",
       });
@@ -1091,14 +1104,14 @@ function EnvironmentImageTemplatePanel({
       }));
       invalidateOverview();
       pushToast({
-        title: "Template disabled",
-        body: "Future runs will use the base provider configuration.",
+        title: t("environmentsPage.customImage.toast.templateDisabled"),
+        body: t("environmentsPage.customImage.toast.templateDisabledBody"),
         tone: "success",
       });
     },
     onError: (error) => {
       pushToast({
-        title: "Failed to disable template",
+        title: t("environmentsPage.customImage.toast.disableFailed"),
         body: describeError(error).body,
         tone: "error",
       });
@@ -1182,9 +1195,9 @@ function EnvironmentImageTemplatePanel({
               variant="outline"
               onClick={() => finishSetupMutation.mutate(session.id)}
               disabled={isMutating || session.status !== "waiting_for_user"}
-            >
+              >
               <Check className="mr-1.5 h-3.5 w-3.5" />
-              Finished
+              {t("environmentsPage.customImage.finished")}
             </Button>
             <Button
               size="sm"
@@ -1193,13 +1206,13 @@ function EnvironmentImageTemplatePanel({
               disabled={isMutating}
             >
               <X className="mr-1.5 h-3.5 w-3.5" />
-              Cancel
+              {t("environmentsPage.customImage.cancel")}
             </Button>
           </div>
         </div>
         {isCapturing ? (
           <div className="mt-2 text-xs text-muted-foreground">
-            Capture is in progress. If this state remains after a refresh or interrupted request, cancel it to return to the active template controls.
+            {t("environmentsPage.customImage.captureInProgress")}
           </div>
         ) : null}
         {session.status === "waiting_for_user" && connectionPayload?.type === "ssh" ? (
@@ -1207,8 +1220,8 @@ function EnvironmentImageTemplatePanel({
         ) : null}
         {session.status === "waiting_for_user" && connectionCommand ? (
           <details className="mt-2 rounded-md border border-border/60 bg-muted/20 px-3 py-2 text-xs text-muted-foreground">
-            <summary className="cursor-pointer select-none font-medium text-foreground">
-              SSH command fallback
+              <summary className="cursor-pointer select-none font-medium text-foreground">
+              {t("environmentsPage.customImage.sshCommandFallback")}
             </summary>
             <code className={cn("mt-2 block overflow-x-auto whitespace-nowrap text-(length:--text-micro) leading-5", ANALYTICS_NO_CAPTURE_CLASS)}>
               {connectionCommand}
@@ -1235,20 +1248,24 @@ function EnvironmentImageTemplatePanel({
       <div className="mt-3 border-t border-border/60 pt-3" data-testid={`custom-image-template-state-${environment.id}`}>
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="min-w-0 space-y-1">
-            <div className="text-xs font-medium">Active template</div>
+            <div className="text-xs font-medium">{t("environmentsPage.customImage.activeTemplate")}</div>
             <div className="text-xs text-muted-foreground">
               {providerDisplayName} · {activeTemplate.templateKind}
               {" · "}
               <span
                 className="break-all font-mono text-foreground"
                 title={templateRef
-                  ? `Provider ${activeTemplate.templateKind} ref ${templateRef} (Paperclip template ${activeTemplate.id})`
+                  ? t("environmentsPage.customImage.templateReference", {
+                      kind: activeTemplate.templateKind,
+                      ref: templateRef,
+                      id: activeTemplate.id,
+                    })
                   : activeTemplate.id}
               >
-                {templateRef ?? `id ${formatShortId(activeTemplate.id)}`}
+                {templateRef ?? t("environmentsPage.customImage.templateId", { id: formatShortId(activeTemplate.id) })}
               </span>
-              {capturedAt ? ` · captured ${capturedAt}` : ""}
-              {lastUsedAt ? ` · last used ${lastUsedAt}` : ""}
+              {capturedAt ? ` · ${t("environmentsPage.customImage.capturedAt", { value: capturedAt })}` : ""}
+              {lastUsedAt ? ` · ${t("environmentsPage.customImage.lastUsedAt", { value: lastUsedAt })}` : ""}
             </div>
             {templateOutOfSync ? (
               <div
@@ -1256,8 +1273,8 @@ function EnvironmentImageTemplatePanel({
                 data-testid={`custom-image-template-out-of-sync-${environment.id}`}
               >
                 {bootSourceDriftSummary
-                  ? `Not in use — ${bootSourceDriftSummary}. Runs fall back to the base configuration until you relink this image or capture a new one.`
-                  : "Not in use — the environment configuration changed since this image was captured. Runs fall back to the base configuration until you relink this image or capture a new one."}
+                  ? t("environmentsPage.customImage.notInUseWithReason", { reason: bootSourceDriftSummary })
+                  : t("environmentsPage.customImage.notInUseGeneric")}
               </div>
             ) : null}
           </div>
@@ -1269,7 +1286,7 @@ function EnvironmentImageTemplatePanel({
               disabled={isMutating}
             >
               <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
-              Refresh
+              {t("environmentsPage.customImage.refresh")}
             </Button>
             <Button
               size="sm"
@@ -1279,7 +1296,7 @@ function EnvironmentImageTemplatePanel({
               data-testid={`custom-image-template-relink-${environment.id}`}
             >
               <Link2 className="mr-1.5 h-3.5 w-3.5" />
-              Relink
+              {t("environmentsPage.customImage.relink")}
             </Button>
             <Button
               size="sm"
@@ -1288,7 +1305,7 @@ function EnvironmentImageTemplatePanel({
               disabled={isMutating}
             >
               <RotateCcw className="mr-1.5 h-3.5 w-3.5" />
-              Rollback
+              {t("environmentsPage.customImage.rollback")}
             </Button>
             <Button
               size="sm"
@@ -1297,7 +1314,7 @@ function EnvironmentImageTemplatePanel({
               disabled={isMutating}
             >
               <Trash2 className="mr-1.5 h-3.5 w-3.5" />
-              Disable
+              {t("environmentsPage.customImage.disable")}
             </Button>
           </div>
         </div>
@@ -1309,11 +1326,11 @@ function EnvironmentImageTemplatePanel({
     <div className="mt-3 border-t border-border/60 pt-3" data-testid={`custom-image-template-state-${environment.id}`}>
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="space-y-1">
-          <div className="text-xs font-medium">Not configured</div>
+          <div className="text-xs font-medium">{t("environmentsPage.customImage.notConfigured")}</div>
           <div className="text-xs text-muted-foreground">
             {latestSession
               ? sessionStatusCopy(latestSession.status)
-              : `Capture a custom ${providerDisplayName} image with your tools already logged in.`}
+              : t("environmentsPage.customImage.capturePrompt", { provider: providerDisplayName })}
           </div>
           {latestSession?.failureReason ? (
             <div className="text-xs text-destructive">{latestSession.failureReason}</div>
@@ -1326,7 +1343,7 @@ function EnvironmentImageTemplatePanel({
           disabled={isMutating}
         >
           <Play className="mr-1.5 h-3.5 w-3.5" />
-          Configure image
+          {t("environmentsPage.customImage.configureImage")}
         </Button>
       </div>
     </div>
@@ -1613,11 +1630,15 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
       navigate(ENVIRONMENTS_PATH, { replace: true });
       const destroyedCount = environment.destroyedReusableSandboxLeaseCount ?? 0;
       pushToast({
-        title: "Environment deleted",
+        title: t("environmentsPage.delete.toast.deleted"),
         body:
           destroyedCount > 0
-            ? `${environment.name} was deleted. Destroyed ${destroyedCount === 1 ? "1 reusable sandbox" : `${destroyedCount} reusable sandboxes`}.`
-            : `${environment.name} was deleted.`,
+            ? t("environmentsPage.delete.toast.deletedWithLeases", {
+                name: environment.name,
+                number: destroyedCount,
+                noun: destroyedCount === 1 ? "sandbox" : "sandboxes",
+              })
+            : t("environmentsPage.delete.toast.deletedBody", { name: environment.name }),
         tone: "success",
       });
     },
@@ -1631,7 +1652,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
         queryKey: ["environment-delete-blast-radius", input.environment.id],
       });
       pushToast({
-        title: "Failed to delete environment",
+        title: t("environmentsPage.delete.toast.deleteFailed"),
         body: describeError(error).body,
         tone: "error",
       });
@@ -1938,9 +1959,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
   const deleteImpactNotes: string[] = [];
   if (deleteBlastRadius && !deleteBlockMessage) {
     if (deleteBlastRadius.staticReferences.agentDefaultCount > agentsUsingEnvironment.length) {
-      deleteImpactNotes.push(
-        "Other references to this environment (agents in other organizations or terminated agents) fall back to the instance default.",
-      );
+      deleteImpactNotes.push(t("environmentsPage.delete.otherReferencesFallback"));
     }
     const selectionCount =
       deleteBlastRadius.staticReferences.executionWorkspaceSelectionCount +
@@ -1948,16 +1967,30 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
       deleteBlastRadius.staticReferences.projectSelectionCount;
     if (selectionCount > 0) {
       deleteImpactNotes.push(
-        `${selectionCount} workspace, issue, or project environment ${selectionCount === 1 ? "selection" : "selections"} will be cleared.`,
+        t("environmentsPage.delete.environmentSelectionsCleared", {
+          number: selectionCount,
+          noun: t(
+            selectionCount === 1
+              ? "environmentsPage.delete.selectionOne"
+              : "environmentsPage.delete.selectionMany",
+          ),
+        }),
       );
     }
     if (deleteBlastRadius.staticReferences.secretBindingCount > 0) {
       deleteImpactNotes.push(
-        `${deleteBlastRadius.staticReferences.secretBindingCount} secret ${deleteBlastRadius.staticReferences.secretBindingCount === 1 ? "binding" : "bindings"} will be removed.`,
+        t("environmentsPage.delete.secretBindingsRemoved", {
+          number: deleteBlastRadius.staticReferences.secretBindingCount,
+          noun: t(
+            deleteBlastRadius.staticReferences.secretBindingCount === 1
+              ? "environmentsPage.delete.bindingOne"
+              : "environmentsPage.delete.bindingMany",
+          ),
+        }),
       );
     }
     if (deleteBlastRadius.activeRuntimeUse.hasActiveRuntimeUse) {
-      deleteImpactNotes.push("Active runs or sandbox leases currently resolve to this environment.");
+      deleteImpactNotes.push(t("environmentsPage.delete.activeRuntimeUse"));
     }
   }
   // One row per workspace holding blocking sandbox leases (several leases can
@@ -1983,7 +2016,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
             holder.executionWorkspaceName
             ?? holder.issueIdentifier
             ?? holder.issueTitle
-            ?? "Workspace no longer on record",
+            ?? t("environmentsPage.delete.workspaceNoLongerOnRecord"),
           issueLabels: issueLabel ? [issueLabel] : [],
           leaseCount: 1,
         });
@@ -2266,7 +2299,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                   size="icon-sm"
                   variant="ghost"
                   className="text-muted-foreground hover:text-destructive"
-                  aria-label={`Delete ${editingEnvironment.name}`}
+                  aria-label={t("environmentsPage.delete.ariaLabel", { name: editingEnvironment.name })}
                   title={t("environmentsPage.deleteEnvironment")}
                   data-testid="environment-delete-button"
                   onClick={() => {
@@ -2521,10 +2554,9 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
               environmentForm.driver === "sandbox" &&
               selectedCompanyId ? (
                 <div className="space-y-2 py-3">
-                  <div className="text-sm font-medium">Custom image</div>
+                  <div className="text-sm font-medium">{t("environmentsPage.customImage.title")}</div>
                   <div className="text-xs text-muted-foreground">
-                    Start a setup sandbox, SSH in to customize the instance, then capture the
-                    running machine as a reusable image for future runs.
+                    {t("environmentsPage.customImage.description")}
                   </div>
                   <EnvironmentImageTemplatePanel
                     environment={editingEnvironment}
@@ -2606,32 +2638,57 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
             >
               <AlertDialogContent data-testid="environment-delete-dialog">
                 <AlertDialogHeader>
-                  <AlertDialogTitle>Delete {editingEnvironment.name}?</AlertDialogTitle>
+                  <AlertDialogTitle>
+                    {t("environmentsPage.delete.title", { name: editingEnvironment.name })}
+                  </AlertDialogTitle>
                   <AlertDialogDescription>
                     {deleteUsageLoading
-                      ? "Checking what uses this environment..."
+                      ? t("environmentsPage.delete.checkingUsage")
                       : deleteUsageError
-                        ? "Could not check what uses this environment. Close this dialog and retry."
+                        ? t("environmentsPage.delete.usageCheckFailed")
                         : deleteBlockMessage
                           ?? ([
                             reusableLeaseOnlyBlock && deleteBlastRadius
-                              ? `${deleteBlastRadius.reusableSandboxLeaseCount === 1 ? "1 reusable sandbox" : `${deleteBlastRadius.reusableSandboxLeaseCount} reusable sandboxes`} will be destroyed; the workspaces holding them stay open and provision a fresh sandbox on their next run.`
+                              ? t("environmentsPage.delete.reusableLeasesDestroyed", {
+                                  number: deleteBlastRadius.reusableSandboxLeaseCount,
+                                  noun: t(
+                                    deleteBlastRadius.reusableSandboxLeaseCount === 1
+                                      ? "environmentsPage.delete.sandboxOne"
+                                      : "environmentsPage.delete.sandboxMany",
+                                  ),
+                                })
                               : null,
                             reusableLeaseOnlyBlock && retainedFailureSourceCount > 0
-                              ? `${retainedFailureSourceCount === 1 ? "1 of them is" : `${retainedFailureSourceCount} of them are`} a failed run's workspace copy kept for file recovery; destroying it loses the files only it holds.`
+                              ? t("environmentsPage.delete.retainedFailureWorkspace", {
+                                  number: retainedFailureSourceCount,
+                                })
                               : null,
                             agentsUsingEnvironment.length > 0
-                              ? `${agentsUsingEnvironment.length === 1 ? "1 agent uses" : `${agentsUsingEnvironment.length} agents use`} this environment as their default. Choose the environment those agents should be reassigned to.`
+                              ? t("environmentsPage.delete.agentsNeedReassignment", {
+                                  number: agentsUsingEnvironment.length,
+                                  noun: t(
+                                    agentsUsingEnvironment.length === 1
+                                      ? "environmentsPage.delete.agentOne"
+                                      : "environmentsPage.delete.agentMany",
+                                  ),
+                                  verb: t(
+                                    agentsUsingEnvironment.length === 1
+                                      ? "environmentsPage.delete.verbUses"
+                                      : "environmentsPage.delete.verbUse",
+                                  ),
+                                })
                               : null,
                           ]
                             .filter(Boolean)
                             .join(" ")
-                            || "This environment will be permanently deleted and future runs stop resolving to it.")}
+                            || t("environmentsPage.delete.permanentImpact"))}
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 {reusableLeaseHolderGroups.length > 0 ? (
                   <div className="space-y-1.5" data-testid="environment-delete-lease-holders">
-                    <div className="text-xs font-medium text-muted-foreground">Sandbox leases held by</div>
+                    <div className="text-xs font-medium text-muted-foreground">
+                      {t("environmentsPage.delete.leasesHeldBy")}
+                    </div>
                     <ul className="space-y-1">
                       {reusableLeaseHolderGroups.map((group) => (
                         <li key={group.workspaceId ?? group.label} className="text-sm">
@@ -2655,8 +2712,8 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                     </ul>
                     <div className="text-xs text-muted-foreground">
                       {reusableLeaseOnlyBlock
-                        ? "Deleting destroys these sandboxes; the workspaces stay open."
-                        : "Close these workspaces to let Paperclip destroy their sandboxes, then retry the delete."}
+                        ? t("environmentsPage.delete.destroyLeasesHint")
+                        : t("environmentsPage.delete.closeWorkspacesHint")}
                     </div>
                   </div>
                 ) : null}
@@ -2665,10 +2722,12 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                     {agentsUsingEnvironment.length > 0 ? (
                       <label className="block space-y-1.5 text-sm">
                         <span className="font-medium">
-                          Reassign {agentsUsingEnvironment.length === 1 ? "agent" : "agents"} to
+                          {t("environmentsPage.delete.reassignLabel", {
+                            noun: agentsUsingEnvironment.length === 1 ? "agent" : "agents",
+                          })}
                         </span>
                         <select
-                          aria-label="Reassign agents to environment"
+                          aria-label={t("environmentsPage.delete.reassignAriaLabel")}
                           data-testid="environment-delete-reassign-select"
                           className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm font-normal outline-none"
                           value={reassignEnvironmentTargetId}
@@ -2677,7 +2736,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                           <option value="">
                             Default: {instanceDefaultEnvironment
                               ? `${instanceDefaultEnvironment.name} · ${instanceDefaultEnvironment.driver}`
-                              : "Local"}
+                              : t("environmentsPage.delete.local")}
                           </option>
                           {reassignTargetEnvironments.map((environment) => (
                             <option key={environment.id} value={environment.id}>
@@ -2686,7 +2745,9 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                           ))}
                         </select>
                         <span className="block text-xs text-muted-foreground">
-                          Affected: {agentsUsingEnvironment.map((agent) => agent.name).join(", ")}
+                          {t("environmentsPage.delete.affectedAgents", {
+                            agents: agentsUsingEnvironment.map((agent) => agent.name).join(", "),
+                          })}
                         </span>
                       </label>
                     ) : null}
@@ -2700,7 +2761,9 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                   </div>
                 ) : null}
                 <AlertDialogFooter>
-                  <AlertDialogCancel disabled={deleteEnvironmentMutation.isPending}>Cancel</AlertDialogCancel>
+                  <AlertDialogCancel disabled={deleteEnvironmentMutation.isPending}>
+                    {t("environmentsPage.delete.cancel")}
+                  </AlertDialogCancel>
                   <AlertDialogAction
                     className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                     data-testid="environment-delete-confirm"
@@ -2721,10 +2784,17 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                     }}
                   >
                     {deleteEnvironmentMutation.isPending
-                      ? "Deleting..."
+                      ? t("environmentsPage.delete.deleting")
                       : reusableLeaseOnlyBlock && deleteBlastRadius
-                        ? `Destroy ${deleteBlastRadius.reusableSandboxLeaseCount === 1 ? "1 sandbox" : `${deleteBlastRadius.reusableSandboxLeaseCount} sandboxes`} and delete`
-                        : "Delete environment"}
+                        ? t("environmentsPage.delete.destroyAndDelete", {
+                            number: deleteBlastRadius.reusableSandboxLeaseCount,
+                            noun: t(
+                              deleteBlastRadius.reusableSandboxLeaseCount === 1
+                                ? "environmentsPage.delete.sandboxOne"
+                                : "environmentsPage.delete.sandboxMany",
+                            ),
+                          })
+                        : t("environmentsPage.delete.confirm")}
                   </AlertDialogAction>
                 </AlertDialogFooter>
               </AlertDialogContent>
