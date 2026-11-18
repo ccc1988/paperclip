@@ -8,6 +8,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { CompanyEnvironments } from "./CompanyEnvironments";
 import { ApiError } from "@/api/client";
 import { tailscaleApi } from "@/api/tailscale";
+import { setLocale } from "@/i18n";
 
 vi.mock("@/api/access", () => ({ accessApi: { getCurrentBoardAccess: async () => ({ source: "local_implicit", isInstanceAdmin: false }) } }));
 vi.mock("@/api/tailscale", () => ({ tailscaleApi: {
@@ -2040,5 +2041,23 @@ describe("CompanyEnvironments — test provider button", () => {
     });
     expect(mockEnvironmentsApi.list).toHaveBeenCalledTimes(2);
     expect(container.querySelector('[data-query-view="error"]')).toBeNull();
+  });
+
+  it("renders environment list controls in Simplified Chinese", async () => {
+    await setLocale("zh-CN");
+    try {
+      root = createRoot(container);
+      const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+      await act(async () => {
+        root!.render(renderCompanyEnvironments(queryClient));
+      });
+      await waitForAssertion(() => {
+        expect(container.textContent).toContain("默认");
+        expect(container.textContent).toContain("沙箱提供商");
+        expect(container.textContent).toContain("测试提供商");
+      });
+    } finally {
+      await setLocale("en");
+    }
   });
 });
