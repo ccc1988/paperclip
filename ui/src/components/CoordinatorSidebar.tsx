@@ -32,20 +32,21 @@ import { AgentAvatar } from "./AgentAvatar";
 import { agentChatPinKey } from "./AgentChatPin";
 import { PinnedNavigationList, type PinnedNavigationItem } from "./PinnedNavigationList";
 import { companyProjectsQuery } from "@/lib/company-projects-query";
+import { useTranslation } from "@/i18n";
 
 const NO_RECENT_TASKS: never[] = [];
 
 const moreDestinations = [
-  { label: "Search", to: "/search", icon: Search },
-  { label: "Dashboard", to: "/dashboard", icon: LayoutDashboard },
-  { label: "Projects", to: "/projects", icon: FolderOpen },
-  { label: "Routines", to: "/routines", icon: Repeat },
-  { label: "Artifacts", to: "/artifacts", icon: Boxes },
-  { label: "Agents", to: "/agents/all", icon: Network },
-  { label: "Skills", to: "/skills", icon: Boxes },
-  { label: "Connectors", to: "/apps", icon: Unplug },
-  { label: "Audit", to: "/activity", icon: History },
-  { label: "Settings", to: "/settings", icon: Settings },
+  { key: "nav.search", to: "/search", icon: Search },
+  { key: "nav.dashboard", to: "/dashboard", icon: LayoutDashboard },
+  { key: "nav.projects", to: "/projects", icon: FolderOpen },
+  { key: "nav.routines", to: "/routines", icon: Repeat },
+  { key: "nav.artifacts", to: "/artifacts", icon: Boxes },
+  { key: "nav.agents", to: "/agents/all", icon: Network },
+  { key: "nav.skills", to: "/skills", icon: Boxes },
+  { key: "nav.connectors", to: "/apps", icon: Unplug },
+  { key: "nav.audit", to: "/activity", icon: History },
+  { key: "common.settings", to: "/settings", icon: Settings },
 ] as const;
 
 export function buildPinnedNavigationItems(pins: readonly string[], agents: readonly Agent[], destinations: readonly { to: string; label: string; icon: LucideIcon }[]): PinnedNavigationItem[] {
@@ -110,6 +111,7 @@ function RecentNavigationList({ children }: { children: ReactNode }) {
 /** The navigation is a view of the existing records; it never creates a chat
  * or task just because someone visits or switches agents. */
 export function CoordinatorSidebar({ children }: { children?: ReactNode }) {
+  const { t } = useTranslation();
   const { companyId, userId, agents, chats, session } = useAgentChatNavigation();
   const unreadChatCount = chats.data?.filter(chat => chat.isUnreadForMe).length ?? 0;
   const pinnedNavigation = usePinnedNavigation(userId);
@@ -121,11 +123,12 @@ export function CoordinatorSidebar({ children }: { children?: ReactNode }) {
   // Tasks and Inbox. The classic dashboard leaves More: one Dashboard at a time.
   const { enabled: responsibilitiesHome } = useResponsibilitiesEnabled();
   const destinations = useMemo(() => {
+    const translated = moreDestinations.map(item => ({ ...item, label: t(item.key) }));
     const base = responsibilitiesHome
-      ? moreDestinations.filter((item) => item.to !== "/dashboard")
-      : moreDestinations;
-    return experimental?.enableCases ? [...base, { label: "Cases", to: "/cases", icon: Boxes }] : base;
-  }, [experimental?.enableCases, responsibilitiesHome]);
+      ? translated.filter((item) => item.to !== "/dashboard")
+      : translated;
+    return experimental?.enableCases ? [...base, { key: "nav.cases", label: t("nav.cases"), to: "/cases", icon: Boxes }] : base;
+  }, [experimental?.enableCases, responsibilitiesHome, t]);
   const [moreOpen, setMoreOpen] = useState(false);
   const [recentsOpen, setRecentsOpen] = useState(true);
   const moreContentRef = useRef<HTMLDivElement>(null);
@@ -160,9 +163,9 @@ export function CoordinatorSidebar({ children }: { children?: ReactNode }) {
       ? [{ kind: "project" as const, id: project.id, time: projectVisits.entries[project.id]!, project }] : []);
     return [...taskRows, ...chatRows, ...projectRows].sort((a, b) => b.time - a.time);
   }, [agents.data, chats.data, recentTasks, projects, projectVisits, scope, hierarchy]);
-  const newTaskButton = <Button type="button" variant="ghost" className="design-sidebar-new-task rounded-lg" aria-label="New task" onClick={() => openNewIssue()}>
+  const newTaskButton = <Button type="button" variant="ghost" className="design-sidebar-new-task rounded-lg" aria-label={t("nav.newTask")} onClick={() => openNewIssue()}>
     <SquarePen aria-hidden />
-    <span className="truncate">New task</span>
+    <span className="truncate">{t("nav.newTask")}</span>
   </Button>;
   return <FlyoutAppearanceProvider><TruncatedTextMarqueeProvider><aside className="coordinator-sidebar design-sidebar w-full">
     <div className="design-sidebar-brand">
@@ -173,19 +176,19 @@ export function CoordinatorSidebar({ children }: { children?: ReactNode }) {
       <div className="design-sidebar-primary">
         {newTaskButton}
         <div className="design-sidebar-primary my-2">
-          {responsibilitiesHome && <SidebarNavItem className="design-sidebar-item" to="/responsibilities" label="Dashboard" icon={Compass} />}
-          <SidebarNavItem className="design-sidebar-item" to="/chats" label="Chat" icon={MessageCircle} badge={unreadChatCount} badgeLabel="unread chats" />
+          {responsibilitiesHome && <SidebarNavItem className="design-sidebar-item" to="/responsibilities" label={t("nav.dashboard")} icon={Compass} />}
+          <SidebarNavItem className="design-sidebar-item" to="/chats" label={t("nav.chat")} icon={MessageCircle} badge={unreadChatCount} badgeLabel={t("nav.unreadChats")} />
           <div className="group/coordinator-new relative">
-            <SidebarNavItem to="/issues" label="Tasks" icon={CircleCheck} className="design-sidebar-item pr-9" />
-            <button type="button" aria-label="New task" title="New task" onClick={() => openNewIssue()}
+            <SidebarNavItem to="/issues" label={t("nav.tasks")} icon={CircleCheck} className="design-sidebar-item pr-9" />
+            <button type="button" aria-label={t("nav.newTask")} title={t("nav.newTask")} onClick={() => openNewIssue()}
               className="absolute right-3 top-1/2 -translate-y-1/2 rounded-md p-1 text-muted-foreground opacity-0 transition-opacity group-hover/coordinator-new:opacity-100 group-focus-within/coordinator-new:opacity-100 pointer-coarse:opacity-100 hover:bg-sidebar-accent focus-visible:ring-2 focus-visible:ring-ring"><Plus className="size-4" /></button>
           </div>
-          <SidebarNavItem className="design-sidebar-item" to="/decisions" label="Inbox" icon={Inbox} badge={attentionCount} badgeLabel="decisions" />
+          <SidebarNavItem className="design-sidebar-item" to="/decisions" label={t("nav.inbox")} icon={Inbox} badge={attentionCount} badgeLabel={t("nav.decisions")} />
           {orderedPins.length > 0 && <PinnedNavigationList key={`${companyId}:${userId}`} items={orderedPins} onReorder={pinnedNavigation.reorder} onUnpin={pinnedNavigation.toggle} />}
         </div>
         <Flyout open={moreOpen} onOpenChange={setMoreOpen}>
-          <FlyoutTrigger asChild><button type="button" aria-label="More workspace pages" className="design-sidebar-item flex w-auto items-center gap-2.5 rounded-lg py-1.5 text-left transition-colors focus-visible:ring-2 focus-visible:ring-ring"><MoreHorizontal className="size-4 shrink-0" /><span>More</span></button></FlyoutTrigger>
-          <FlyoutContent ref={moreContentRef} tabIndex={-1} onOpenAutoFocus={(event) => { event.preventDefault(); moreContentRef.current?.focus(); }} side={isMobile ? "bottom" : "right"} align="start" className="w-56 p-1" aria-label="More workspace pages">
+          <FlyoutTrigger asChild><button type="button" aria-label={t("nav.moreWorkspacePages")} className="design-sidebar-item flex w-auto items-center gap-2.5 rounded-lg py-1.5 text-left transition-colors focus-visible:ring-2 focus-visible:ring-ring"><MoreHorizontal className="size-4 shrink-0" /><span>{t("nav.more")}</span></button></FlyoutTrigger>
+          <FlyoutContent ref={moreContentRef} tabIndex={-1} onOpenAutoFocus={(event) => { event.preventDefault(); moreContentRef.current?.focus(); }} side={isMobile ? "bottom" : "right"} align="start" className="w-56 p-1" aria-label={t("nav.moreWorkspacePages")}>
             {destinations.map(({ label, to, icon: Icon }, index) => {
               const pinned = pinnedNavigation.pins.includes(to);
               const PinIcon = pinned ? PinOff : Pin;
@@ -205,7 +208,7 @@ export function CoordinatorSidebar({ children }: { children?: ReactNode }) {
         </Flyout>
       </div>
       {pinnedNavigation.error && <p role="alert" className="px-4 py-2 text-xs text-destructive">{pinnedNavigation.error}</p>}
-      {session.isSuccess && recents.length > 0 && <div className="design-sidebar-recents"><SidebarSection label="Recents" collapsible={{ open: recentsOpen, onOpenChange: setRecentsOpen }}>
+      {session.isSuccess && recents.length > 0 && <div className="design-sidebar-recents"><SidebarSection label={t("nav.recents")} collapsible={{ open: recentsOpen, onOpenChange: setRecentsOpen }}>
         <RecentNavigationList>
         {recents.map(item => item.kind === "task"
           ? <RecentTaskGroup key={`${scope}:${item.id}`} task={item.task} userId={userId} className="design-sidebar-item" flattened={hierarchy.flattenedIds.has(item.id)}

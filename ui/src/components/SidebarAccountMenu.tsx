@@ -27,6 +27,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "../lib/utils";
 import { ThemeToggle } from "./ThemeToggle";
 import { SidebarServerInfo } from "./SidebarServerInfo";
+import { LanguageSwitcher } from "./LanguageSwitcher";
+import { useTranslation } from "@/i18n";
 import { TruncatedText } from "./TruncatedText";
 
 const INVITES_PATH = "/company/settings/members?tab=invites";
@@ -120,6 +122,7 @@ export function SidebarAccountMenu({
   onOpenChange,
   shadow,
 }: SidebarAccountMenuProps) {
+  const { t } = useTranslation();
   const cloud = useCloudInstance();
   const isCloud = Boolean(cloud);
   // Invites live on the Members page (or in Cloud's People settings). Hide the
@@ -231,14 +234,14 @@ export function SidebarAccountMenu({
 
             <FlyoutOptions className="flex flex-col gap-0.5 border-t border-border p-2.5">
               <MenuAction
-                label="Settings"
+                label={t("common.settings")}
                 icon={Settings}
                 href="/company/settings"
                 onClick={closeNavigationChrome}
               />
               {showInvite && inviteHref ? (
                 <MenuAction
-                  label="Invite"
+                  label={t("common.invite")}
                   icon={UserPlus}
                   href={inviteHref}
                   topLevel={isCloud}
@@ -246,13 +249,14 @@ export function SidebarAccountMenu({
                 />
               ) : null}
               <MenuAction
-                label="Documentation"
+                label={t("common.documentation")}
                 icon={BookOpen}
                 href={DOCS_URL}
                 external
                 onClick={() => setOpen(false)}
               />
               <ThemeToggle variant="compact-menu-action" onAfterToggle={() => setOpen(false)} />
+              <LanguageSwitcher compact />
               {deploymentMode === "authenticated" ? (
                 <button
                   type="button"
@@ -267,7 +271,7 @@ export function SidebarAccountMenu({
                     <LogOut className="size-4" />
                   </span>
                   <TruncatedText className="min-w-0 flex-1 truncate">
-                    {signOutMutation.isPending ? "Signing out..." : "Sign out"}
+                    {signOutMutation.isPending ? t("common.signingOut") : t("common.signOut")}
                   </TruncatedText>
                 </button>
               ) : null}

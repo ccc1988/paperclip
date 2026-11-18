@@ -1,9 +1,54 @@
 {
+  "common": {
+    "language": "语言",
+    "interfaceLanguage": "界面语言",
+    "settings": "设置",
+    "invite": "邀请",
+    "documentation": "文档",
+    "invitePeopleDescription": "邀请成员加入您的组织。",
+    "documentationDescription": "在新标签页打开 Paperclip 文档。",
+    "languageDescription": "选择 Paperclip 界面使用的语言。尚未翻译的内容会回退为英文。",
+    "signingOut": "正在退出...",
+    "signOut": "退出登录",
+    "endBrowserSession": "结束当前浏览器会话。"
+  },
+  "nav": {
+    "search": "搜索",
+    "dashboard": "仪表盘",
+    "projects": "项目",
+    "routines": "例行任务",
+    "artifacts": "产物",
+    "agents": "Agent",
+    "skills": "技能",
+    "connectors": "连接器",
+    "audit": "审计",
+    "cases": "案例",
+    "chat": "对话",
+    "tasks": "任务",
+    "inbox": "收件箱",
+    "decisions": "决策",
+    "unreadChats": "未读对话",
+    "newTask": "新建任务",
+    "more": "更多",
+    "moreWorkspacePages": "更多工作区页面",
+    "recents": "最近使用"
+  },
   "app": {
     "noCompanies": {
       "title": "创建您的第一家公司",
       "description": "通过创建公司开始。",
-      "newCompany": "新公司"
+      "newCompany": "新组织"
+    },
+    "onboarding": {
+      "addAgentTitle": "向 {{company}} 添加其他 Agent",
+      "addAgentDescription": "重新运行引导，为此组织添加 Agent 和初始任务。",
+      "createAnotherTitle": "创建其他组织",
+      "createAnotherDescription": "重新运行引导，创建其他组织并设置第一个 Agent。",
+      "createFirstTitle": "创建您的第一个组织",
+      "createFirstDescription": "创建组织和第一个 Agent，开始使用 Paperclip。",
+      "cloudCreateUnavailable": "组织需要在 Paperclip Cloud 中创建。当前实例暂时无法连接，请从 Cloud 工作区重试。",
+      "addAgent": "添加 Agent",
+      "start": "开始引导"
     }
   }
 }

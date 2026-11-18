@@ -16,23 +16,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { describeError } from "@/api/errors";
-import { getLocale, setLocale } from "@/i18n";
-import { supportedLocales, type SupportedLocale } from "@/i18n/locales";
-import { NativeSelect } from "@/components/ui/select";
-
-const localeLabels: Record<string, string> = {
-  en: "English",
-  "zh-CN": "简体中文",
-  "zh-TW": "繁體中文",
-  ja: "日本語",
-  ko: "한국어",
-  de: "Deutsch",
-  fr: "Français",
-  es: "Español",
-  pt: "Português",
-  "pt-BR": "Português (Brasil)",
-  ru: "Русский",
-};
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useTranslation } from "@/i18n";
 
 function deriveInitials(name: string) {
   const parts = name.trim().split(/\s+/).filter(Boolean);
@@ -41,6 +26,7 @@ function deriveInitials(name: string) {
 }
 
 export function ProfileSettings() {
+  const { t } = useTranslation();
   const { setBreadcrumbs } = useBreadcrumbs();
   const { selectedCompanyId, selectedCompany } = useCompany();
   const queryClient = useQueryClient();
@@ -51,7 +37,6 @@ export function ProfileSettings() {
   const [nameDraft, setName] = useState<string | null>(null);
   const [imageDraft, setImage] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [locale, setLocaleState] = useState<SupportedLocale>(getLocale());
   const sessionQuery = useQuery({
     queryKey: queryKeys.auth.session,
     queryFn: () => authApi.getSession(),
@@ -174,13 +159,6 @@ export function ProfileSettings() {
   const uploadHint = selectedCompany
     ? `Stored in Paperclip file storage for ${selectedCompany.name}.`
     : "Select an organization to upload an avatar into Paperclip storage.";
-
-  async function handleLocaleChange(nextLocale: string) {
-    if (!supportedLocales.includes(nextLocale)) return;
-    const resolvedLocale = nextLocale as SupportedLocale;
-    await setLocale(resolvedLocale);
-    setLocaleState(resolvedLocale);
-  }
 
   return (
     <div className="max-w-6xl space-y-6">
@@ -317,23 +295,12 @@ export function ProfileSettings() {
 
         <Card className="space-y-4 p-6">
           <div>
-            <h2 className="text-base font-semibold">Language</h2>
+            <h2 className="text-base font-semibold">{t("common.language")}</h2>
             <p className="text-sm text-muted-foreground">
-              Choose the language used by the Paperclip interface. Untranslated text falls back to English.
+              {t("common.languageDescription", { defaultValue: "Choose the language used by the Paperclip interface. Untranslated text falls back to English." })}
             </p>
           </div>
-          <NativeSelect
-            aria-label="Interface language"
-            value={locale}
-            onChange={(event) => void handleLocaleChange(event.target.value)}
-            className="max-w-sm"
-          >
-            {supportedLocales.map((supportedLocale) => (
-              <option key={supportedLocale} value={supportedLocale}>
-                {localeLabels[supportedLocale] ?? supportedLocale}
-              </option>
-            ))}
-          </NativeSelect>
+          <LanguageSwitcher />
         </Card>
       </section>
     </div>

@@ -3,6 +3,7 @@ import type { Resource } from "i18next";
 import { assertValidLocaleMessages } from "./locale-validation";
 
 export const DEFAULT_LOCALE = "en" as const;
+export const supportedLocales = ["en", "zh-CN"] as const;
 
 const localeModules = import.meta.glob("./locales/*.json", {
   eager: true,
@@ -23,7 +24,11 @@ if (!(DEFAULT_LOCALE in localeMessages)) {
   throw new Error(`Missing default locale messages for ${DEFAULT_LOCALE}`);
 }
 
-for (const [locale, messages] of Object.entries(localeMessages)) {
+for (const locale of supportedLocales) {
+  const messages = localeMessages[locale];
+  if (!messages) {
+    throw new Error(`Missing supported locale messages for ${locale}`);
+  }
   try {
     assertValidLocaleMessages(messages);
   } catch (error) {
@@ -32,10 +37,13 @@ for (const [locale, messages] of Object.entries(localeMessages)) {
   }
 }
 
-export const supportedLocales = Object.keys(localeMessages);
-
 export const i18nextResources: Resource = Object.fromEntries(
   Object.entries(localeMessages).map(([locale, messages]) => [locale, { translation: messages }]),
 ) as Resource;
 
-export type SupportedLocale = keyof typeof localeMessages;
+export type SupportedLocale = (typeof supportedLocales)[number];
+
+export const localeLabels: Record<SupportedLocale, string> = {
+  en: "English",
+  "zh-CN": "简体中文",
+};

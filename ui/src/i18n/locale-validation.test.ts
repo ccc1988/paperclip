@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { t } from ".";
 import en from "./locales/en.json";
-import { localeMessages } from "./locales";
+import { localeMessages, supportedLocales } from "./locales";
 import { validateLocaleMessages } from "./locale-validation";
 
 describe("locale validation", () => {
@@ -13,8 +13,8 @@ describe("locale validation", () => {
 
   it("accepts registered locale files", () => {
     expect(Object.keys(localeMessages)).toContain("en");
-    for (const [locale, messages] of Object.entries(localeMessages)) {
-      expect(validateLocaleMessages(messages), locale).toEqual([]);
+    for (const locale of supportedLocales) {
+      expect(validateLocaleMessages(localeMessages[locale]), locale).toEqual([]);
     }
   });
 

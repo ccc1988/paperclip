@@ -7,8 +7,15 @@ const LOCALE_STORAGE_KEY = "paperclip.locale";
 
 function readStoredLocale(): SupportedLocale {
   if (typeof window === "undefined") return DEFAULT_LOCALE;
-  const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
-  return stored && supportedLocales.includes(stored) ? stored as SupportedLocale : DEFAULT_LOCALE;
+  try {
+    const stored = window.localStorage.getItem(LOCALE_STORAGE_KEY);
+    if (stored && supportedLocales.includes(stored as SupportedLocale)) return stored as SupportedLocale;
+  } catch {
+    // Storage can be unavailable in private browsing or restricted webviews.
+  }
+
+  const browserLanguage = window.navigator.language.toLowerCase();
+  return browserLanguage.startsWith("zh") ? "zh-CN" : DEFAULT_LOCALE;
 }
 
 const i18nextOptions: InitOptions = {
@@ -31,14 +38,20 @@ export function t(key: string, options: TOptions = {}) {
 }
 
 export function getLocale(): SupportedLocale {
-  return (i18n.language && supportedLocales.includes(i18n.language)
-    ? i18n.language
+  return (i18n.language && supportedLocales.includes(i18n.language as SupportedLocale)
+    ? i18n.language as SupportedLocale
     : DEFAULT_LOCALE) as SupportedLocale;
 }
 
 export async function setLocale(locale: SupportedLocale) {
   if (!supportedLocales.includes(locale)) return;
-  if (typeof window !== "undefined") window.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+  if (typeof window !== "undefined") {
+    try {
+      window.localStorage.setItem(LOCALE_STORAGE_KEY, locale);
+    } catch {
+      // Language switching still works for the current session without storage.
+    }
+  }
   await i18n.changeLanguage(locale);
 }
 

@@ -1,9 +1,54 @@
 {
+  "common": {
+    "language": "Language",
+    "interfaceLanguage": "Interface language",
+    "settings": "Settings",
+    "invite": "Invite",
+    "documentation": "Documentation",
+    "invitePeopleDescription": "Invite people to your organization.",
+    "documentationDescription": "Open Paperclip docs in a new tab.",
+    "languageDescription": "Choose the language used by the Paperclip interface. Untranslated text falls back to English.",
+    "signingOut": "Signing out...",
+    "signOut": "Sign out",
+    "endBrowserSession": "End this browser session."
+  },
+  "nav": {
+    "search": "Search",
+    "dashboard": "Dashboard",
+    "projects": "Projects",
+    "routines": "Routines",
+    "artifacts": "Artifacts",
+    "agents": "Agents",
+    "skills": "Skills",
+    "connectors": "Connectors",
+    "audit": "Audit",
+    "cases": "Cases",
+    "chat": "Chat",
+    "tasks": "Tasks",
+    "inbox": "Inbox",
+    "decisions": "decisions",
+    "unreadChats": "unread chats",
+    "newTask": "New task",
+    "more": "More",
+    "moreWorkspacePages": "More workspace pages",
+    "recents": "Recents"
+  },
   "app": {
     "noCompanies": {
       "title": "Create your first organization",
       "description": "Get started by creating an organization.",
       "newCompany": "New Organization"
+    },
+    "onboarding": {
+      "addAgentTitle": "Add another agent to {{company}}",
+      "addAgentDescription": "Run onboarding again to add an agent and a starter task for this organization.",
+      "createAnotherTitle": "Create another organization",
+      "createAnotherDescription": "Run onboarding again to create another organization and seed its first agent.",
+      "createFirstTitle": "Create your first organization",
+      "createFirstDescription": "Get started by creating an organization and your first agent.",
+      "cloudCreateUnavailable": "Organizations are created in Paperclip Cloud. This instance can't reach it right now — try again from your Cloud portfolio.",
+      "addAgent": "Add Agent",
+      "start": "Start Onboarding"
     }
   }
 }
