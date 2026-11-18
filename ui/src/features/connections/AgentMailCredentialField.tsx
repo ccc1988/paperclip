@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import { emailApi } from "@/api/email";
 import { describeError } from "@/api/errors";
@@ -15,6 +16,7 @@ export function AgentMailCredentialField({ companyId, connectionId, onConnection
   onChange(value: string): void;
   disabled?: boolean;
 }) {
+  const { t } = useTranslation();
   const saved = useQuery({ queryKey: ["email-credentials", companyId],
     queryFn: () => emailApi.credentials(companyId), staleTime: 60_000 });
   const savedView = useQueryView(saved);
@@ -27,7 +29,7 @@ export function AgentMailCredentialField({ companyId, connectionId, onConnection
   }, [connectionId, value, saved.isSuccess, saved.data, onConnectionChange]);
   return <ApiKeyCredentialField providerName="AgentMail" keysUrl={AGENTMAIL_API_KEYS_URL}
     options={(saved.data ?? []).map(option => ({ id: option.id, disabled: option.scope === "unavailable",
-      label: `${option.label} · saved ${formatDateTime(option.createdAt)}` }))}
+      label: `${option.label} · ${t("agentMailSetup.savedAt", { date: formatDateTime(option.createdAt) })}` }))}
     connectionId={connectionId} onConnectionChange={onConnectionChange} value={value} onChange={onChange}
     disabled={disabled} loading={saved.isFetching || savedView.kind === "reconnecting"}
     error={savedView.kind === "error" ? describeError(saved.error).body : undefined} />;
