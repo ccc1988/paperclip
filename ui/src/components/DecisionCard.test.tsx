@@ -10,6 +10,7 @@ import type { Decision, DecisionEffectExecution } from "../api/decisions";
 import { ThemeProvider } from "../context/ThemeContext";
 import { TooltipProvider } from "./ui/tooltip";
 import { replayLeaks } from "@/lib/analytics/replay-recording.test-utils";
+import { setLocale } from "@/i18n";
 
 let container: HTMLDivElement | null = null;
 let root: Root | null = null;
@@ -318,6 +319,28 @@ describe("DecisionCard", () => {
     });
     expect(expired.textContent).toContain("target issues were completed");
     expect(expired.textContent).not.toContain("expiry deadline");
+  });
+
+  it("renders decision controls in Simplified Chinese", async () => {
+    await act(async () => { await setLocale("zh-CN"); });
+    try {
+      const el = render({
+        decision: mkDecision({
+          options: [{
+            id: "cancel",
+            label: "Cancel the tree",
+            style: "destructive",
+            effects: [{ type: "cancel_issue_tree", targetIssueId: "issue-target", staleness: "strict", reasonComment: "stale" }],
+          }],
+        }),
+      });
+      expect(el.textContent).toContain("待处理");
+      expect(el.textContent).toContain("高风险操作");
+      clickButtonWithText(el, "Cancel the tree");
+      expect(el.textContent).toContain("取消任务树");
+    } finally {
+      await act(async () => { await setLocale("en"); });
+    }
   });
 });
 

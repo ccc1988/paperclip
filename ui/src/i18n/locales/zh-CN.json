@@ -392,6 +392,106 @@
       "revision_requested": "要求修改"
     }
   },
+  "decisionCard": {
+    "status": {
+      "pending": "待处理",
+      "expired": "已过期",
+      "cancelled": "已撤回",
+      "dismissed": "已忽略",
+      "decided": "已决策",
+      "partial": "部分完成",
+      "failed": "失败"
+    },
+    "taskStatus": {
+      "backlog": "待开始",
+      "todo": "待处理",
+      "in_progress": "进行中",
+      "in_review": "待审核",
+      "blocked": "已阻塞",
+      "done": "已完成",
+      "cancelled": "已取消"
+    },
+    "units": {
+      "issue": "个任务",
+      "issues": "个任务",
+      "blocker": "个阻塞项",
+      "blockers": "个阻塞项"
+    },
+    "unknown": "未知",
+    "issueFallback": "任务 {{id}}",
+    "effects": {
+      "commentOn": "评论 {{target}}",
+      "createIssue": "在 {{parent}} 下创建任务“{{title}}”",
+      "setStatus": "将 {{target}} 状态设为{{status}}",
+      "reassign": "重新分配 {{target}}",
+      "unblock": "解除 {{target}} 的阻塞，移除{{unit}}",
+      "cancelTree": "取消 {{target}} 及其子树（{{unit}}）",
+      "apply": "应用操作"
+    },
+    "failureCauses": {
+      "permissionBoundary": "被权限边界阻止（默认拒绝）",
+      "missingIssue": "引用的任务已不存在",
+      "targetChanged": "目标在提议后发生了变化",
+      "executionFailed": "执行操作时发生错误",
+      "couldNotRun": "操作无法执行"
+    },
+    "execution": {
+      "skipped": "已跳过 {{target}}：目标在提议后发生了变化",
+      "failed": "{{target}} 执行失败：{{cause}}",
+      "running": "正在处理 {{target}}……",
+      "commented": "已评论 {{target}}",
+      "created": "已创建{{issue}}",
+      "newIssue": "新任务",
+      "setStatus": "已将 {{target}} 状态设为{{status}}",
+      "reassigned": "已重新分配 {{target}}",
+      "removedBlockers": "已从 {{target}} 移除{{unit}}",
+      "cancelledIssues": "已取消 {{target}} 下的{{unit}}",
+      "applied": "已在 {{target}} 上应用操作"
+    },
+    "destructive": "高风险操作",
+    "proposedBy": "提议者",
+    "anAgent": "某个 Agent",
+    "whileRunning": "运行期间",
+    "appliesTo": "作用于",
+    "viewRun": "查看运行",
+    "targetsChanged": "{{count}} 个目标在提议后发生了变化",
+    "targetsChangedPlural": "{{count}} 个目标在提议后发生了变化",
+    "unchangedTargetDisabled": "下方要求目标未发生变化的选项已禁用。",
+    "blockedStale": "已阻止 · 目标已变化",
+    "cancelTreeWarning": "此操作会取消整个任务树",
+    "willBeCancelled": "将取消{{items}}：",
+    "noPreview": "此任务及其下的所有子任务都会被取消。",
+    "cancelIssues": "取消{{items}}",
+    "typeToConfirm": "请输入 {{token}} 以确认。",
+    "confirmIssueIdentifier": "输入任务标识符以确认",
+    "cancel": "取消",
+    "cancelTree": "取消任务树",
+    "decisionWindowClosed": "决策窗口已关闭",
+    "targetCancelledBeforeDecision": "目标任务在决策前已被取消。",
+    "targetsCompletedBeforeDecision": "所有目标任务在决策前已完成。",
+    "noResponseBeforeExpiry": "在截止时间前没有收到响应。",
+    "proposerRewoken": " 提议者已被重新唤醒。",
+    "withdrawn": "提议者已在收到响应前撤回此决策。",
+    "dismissedNoEffects": "已忽略，未执行任何操作。",
+    "partialGuidance": "部分操作可能已经执行。请先检查结果，再让提议者重新提交决策。"
+  },
+  "taskDecision": {
+    "record": "决策记录",
+    "loading": "正在加载决策……",
+    "loadError": "无法加载此决策。",
+    "retry": "重试",
+    "notAvailable": "此任务中无法查看该决策。",
+    "recordedChoice": "已记录的选择",
+    "dismissed": "已忽略"
+  },
+  "issueAssignedBacklog": {
+    "parked": "已暂停",
+    "willNotBeAsked": "{{assignee}} 在状态变为“待处理”或“进行中”前不会被要求处理此任务。",
+    "commentsStillNotify": "评论仍会通知负责人，以便提问或分诊。只有在工作确实暂时搁置时才应保持此状态。",
+    "resumeNow": "立即恢复",
+    "resuming": "正在恢复……",
+    "assignee": "负责人"
+  },
   "connectionsPage": {
     "title": "连接",
     "selectOrganization": "未选择组织，请从上方切换器选择组织。",

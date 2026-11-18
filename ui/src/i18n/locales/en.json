@@ -392,6 +392,106 @@
       "revision_requested": "revision requested"
     }
   },
+  "decisionCard": {
+    "status": {
+      "pending": "Pending",
+      "expired": "Expired",
+      "cancelled": "Cancelled",
+      "dismissed": "Dismissed",
+      "decided": "Decided",
+      "partial": "Partial",
+      "failed": "Failed"
+    },
+    "taskStatus": {
+      "backlog": "backlog",
+      "todo": "to do",
+      "in_progress": "in progress",
+      "in_review": "in review",
+      "blocked": "blocked",
+      "done": "done",
+      "cancelled": "cancelled"
+    },
+    "units": {
+      "issue": "issue",
+      "issues": "issues",
+      "blocker": "blocker",
+      "blockers": "blockers"
+    },
+    "unknown": "unknown",
+    "issueFallback": "issue {{id}}",
+    "effects": {
+      "commentOn": "Comment on {{target}}",
+      "createIssue": "Create issue “{{title}}” under {{parent}}",
+      "setStatus": "Set {{target}} to {{status}}",
+      "reassign": "Reassign {{target}}",
+      "unblock": "Unblock {{target}} — remove {{unit}}",
+      "cancelTree": "Cancel {{target}} and its sub-tree ({{unit}})",
+      "apply": "Apply effect"
+    },
+    "failureCauses": {
+      "permissionBoundary": "blocked by the permission boundary (fail-closed)",
+      "missingIssue": "a referenced issue no longer exists",
+      "targetChanged": "the target changed since this was proposed",
+      "executionFailed": "the effect errored while running",
+      "couldNotRun": "the effect could not run"
+    },
+    "execution": {
+      "skipped": "Skipped {{target}} — target changed since proposal",
+      "failed": "Failed on {{target}} — {{cause}}",
+      "running": "Running on {{target}}…",
+      "commented": "Commented on {{target}}",
+      "created": "Created {{issue}}",
+      "newIssue": "a new issue",
+      "setStatus": "Set {{target}} to {{status}}",
+      "reassigned": "Reassigned {{target}}",
+      "removedBlockers": "Removed {{unit}} from {{target}}",
+      "cancelledIssues": "Cancelled {{unit}} under {{target}}",
+      "applied": "Applied effect on {{target}}"
+    },
+    "destructive": "Destructive",
+    "proposedBy": "Proposed by",
+    "anAgent": "an agent",
+    "whileRunning": "while running",
+    "appliesTo": "applies to",
+    "viewRun": "view run",
+    "targetsChanged": "{{count}} target changed since this was proposed",
+    "targetsChangedPlural": "{{count}} targets changed since this was proposed",
+    "unchangedTargetDisabled": "Options that require an unchanged target are disabled below.",
+    "blockedStale": "Blocked · stale",
+    "cancelTreeWarning": "This cancels an entire issue tree",
+    "willBeCancelled": "{{items}} will be cancelled:",
+    "noPreview": "This issue and every sub-issue beneath it will be cancelled.",
+    "cancelIssues": "Cancel {{items}}",
+    "typeToConfirm": "Type {{token}} to confirm.",
+    "confirmIssueIdentifier": "Type the issue identifier to confirm",
+    "cancel": "Cancel",
+    "cancelTree": "Cancel tree",
+    "decisionWindowClosed": "The decision window closed",
+    "targetCancelledBeforeDecision": "A target issue was cancelled before this was decided.",
+    "targetsCompletedBeforeDecision": "All target issues were completed before this was decided.",
+    "noResponseBeforeExpiry": "No response before the expiry deadline.",
+    "proposerRewoken": " The proposer was re-woken.",
+    "withdrawn": "This decision was withdrawn by the proposer before a response.",
+    "dismissedNoEffects": "Dismissed — no effects were run.",
+    "partialGuidance": "Some effects may already have been applied. Review the results before asking the proposer to re-propose."
+  },
+  "taskDecision": {
+    "record": "Decision record",
+    "loading": "Loading decision…",
+    "loadError": "Could not load this decision.",
+    "retry": "Retry",
+    "notAvailable": "This decision is not available in this task.",
+    "recordedChoice": "Recorded choice",
+    "dismissed": "Dismissed"
+  },
+  "issueAssignedBacklog": {
+    "parked": "Parked",
+    "willNotBeAsked": "{{assignee}} will not be asked to work on this until status changes to To do or In progress.",
+    "commentsStillNotify": "Comments still notify the assignee for questions or triage. Leave this parked only if the work is intentionally on hold.",
+    "resumeNow": "Resume now",
+    "resuming": "Resuming…",
+    "assignee": "the assignee"
+  },
   "connectionsPage": {
     "title": "Connections",
     "selectOrganization": "No organization selected. Select an organization from the switcher above.",
