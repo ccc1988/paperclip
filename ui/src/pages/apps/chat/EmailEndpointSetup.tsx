@@ -1,4 +1,5 @@
 import { isUuidLike } from "@paperclipai/shared";
+import { useTranslation } from "react-i18next";
 import { ApiError } from "@/api/client";
 import { describeError } from "@/api/errors";
 import { QueryErrorState, useQueryView } from "@/components/QueryView";
@@ -88,12 +89,14 @@ function readEmailSetupDraft(key: string): Partial<EmailSetupDraft> {
 
 export function EmailEndpointSetup() {
   const { selectedCompanyId } = useCompany();
+  const { t } = useTranslation();
   const [params] = useSearchParams();
-  if (!selectedCompanyId) return <p role="status" className="p-6 text-sm text-muted-foreground">Loading email setup…</p>;
+  if (!selectedCompanyId) return <p role="status" className="p-6 text-sm text-muted-foreground">{t("agentMailSetup.loadingSetup")}</p>;
   return <EmailEndpointSetupForm key={`${selectedCompanyId}:${params.get("resume") ?? params.get("setupId") ?? params.get("connectionId") ?? "new"}:${params.get("agentId") ?? "choose"}`} companyId={selectedCompanyId} />;
 }
 
 function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
+  const { t } = useTranslation();
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const cache = useQueryClient();
@@ -304,14 +307,14 @@ function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
       .map(suffix => `${username.slice(0, 64 - suffix.length)}${suffix}`)
       .filter(name => !knownAddresses.has(`${name}@${domain}`)) : [];
   const assignedInbox = addressMode === "existing" && inboxes.data?.some(i => i.id !== requestId && i.address === address && i.status !== "archived");
-  const addressError = addressTaken ? "This email address is already in use. Choose a different address."
-    : assignedInbox ? "This inbox is already assigned to an agent." : null;
+  const addressError = addressTaken ? t("agentMailSetup.addressInUse")
+    : assignedInbox ? t("agentMailSetup.inboxAssigned") : null;
   const writeError = connect.error ?? (!addressTaken ? setup.error : null);
   const readFailure = resumeAccountView.kind === "error" ? resumeAccountView
     : inspectedView.kind === "error" ? inspectedView
     : agentsView.kind === "error" ? agentsView : null;
   const setupError = writeError ? <p role="alert" className="text-sm text-destructive">{describeError(writeError).body}</p>
-    : readFailure ? <QueryErrorState size="inline" error={readFailure.error} action="load email setup" onRetry={readFailure.retry} retrying={readFailure.isFetching} />
+    : readFailure ? <QueryErrorState size="inline" error={readFailure.error} action={t("agentMailSetup.loadProgress")} onRetry={readFailure.retry} retrying={readFailure.isFetching} />
     : null;
   const busy = connect.isPending || setup.isPending;
   const identityReady = inboxesLoaded && (!resumeId || requestId !== resumeId || !!pendingEndpoint) && (!pendingEndpoint || pendingEndpoint.assignedAgentId === agentId);
@@ -340,51 +343,51 @@ function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
   };
   return <div className="mx-auto max-w-xl space-y-6 p-6">
     <header className="space-y-2">
-      <h1 className="text-xl font-bold">{step === 2 ? "Your agent’s email is ready" : "Give an agent an email address"}</h1>
+      <h1 className="text-xl font-bold">{step === 2 ? t("agentMailSetup.emailReady") : t("agentMailSetup.giveEmail")}</h1>
     </header>
-    {step < 2 && inboxesView.kind === "error" && <QueryErrorState error={inboxes.error} action="load email setup progress"
+    {step < 2 && inboxesView.kind === "error" && <QueryErrorState error={inboxes.error} action={t("agentMailSetup.loadProgress")}
       onRetry={inboxesView.retry} retrying={inboxesView.isFetching} />}
-    {step < 2 && resumeId === requestId && inboxesLoaded && !pendingEndpoint && <p role="alert" className="text-sm text-destructive">This email setup could not be found. Return to Connectors and start a new connection.</p>}
-    {step < 2 && <ChatSetupNavigation labels={["Agent", "Email address"]} step={step}
+    {step < 2 && resumeId === requestId && inboxesLoaded && !pendingEndpoint && <p role="alert" className="text-sm text-destructive">{t("agentMailSetup.notFound")}</p>}
+    {step < 2 && <ChatSetupNavigation labels={[t("agentMailSetup.navAgent"), t("agentMailSetup.navEmailAddress")]} step={step}
       availableStep={step} disabled={busy} onSelect={index => { setup.reset(); setStep(index as 0 | 1); }} />}
     {step === 0 && <form className="space-y-6" onSubmit={event => { event.preventDefault(); if (canContinue) connect.mutate(); }}>
       <div className="space-y-2">
-        <Label htmlFor="email-agent">Agent</Label>
+        <Label htmlFor="email-agent">{t("agentMailSetup.navAgent")}</Label>
         <AgentSelect id="email-agent" value={agentId} disabled={busy || agents.isPending || !inboxesLoaded || !!pendingEndpoint}
-          placeholder="Choose an agent" emptyMessage="No agents found." triggerClassName="h-10"
+          placeholder={t("agentMailSetup.chooseAgent")} emptyMessage={t("agentMailSetup.noAgents")} triggerClassName="h-10"
           agents={(agents.data ?? []).filter(a => !["terminated", "pending_approval"].includes(a.status))}
           onChange={id => { setAgentId(id); setUsername((agents.data?.find(a => a.id === id)?.name ?? "").toLowerCase().replace(/[^a-z0-9._-]+/g, "-").slice(0, 64)); }} />
       </div>
       {!pendingAddress && <AgentMailCredentialField companyId={companyId} connectionId={selectedCredentialId}
         onConnectionChange={selectCredential} value={apiKey} onChange={value => { setApiKey(value); connect.reset(); }} disabled={busy} />}
       {restrictedInbox && <div className="space-y-2 text-sm">
-        <p className="text-muted-foreground">That key only connects {restrictedInbox}. Choose a saved account key or enter one to create a new address.</p>
+        <p className="text-muted-foreground">{t("agentMailSetup.restrictedKey", { inbox: restrictedInbox })}</p>
         <Button type="button" variant="link" size="sm" className="h-auto p-0" disabled={busy || !(selectedCredentialId || apiKey.trim())}
-          onClick={() => { setAllowInboxKey(true); setRestrictedInbox(""); connect.reset(); }}>Use the existing inbox instead</Button>
+        onClick={() => { setAllowInboxKey(true); setRestrictedInbox(""); connect.reset(); }}>{t("agentMailSetup.useExistingInbox")}</Button>
       </div>}
       {lowTrust && !scoped && <div role="alert" className="space-y-2 text-sm">
-        <p>This agent needs a work boundary before it can receive email.</p>
-        <Button type="button" variant="outline" size="sm" onClick={openTrust}>Configure work boundary</Button>
+        <p>{t("agentMailSetup.workBoundaryRequired")}</p>
+        <Button type="button" variant="outline" size="sm" onClick={openTrust}>{t("agentMailSetup.configureBoundary")}</Button>
       </div>}
       {setupError}
       <div className="flex items-center justify-between gap-3 border-t border-border pt-5">
-        <Button type="button" variant="ghost" disabled={busy} onClick={cancel}>Cancel</Button>
-        <Button disabled={!canContinue}>{connect.isPending ? "Connecting…" : "Continue"}<ArrowRight className="size-4" /></Button>
+        <Button type="button" variant="ghost" disabled={busy} onClick={cancel}>{t("common.cancel")}</Button>
+        <Button disabled={!canContinue}>{connect.isPending ? t("agentMailSetup.connecting") : t("agentMailSetup.continue")}<ArrowRight className="size-4" /></Button>
       </div>
     </form>}
     {step === 1 && <form className="space-y-6" onSubmit={event => { event.preventDefault(); if (canCreate) setup.mutate(); }}>
       <div className="space-y-2">
-        <Label htmlFor={addressMode === "new" ? "email-name" : "email-existing"}>{chosen?.name}’s email address</Label>
+        <Label htmlFor={addressMode === "new" ? "email-name" : "email-existing"}>{t("agentMailSetup.addressLabel", { agent: chosen?.name ?? "" })}</Label>
         {pendingAddress ? <>
           <p className="text-sm font-medium">{pendingAddress}</p>
-          <p className="text-sm text-muted-foreground">This address was created in AgentMail. Finish connecting it to {chosen?.name}{scopedKey ? "." : ", or choose a different address. The original inbox will stay in AgentMail."}</p>
-          {!scopedKey && <Button type="button" variant="link" size="sm" className="h-auto p-0" disabled={busy} onClick={chooseAnotherAddress}>Choose a different address</Button>}
+          <p className="text-sm text-muted-foreground">{t("agentMailSetup.createdInAgentMail", { agent: chosen?.name ?? "", suffix: scopedKey ? "." : t("agentMailSetup.createdInAgentMailSuffix") })}</p>
+          {!scopedKey && <Button type="button" variant="link" size="sm" className="h-auto p-0" disabled={busy} onClick={chooseAnotherAddress}>{t("agentMailSetup.chooseDifferentAddress")}</Button>}
         </> : addressMode === "new" ? <>
           <div className="flex items-center gap-2">
             <Input id="email-name" className="min-w-0" value={username} maxLength={64} autoComplete="off" spellCheck={false} disabled={busy}
               aria-invalid={!!addressError} aria-describedby={addressError ? "email-address-error" : "email-address-status"}
               onChange={event => { setUsername(event.target.value.toLowerCase()); setup.reset(); }} />
-            <select id="email-domain" aria-label="Email domain" className={cn(selectClass, "max-w-1/2 shrink-0", ANALYTICS_MASK_CLASS)} value={domain}
+            <select id="email-domain" aria-label={t("agentMailSetup.emailDomain")} className={cn(selectClass, "max-w-1/2 shrink-0", ANALYTICS_MASK_CLASS)} value={domain}
               disabled={busy || !inspected.data} onChange={event => { setDomainSelected(true); setDomain(event.target.value); setup.reset(); }}>
               {[...new Set([...customDomains, "agentmail.to", domain])]
                 .map(value => <option key={value} value={value}>@{value}</option>)}
@@ -393,77 +396,76 @@ function EmailEndpointSetupForm({ companyId }: { companyId: string }) {
         </> : <select id="email-existing" className={cn(selectClass, ANALYTICS_MASK_CLASS)} value={pendingAddress ?? inboxId} disabled={busy || scopedKey || !!pendingAddress}
           aria-invalid={!!addressError} aria-describedby={addressError ? "email-address-error" : undefined}
           onChange={event => { setInboxId(event.target.value); setup.reset(); }}>
-          <option value="">Choose an inbox</option>
+          <option value="">{t("agentMailSetup.chooseInbox")}</option>
           {inspected.data?.inboxes.map(i => {
             const assigned = inboxes.data?.some(e => e.id !== requestId && e.address === i.inbox_id && e.status !== "archived");
-            return <option key={i.inbox_id} value={i.inbox_id} disabled={assigned}>{i.inbox_id}{assigned ? " — already assigned" : ""}</option>;
+            return <option key={i.inbox_id} value={i.inbox_id} disabled={assigned}>{i.inbox_id}{assigned ? t("agentMailSetup.alreadyAssigned") : ""}</option>;
           })}
         </select>}
         {scopedKey && !pendingAddress && <Button type="button" variant="link" size="sm" className="h-auto p-0" disabled={busy}
-          onClick={() => { setAllowInboxKey(false); setStep(0); }}>Choose a key for a new address</Button>}
+          onClick={() => { setAllowInboxKey(false); setStep(0); }}>{t("agentMailSetup.chooseKeyNewAddress")}</Button>}
         {addressError && <p id="email-address-error" role="alert" className="text-sm text-destructive">{addressError}</p>}
         {checkingNewAddress && !addressError && <p id="email-address-status" role="status" className="text-sm text-muted-foreground">
-          {addressCheck.checking ? "Checking address…" : addressCheck.error ? `Could not check this address. ${addressCheck.error}`
-            : addressCheck.result?.status === "unknown" ? "AgentMail confirms availability when you create the address." : null}
+          {addressCheck.checking ? t("agentMailSetup.checkingAddress") : addressCheck.error ? t("agentMailSetup.couldNotCheckAddress", { error: addressCheck.error })
+            : addressCheck.result?.status === "unknown" ? t("agentMailSetup.confirmsAvailability") : null}
         </p>}
-        {suggestions.length > 0 && <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm" aria-label="Suggested email addresses">
-          <span className="text-muted-foreground">Try:</span>
+        {suggestions.length > 0 && <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm" aria-label={t("agentMailSetup.suggestedAddresses")}>
+          <span className="text-muted-foreground">{t("agentMailSetup.try")}</span>
           {suggestions.map(name => <Button key={name} type="button" variant="link" size="sm" className="h-auto p-0" disabled={busy}
             onClick={() => { setUsername(name); setup.reset(); }}>{name}@{domain}</Button>)}
         </div>}
         {!scopedKey && !pendingAddress && <Button type="button" variant="link" size="sm" className="h-auto p-0" disabled={busy}
           onClick={() => { setAddressMode(addressMode === "new" ? "existing" : "new"); setup.reset(); }}>
-          {addressMode === "new" ? "Use an existing inbox" : "Create a new address"}
+          {addressMode === "new" ? t("agentMailSetup.useAnExistingInbox") : t("agentMailSetup.createNewAddress")}
         </Button>}
       </div>
       <Card className="py-4">
         <CardHeader className="px-4">
-          <h2 className="text-sm font-medium">How it Works</h2>
-          <CardDescription>Incoming email creates tasks for {chosen?.name}. Replies stay in the same task.</CardDescription>
+          <h2 className="text-sm font-medium">{t("agentMailSetup.howItWorks")}</h2>
+          <CardDescription>{t("agentMailSetup.incomingCreatesTasks", { agent: chosen?.name ?? "" })}</CardDescription>
         </CardHeader>
       </Card>
       <details className="space-y-4">
-        <summary className="cursor-pointer text-sm text-muted-foreground">Advanced options</summary>
+        <summary className="cursor-pointer text-sm text-muted-foreground">{t("agentMailSetup.advancedOptions")}</summary>
         <div className="space-y-4">
           {addressMode === "new" && <div className="space-y-2">
-            <a className="text-sm underline" href="https://docs.agentmail.to/custom-domains" target="_blank" rel="noreferrer">Set up a custom domain ↗</a>
+            <a className="text-sm underline" href="https://docs.agentmail.to/custom-domains" target="_blank" rel="noreferrer">{t("agentMailSetup.customDomain")}</a>
           </div>}
           <div className="space-y-2">
-            <Label htmlFor="email-mode">Receiving</Label>
+            <Label htmlFor="email-mode">{t("agentMailSetup.receiving")}</Label>
             <select id="email-mode" value={mode} disabled={busy} className={selectClass} onChange={event => setMode(event.target.value as typeof mode)}>
-              <option value="websocket">Live connection</option><option value="webhook">Webhook</option>
+              <option value="websocket">{t("agentMailSetup.liveConnection")}</option><option value="webhook">{t("agentMailSetup.webhook")}</option>
             </select>
           </div>
           <EmailSafetyNotice />
           <div className="space-y-2 text-sm">
-            <p>{lowTrust && scoped ? "Low-trust review configured" : "Manage which tasks and tools this agent can access."}</p>
-            <Button type="button" variant="outline" size="sm" onClick={openTrust}>Review trust settings</Button>
+            <p>{lowTrust && scoped ? t("agentMailSetup.lowTrustConfigured") : t("agentMailSetup.manageAccess")}</p>
+            <Button type="button" variant="outline" size="sm" onClick={openTrust}>{t("agentMailSetup.reviewTrust")}</Button>
           </div>
         </div>
       </details>
       {setupError}
-      {inspected.isPending && <p role="status" className="text-sm text-muted-foreground">Loading email options…</p>}
+      {inspected.isPending && <p role="status" className="text-sm text-muted-foreground">{t("agentMailSetup.loadingOptions")}</p>}
       <div className="flex items-center justify-between gap-3 border-t border-border pt-5">
-        <Button type="button" variant="ghost" disabled={busy} onClick={() => { setup.reset(); setStep(0); }}><ArrowLeft className="size-4" />Back</Button>
+        <Button type="button" variant="ghost" disabled={busy} onClick={() => { setup.reset(); setStep(0); }}><ArrowLeft className="size-4" />{t("agentMailSetup.back")}</Button>
         <Button disabled={!canCreate}>
-          {setup.isPending ? "Connecting…" : pendingAddress ? "Finish connecting" : addressMode === "new" ? "Create email address" : "Connect email address"}<ArrowRight className="size-4" />
+          {setup.isPending ? t("agentMailSetup.connecting") : pendingAddress ? t("agentMailSetup.finishConnecting") : addressMode === "new" ? t("agentMailSetup.createEmailAddress") : t("agentMailSetup.connectEmailAddress")}<ArrowRight className="size-4" />
         </Button>
       </div>
     </form>}
     {step === 2 && <div className="space-y-6">
       <div className="space-y-2"><p className="flex items-center gap-2 font-medium"><Check className="size-4" />{setup.data?.address}</p>
-        <p className="text-sm text-muted-foreground">{chosen?.name} can now receive email at this address.</p></div>
+        <p className="text-sm text-muted-foreground">{t("agentMailSetup.readyBody", { agent: chosen?.name ?? "" })}</p></div>
       <div className="flex items-center justify-between gap-3 border-t border-border pt-5">
-        <Button variant="ghost" onClick={leave}>Email settings</Button><Button onClick={() => navigate("/apps")}>Done</Button>
+        <Button variant="ghost" onClick={leave}>{t("agentMailSetup.emailSettings")}</Button><Button onClick={() => navigate("/apps")}>{t("agentMailSetup.done")}</Button>
       </div>
     </div>}
       <Dialog open={trustOpen} onOpenChange={setTrustOpen}>
         <DialogContent className={cn("max-h-screen overflow-y-auto sm:max-w-2xl", ANALYTICS_MASK_CLASS)}>
           <DialogHeader>
-            <DialogTitle>Trust settings · {chosen?.name}</DialogTitle>
+            <DialogTitle>{t("agentMailSetup.trustTitle", { agent: chosen?.name ?? "" })}</DialogTitle>
             <DialogDescription>
-              Changes apply to all of this agent’s work. Use a dedicated email
-              agent if its other tasks need broader access.
+              {t("agentMailSetup.trustDescription")}
             </DialogDescription>
           </DialogHeader>
           <TrustPresetSection
@@ -529,6 +531,7 @@ export function EmailConnectionInboxes({
   connectionId: string;
   canConfigure: boolean;
 }) {
+  const { t } = useTranslation();
   const query = useQuery({
     queryKey: ["email-inboxes", companyId],
     queryFn: () => emailApi.list(companyId),
@@ -553,10 +556,10 @@ export function EmailConnectionInboxes({
       <div className="flex flex-wrap items-center justify-between gap-4 rounded-xl border border-border p-6">
         <div className="space-y-1">
           <h2 className="text-lg font-semibold">
-            Give an agent an email address
+            {t("agentMailSetup.giveEmail")}
           </h2>
           <p className="text-sm text-muted-foreground">
-            Each email conversation becomes a task.
+            {t("agentMailSetup.eachConversationTask")}
           </p>
         </div>
         {canConfigure && (
@@ -564,7 +567,7 @@ export function EmailConnectionInboxes({
             <Link
               to={`/apps/chat/connect?provider=agentmail&connectionId=${connectionId}`}
             >
-              Give an agent an email address
+              {t("agentMailSetup.giveEmail")}
             </Link>
           </Button>
         )}
@@ -582,13 +585,13 @@ export function EmailConnectionInboxes({
           </Link>
           <span className="text-xs text-muted-foreground">
             {i.lastError ??
-              (i.status === "active" ? "Receiving email" : i.status)}
+              (i.status === "active" ? t("agentMailSetup.receivingEmail") : i.status)}
           </span>
         </div>
       ))}
       {!!inboxes.length && <EmailSafetyNotice />}
       {view.kind === "error" && (
-        <QueryErrorState error={query.error} action="load the inboxes" onRetry={view.retry} retrying={view.isFetching} />
+        <QueryErrorState error={query.error} action={t("agentMailSetup.loadInboxes")} onRetry={view.retry} retrying={view.isFetching} />
       )}
     </section>
   );
@@ -602,6 +605,7 @@ export function EmailEndpointSettings({
   companyId: string;
   assignedAgentName: string;
 }) {
+  const { t } = useTranslation();
   const cache = useQueryClient();
   const query = useQuery({
     queryKey: ["email-inboxes", companyId],
@@ -644,76 +648,75 @@ export function EmailEndpointSettings({
     },
   });
   if (removed)
-    return <p>Inbox disconnected. Email history remains in its tasks.</p>;
+    return <p>{t("agentMailSetup.inboxDisconnected")}</p>;
   if (!inbox) {
     if (view.kind === "error")
-      return <QueryErrorState error={query.error} action="load the email inbox" onRetry={view.retry} retrying={view.isFetching} />;
-    return <p role="status">Loading email inbox…</p>;
+      return <QueryErrorState error={query.error} action={t("agentMailSetup.loadEmailInbox")} onRetry={view.retry} retrying={view.isFetching} />;
+    return <p role="status">{t("agentMailSetup.loadingEmailInbox")}</p>;
   }
   return (
     <div className="max-w-2xl space-y-8 pb-8">
       <header className="space-y-2">
-        <p className="text-sm text-muted-foreground">{assignedAgentName}’s email address</p>
+        <p className="text-sm text-muted-foreground">{t("agentMailSetup.addressLabel", { agent: assignedAgentName })}</p>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
           <h1 aria-label={inbox.address ?? undefined} className="min-w-0 break-all text-xl font-bold">
             {inbox.address ? (
-              <CopyText text={inbox.address} ariaLabel="Copy email address" title="Copy email address"
+              <CopyText text={inbox.address} ariaLabel={t("agentMailSetup.copyEmailAddress")} title={t("agentMailSetup.copyEmailAddress")}
                 containerClassName="max-w-full" className="flex min-w-0 items-center gap-2 rounded-md text-left">
                 <span className="min-w-0 break-all">{inbox.address}</span>
                 <Copy aria-hidden="true" className="size-4 shrink-0 text-muted-foreground" />
               </CopyText>
-            ) : "Email inbox"}
+            ) : t("agentMailSetup.emailInbox")}
           </h1>
           {inbox.address && (
             <a href={`https://console.agentmail.to/dashboard/inboxes/${encodeURIComponent(inbox.address)}`}
               target="_blank" rel="noopener noreferrer"
               className="inline-flex items-center gap-1 text-sm text-muted-foreground underline underline-offset-4 hover:text-foreground">
-              View inbox <ExternalLink aria-hidden="true" className="size-3" />
+              {t("agentMailSetup.viewInbox")} <ExternalLink aria-hidden="true" className="size-3" />
             </a>
           )}
         </div>
         {inbox.status === "active" && inbox.address && (
           <p className="text-sm text-muted-foreground">
-            Send an email to this address to start a task with {assignedAgentName}.
+            {t("agentMailSetup.sendToStart", { agent: assignedAgentName })}
           </p>
         )}
       </header>
 
       <Card className="gap-2 p-4">
-        <h2 className="text-sm font-semibold">How it Works</h2>
+        <h2 className="text-sm font-semibold">{t("agentMailSetup.howItWorks")}</h2>
         <p className="text-sm text-muted-foreground">
-          Incoming email creates tasks for {assignedAgentName}. Replies stay in the same task.
-          Task comments stay internal; use Email reply to send an email.
+          {t("agentMailSetup.incomingCreatesTasks", { agent: assignedAgentName })} {t("agentMailSetup.taskCommentsInternal")}
         </p>
       </Card>
 
       <section aria-labelledby="email-receiving-heading" className="space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <h2 id="email-receiving-heading" className="text-sm font-semibold">Receiving email</h2>
+            <h2 id="email-receiving-heading" className="text-sm font-semibold">{t("agentMailSetup.receivingEmail")}</h2>
             {(inbox.status !== "active" || inbox.lastError) && (
               <StatusBadge status={inbox.status === "active" ? "attention" : inbox.status}
-                label={inbox.status === "active" ? "Needs attention" : inbox.status === "revoked" ? "Access revoked" : undefined} />
+                label={inbox.status === "active" ? t("agentMailSetup.needsAttention") : inbox.status === "revoked" ? t("agentMailSetup.accessRevoked") : undefined} />
             )}
           </div>
           {["active", "paused"].includes(inbox.status) && (
             <Button variant="outline" size="sm" disabled={control.isPending}
               onClick={() => control.mutate(inbox.status === "active" ? "pause" : "resume")}>
-              {inbox.status === "active" ? "Pause" : "Resume"}
+              {inbox.status === "active" ? t("agentMailSetup.pause") : t("agentMailSetup.resume")}
             </Button>
           )}
         </div>
         {inbox.status === "paused" && (
-          <p className="text-sm text-muted-foreground">Receiving is paused. Resume to receive new email.</p>
+          <p className="text-sm text-muted-foreground">{t("agentMailSetup.receivingPaused")}</p>
         )}
         <dl className="grid gap-3 sm:grid-cols-2">
           <div className="space-y-1">
-            <dt className="text-xs text-muted-foreground">Receiving mode</dt>
-            <dd className="text-sm">{inbox.receiveMode === "websocket" ? "Live connection" : "Webhook"}</dd>
+            <dt className="text-xs text-muted-foreground">{t("agentMailSetup.receivingMode")}</dt>
+            <dd className="text-sm">{inbox.receiveMode === "websocket" ? t("agentMailSetup.liveConnection") : t("agentMailSetup.webhook")}</dd>
           </div>
           <div className="space-y-1">
-            <dt className="text-xs text-muted-foreground">Last mail check</dt>
-            <dd className="font-mono text-xs">{inbox.lastSyncAt ? formatDateTime(inbox.lastSyncAt) : "Not checked yet"}</dd>
+            <dt className="text-xs text-muted-foreground">{t("agentMailSetup.lastMailCheck")}</dt>
+            <dd className="font-mono text-xs">{inbox.lastSyncAt ? formatDateTime(inbox.lastSyncAt) : t("agentMailSetup.notChecked")}</dd>
           </div>
         </dl>
         {inbox.lastError && <p role="alert" className="text-sm text-destructive">{inbox.lastError}</p>}
@@ -723,26 +726,26 @@ export function EmailEndpointSettings({
       </section>
 
       <details open={reconnectOpen} onToggle={(event) => setReconnectOpen(event.currentTarget.open)} className="border-t border-border pt-5">
-        <summary className="cursor-pointer text-sm font-medium">Reconnect inbox</summary>
+        <summary className="cursor-pointer text-sm font-medium">{t("agentMailSetup.reconnectInbox")}</summary>
         <div className="space-y-4 pt-4">
           <p className="text-sm text-muted-foreground">
-            Replace the API key or change how this inbox receives email. The email address and task history stay the same.
+            {t("agentMailSetup.replaceKeyDescription")}
           </p>
-          <AgentMailApiKeyField label="New API key" value={replacementKey} onChange={setReplacementKey} disabled={reconnect.isPending} />
+          <AgentMailApiKeyField label={t("credentialField.newApiKey")} value={replacementKey} onChange={setReplacementKey} disabled={reconnect.isPending} />
           <div className="space-y-2">
-            <Label htmlFor="email-reconnect-mode">Receiving mode</Label>
+            <Label htmlFor="email-reconnect-mode">{t("agentMailSetup.receivingMode")}</Label>
             <select id="email-reconnect-mode" className={selectClass}
               disabled={reconnect.isPending} value={receiveMode || inbox.receiveMode}
               onChange={(e) => setReceiveMode(e.target.value as "websocket" | "webhook")}>
-              <option value="websocket">Live connection</option>
-              <option value="webhook">Webhook</option>
+              <option value="websocket">{t("agentMailSetup.liveConnection")}</option>
+              <option value="webhook">{t("agentMailSetup.webhook")}</option>
             </select>
           </div>
           {reconnect.error && <p role="alert" className="text-sm text-destructive">{describeError(reconnect.error).body}</p>}
-          {reconnect.isSuccess && <p role="status" className="text-sm">Inbox reconnected.</p>}
+          {reconnect.isSuccess && <p role="status" className="text-sm">{t("agentMailSetup.inboxReconnected")}</p>}
           <div className="flex justify-end">
             <Button variant="outline" disabled={!replacementKey || reconnect.isPending} onClick={() => reconnect.mutate()}>
-              {reconnect.isPending ? "Reconnecting…" : "Reconnect inbox"}
+              {reconnect.isPending ? t("agentMailSetup.reconnecting") : t("agentMailSetup.reconnectInbox")}
             </Button>
           </div>
         </div>
@@ -751,12 +754,12 @@ export function EmailEndpointSettings({
       <section aria-labelledby="email-disconnect-heading" className="space-y-3 border-t border-border pt-5">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="space-y-1">
-            <h2 id="email-disconnect-heading" className="text-sm font-semibold">Disconnect inbox</h2>
-            <p className="text-sm text-muted-foreground">Stop receiving email in Paperclip. The inbox stays in AgentMail.</p>
+            <h2 id="email-disconnect-heading" className="text-sm font-semibold">{t("agentMailSetup.disconnectInbox")}</h2>
+            <p className="text-sm text-muted-foreground">{t("agentMailSetup.stopReceiving")}</p>
           </div>
           <Button variant="outline" size="sm" disabled={control.isPending}
             onClick={() => control.mutate("remove")}>
-            Disconnect inbox
+            {t("agentMailSetup.disconnectInbox")}
           </Button>
         </div>
         {control.error && control.variables === "remove" && (
