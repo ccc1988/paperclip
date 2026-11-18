@@ -160,6 +160,38 @@
       "loadingView": "Loading agent view…",
       "agentViewUnavailable": "Agent view unavailable",
       "pluginViewUnavailable": "This plugin view is unavailable"
+    },
+    "costs": {
+      "inputTokens": "Input tokens",
+      "outputTokens": "Output tokens",
+      "cachedTokens": "Cached tokens",
+      "totalCost": "Total cost",
+      "date": "Date",
+      "run": "Run",
+      "input": "Input",
+      "output": "Output",
+      "cost": "Cost"
+    },
+    "keys": {
+      "createdNotice": "API key created — copy it now, it will not be shown again.",
+      "hide": "Hide",
+      "show": "Show",
+      "copy": "Copy",
+      "copied": "Copied!",
+      "dismiss": "Dismiss",
+      "createTitle": "Create API Key",
+      "description": "API keys allow this agent to authenticate calls to the Paperclip server.",
+      "namePlaceholder": "Key name (e.g. production)",
+      "create": "Create",
+      "loading": "Loading keys...",
+      "noneActive": "No active API keys.",
+      "active": "Active Keys",
+      "created": "Created {{date}}",
+      "revoke": "Revoke",
+      "revoked": "Revoked {{date}}",
+      "revokedTitle": "Revoked Keys",
+      "copyFailed": "Copy failed",
+      "clipboardUnavailable": "Clipboard access is unavailable."
     }
   },
   "projects": {

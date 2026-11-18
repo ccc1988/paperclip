@@ -160,6 +160,38 @@
       "loadingView": "正在加载 Agent 页面…",
       "agentViewUnavailable": "Agent 页面不可用",
       "pluginViewUnavailable": "此插件页面不可用"
+    },
+    "costs": {
+      "inputTokens": "输入令牌",
+      "outputTokens": "输出令牌",
+      "cachedTokens": "缓存令牌",
+      "totalCost": "总成本",
+      "date": "日期",
+      "run": "运行",
+      "input": "输入",
+      "output": "输出",
+      "cost": "成本"
+    },
+    "keys": {
+      "createdNotice": "API 密钥已创建，请立即复制；之后将不再显示。",
+      "hide": "隐藏",
+      "show": "显示",
+      "copy": "复制",
+      "copied": "已复制！",
+      "dismiss": "关闭",
+      "createTitle": "创建 API 密钥",
+      "description": "API 密钥允许此智能体向 Paperclip 服务器发起认证调用。",
+      "namePlaceholder": "密钥名称（例如：production）",
+      "create": "创建",
+      "loading": "正在加载密钥……",
+      "noneActive": "暂无有效 API 密钥。",
+      "active": "有效密钥",
+      "created": "创建于 {{date}}",
+      "revoke": "撤销",
+      "revoked": "撤销于 {{date}}",
+      "revokedTitle": "已撤销密钥",
+      "copyFailed": "复制失败",
+      "clipboardUnavailable": "剪贴板不可用。"
     }
   },
   "projects": {
