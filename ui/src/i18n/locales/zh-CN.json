@@ -8,6 +8,11 @@
     "invitePeopleDescription": "邀请成员加入您的组织。",
     "documentationDescription": "在新标签页打开 Paperclip 文档。",
     "languageDescription": "选择 Paperclip 界面使用的语言。尚未翻译的内容会回退为英文。",
+    "continue": "继续",
+    "next": "下一步",
+    "creating": "正在创建...",
+    "connecting": "正在连接",
+    "launching": "正在启动...",
     "signingOut": "正在退出...",
     "signOut": "退出登录",
     "endBrowserSession": "结束当前浏览器会话。"
@@ -32,6 +37,26 @@
     "more": "更多",
     "moreWorkspacePages": "更多工作区页面",
     "recents": "最近使用"
+  },
+  "onboarding": {
+    "steps": {
+      "organization": "命名组织",
+      "agent": "创建第一个 Agent",
+      "model": "连接模型",
+      "review": "检查"
+    },
+    "organizationQuestion": "您的组织叫什么名称？",
+    "agentQuestion": "创建第一个 Agent",
+    "modelQuestion": "连接模型",
+    "reviewQuestion": "开始使用 Paperclip...",
+    "modelDescription": "Paperclip 支持使用订阅或 API 密钥。",
+    "agentReady": "{{agent}} 已准备好工作！",
+    "yourFirstAgent": "您的第一个 Agent",
+    "organizationName": "名称",
+    "organizationPlaceholder": "例如：北风实验室",
+    "agentName": "Agent 名称",
+    "agentPlaceholder": "例如：首席助理",
+    "getStarted": "开始使用"
   },
   "app": {
     "noCompanies": {

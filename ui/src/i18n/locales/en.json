@@ -8,6 +8,11 @@
     "invitePeopleDescription": "Invite people to your organization.",
     "documentationDescription": "Open Paperclip docs in a new tab.",
     "languageDescription": "Choose the language used by the Paperclip interface. Untranslated text falls back to English.",
+    "continue": "Continue",
+    "next": "Next",
+    "creating": "Creating...",
+    "connecting": "Connecting",
+    "launching": "Launching...",
     "signingOut": "Signing out...",
     "signOut": "Sign out",
     "endBrowserSession": "End this browser session."
@@ -32,6 +37,26 @@
     "more": "More",
     "moreWorkspacePages": "More workspace pages",
     "recents": "Recents"
+  },
+  "onboarding": {
+    "steps": {
+      "organization": "Name your organization",
+      "agent": "Create your first agent",
+      "model": "Connect a model",
+      "review": "Review"
+    },
+    "organizationQuestion": "What is the name of your organization?",
+    "agentQuestion": "Create your first agent",
+    "modelQuestion": "Connect a model",
+    "reviewQuestion": "Let's get started...",
+    "modelDescription": "Paperclip works with your subscription or API keys.",
+    "agentReady": "{{agent}} is ready to work!",
+    "yourFirstAgent": "Your first agent",
+    "organizationName": "Name",
+    "organizationPlaceholder": "e.g. Northwind Labs",
+    "agentName": "Agent name",
+    "agentPlaceholder": "e.g. Chief of staff",
+    "getStarted": "Get started"
   },
   "app": {
     "noCompanies": {

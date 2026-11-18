@@ -439,8 +439,8 @@ curl http://127.0.0.1:3100/api/health
 
 ### 10.1 2026-11-18 实施更新
 
-- **已实现：** 官方上游 3 个提交已合并到本地基线；语言运行时支持浏览器中文识别、`paperclip.locale` 持久化和英文回退；账户菜单与个人设置均提供语言入口；引导页、账户菜单和主工作区侧栏已接入翻译键；新增 `pnpm check:i18n` 审计命令。
-- **已验证：** `pnpm check:i18n` 通过；`ui/src/i18n/locale-validation.test.ts` 通过（7 tests）；`@paperclipai/plugin-sdk` 构建通过；`@paperclipai/ui` 类型检查通过；`@paperclipai/ui` 生产构建通过；`git diff --check` 通过。
-- **已提交未部署：** 本地实现待提交；尚未推送到 `ccc1988/paperclip`，尚未替换当前运行中的 npm 安装版本。
-- **尚未验证：** 浏览器真实点击切换、完整引导业务流程、Agent/任务/连接器全页面中文覆盖、同步后回归和发布验收。
-- **环境阻塞：** 使用隔离 `data-dir` 启动完整本地服务时，嵌入式 PostgreSQL 初始化进程异常退出；当前不影响 UI 构建和类型验证，但需要在业务验收前单独处理。
+- **已实现：** 官方上游 3 个提交已合并到本地基线；语言运行时支持浏览器中文识别、`paperclip.locale` 持久化和英文回退；账户菜单与个人设置均提供语言入口；引导页首屏、账户菜单和主工作区侧栏已接入翻译键；新增 `pnpm check:i18n` 审计命令。
+- **已验证：** `pnpm check:i18n` 通过（63 个正式中文消息）；`ui/src/i18n/locale-validation.test.ts` 通过（7 tests）；`@paperclipai/plugin-sdk` 构建通过；`@paperclipai/ui` 类型检查通过；`@paperclipai/ui` 生产构建通过；`git diff --check` 通过；本地服务在 `127.0.0.1:3110` readiness 通过；浏览器验收确认中文默认显示、切换英文、刷新保持英文、切回中文、刷新保持中文，并确认 `paperclip.locale=zh-CN`。
+- **已提交未部署：** 本地实现已提交，当前实现 SHA 待本次收口后记录；尚未推送到 `ccc1988/paperclip`，尚未替换当前运行中的 npm 安装版本。
+- **尚未验证：** 完整引导业务流程、Agent/任务/连接器全页面中文覆盖、同步后回归和发布验收。
+- **环境处理：** 本机缺少 Cargo，使用已安装且架构匹配的 Paperclip Runner 二进制启动本地验收服务；本地依赖的嵌入式 PostgreSQL 动态库别名已补齐到工作区 `node_modules`，不属于源码提交。
