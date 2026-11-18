@@ -13,6 +13,7 @@
  */
 
 import { CancelledError } from "@tanstack/react-query";
+import { t } from "../i18n";
 
 export type ErrorKind =
   | "transient"
@@ -129,9 +130,27 @@ const KIND_COPY: Record<ErrorKind, { title: string; body: string }> = {
   unknown: { title: "Something went wrong", body: "An unexpected error occurred. Please try again." },
 };
 
+function localizedCodeCopy(key: string): { title: string; body: string } {
+  const fallback = CODE_COPY[key] ?? KIND_COPY.unknown;
+  return {
+    title: t(`errors.codes.${key}.title`, { defaultValue: fallback.title }),
+    body: t(`errors.codes.${key}.body`, { defaultValue: fallback.body }),
+  };
+}
+
+function localizedKindCopy(kind: ErrorKind): { title: string; body: string } {
+  const fallback = KIND_COPY[kind];
+  return {
+    title: t(`errors.kinds.${kind}.title`, { defaultValue: fallback.title }),
+    body: t(`errors.kinds.${kind}.body`, { defaultValue: fallback.body }),
+  };
+}
+
 /** Copy for a specific code or kind, for callers that build their own messages. */
 export function errorCopy(key: string): { title: string; body: string } {
-  return CODE_COPY[key] ?? KIND_COPY[key as ErrorKind] ?? KIND_COPY.unknown;
+  if (CODE_COPY[key]) return localizedCodeCopy(key);
+  if (KIND_COPY[key as ErrorKind]) return localizedKindCopy(key as ErrorKind);
+  return localizedKindCopy("unknown");
 }
 
 // --- Field extraction -------------------------------------------------------------
@@ -292,8 +311,9 @@ export function errorRetryAfterMs(err: unknown): number | null {
 export function describeError(err: unknown, options: DescribeErrorOptions = {}): ErrorDescription {
   const kind = classifyError(err);
   const retryable = kind === "transient" || kind === "unknown";
-  const coded = errorCodes(err).map((code) => CODE_COPY[code]).find(Boolean);
-  const fallback = KIND_COPY[kind];
+  const codedKey = errorCodes(err).find((code) => CODE_COPY[code]);
+  const coded = codedKey ? localizedCodeCopy(codedKey) : null;
+  const fallback = localizedKindCopy(kind);
 
   let body: string;
   if (coded) body = coded.body;
@@ -301,7 +321,7 @@ export function describeError(err: unknown, options: DescribeErrorOptions = {}):
   else body = readableServerMessage(err) ?? fallback.body;
 
   const title = options.action && kind !== "transient"
-    ? `Couldn't ${options.action}`
+    ? t("errors.actionFailed", { action: options.action, defaultValue: `Couldn't ${options.action}` })
     : (coded?.title ?? fallback.title);
   return { title, body, retryable };
 }

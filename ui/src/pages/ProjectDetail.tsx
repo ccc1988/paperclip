@@ -50,6 +50,7 @@ import {
 } from "../hooks/useResourceMemberships";
 import { useUpdateIssueMutation } from "../hooks/useUpdateIssueMutation";
 import { companyProjectsQuery } from "@/lib/company-projects-query";
+import { useTranslation } from "@/i18n";
 
 /* ── Top-level tab types ── */
 
@@ -328,6 +329,7 @@ function ProjectPluginOperationsList({
 /* ── Main project page ── */
 
 export function ProjectDetail() {
+  const { t } = useTranslation();
   const { companyPrefix, projectId, filter } = useParams<{
     companyPrefix?: string;
     projectId: string;
@@ -470,7 +472,7 @@ export function ProjectDetail() {
       projectsApi.update(projectLookupRef, data, resolvedCompanyId ?? lookupCompanyId),
     onSuccess: (updated, data) => {
       const notice = configurationWarningMessages(updated);
-      if (notice) pushToast({ title: "Project saved", body: notice, tone: "warn" });
+      if (notice) pushToast({ title: t("projectDetail.toasts.saved"), body: notice, tone: "warn" });
       invalidateProject();
       if (data.visibility !== undefined) queryClient.invalidateQueries({ queryKey: ["issues"] });
     },
@@ -487,15 +489,15 @@ export function ProjectDetail() {
       invalidateProject();
       const name = updatedProject?.name ?? project?.name ?? "Project";
       if (archived) {
-        pushToast({ title: `"${name}" has been archived`, tone: "success" });
+        pushToast({ title: t("projectDetail.toasts.archived", { name }), tone: "success" });
         navigate("/dashboard");
       } else {
-        pushToast({ title: `"${name}" has been unarchived`, tone: "success" });
+        pushToast({ title: t("projectDetail.toasts.unarchived", { name }), tone: "success" });
       }
     },
     onError: (_, archived) => {
       pushToast({
-        title: archived ? "Failed to archive project" : "Failed to unarchive project",
+        title: archived ? t("projectDetail.toasts.archiveFailed") : t("projectDetail.toasts.unarchiveFailed"),
         tone: "error",
       });
     },
@@ -604,7 +606,7 @@ export function ProjectDetail() {
     try {
       const updated = await projectsApi.update(projectLookupRef, data, resolvedCompanyId ?? lookupCompanyId);
       const notice = configurationWarningMessages(updated);
-      if (notice) pushToast({ title: "Project saved", body: notice, tone: "warn" });
+      if (notice) pushToast({ title: t("projectDetail.toasts.saved"), body: notice, tone: "warn" });
       invalidateProject();
       if (data.visibility !== undefined) queryClient.invalidateQueries({ queryKey: ["issues"] });
       if (fieldSaveRequestIds.current[field] !== requestId) return;
@@ -830,8 +832,8 @@ export function ProjectDetail() {
         companyId={resolvedCompanyId}
         scopeKind="project"
         scopeId={project.id}
-        title="Project summary"
-        description="Summarizer keeps the latest project status, next step, and operator-needed items here."
+        title={t("projectDetail.summaryTitle")}
+        description={t("projectDetail.summaryDescription")}
       />
 
       <PluginSlotOutlet
@@ -868,12 +870,12 @@ export function ProjectDetail() {
       <Tabs value={activeTab ?? "list"} onValueChange={(value) => handleTabChange(value as ProjectTab)}>
         <PageTabBar
           items={[
-            { value: "list", label: "Tasks" },
+            { value: "list", label: t("projectDetail.tabs.tasks") },
 
-            ...(project.managedByPlugin ? [{ value: "plugin-operations", label: "Plugin operations" }] : []),
-            ...(showWorkspacesTab ? [{ value: "workspaces", label: "Workspaces" }] : []),
-            { value: "configuration", label: "Configuration" },
-            { value: "budget", label: "Budget" },
+            ...(project.managedByPlugin ? [{ value: "plugin-operations", label: t("projectDetail.tabs.pluginOperations") }] : []),
+            ...(showWorkspacesTab ? [{ value: "workspaces", label: t("projectDetail.tabs.workspaces") }] : []),
+            { value: "configuration", label: t("projectDetail.tabs.configuration") },
+            { value: "budget", label: t("projectDetail.tabs.budget") },
             ...pluginTabItems.map((item) => ({
               value: item.value,
               label: item.label,
@@ -904,7 +906,7 @@ export function ProjectDetail() {
           workspaceTabFailure ? (
             <QueryErrorState
               error={workspaceTabFailure.error}
-              action="load workspaces"
+              action={t("projectDetail.actions.loadWorkspaces")}
               onRetry={workspaceTabFailure.retry}
               retrying={workspaceTabFailure.isFetching}
             />
@@ -917,7 +919,7 @@ export function ProjectDetail() {
             />
           )
         ) : (
-          <p className="text-sm text-muted-foreground">Loading workspaces...</p>
+          <p className="text-sm text-muted-foreground">{t("projectDetail.loadingWorkspaces")}</p>
         )
       ) : null}
 
