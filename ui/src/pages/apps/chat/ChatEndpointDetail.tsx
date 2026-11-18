@@ -74,6 +74,7 @@ import { Link, Navigate, useLocation, useNavigate, useParams } from "@/lib/route
 import { describeError } from "@/api/errors";
 import { ANALYTICS_MASK_CLASS, ANALYTICS_NO_CAPTURE_CLASS } from "@/lib/analytics/privacy";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 const tabs = ["settings", "access", "reviews", "conversations", "activity"] as const;
 type ChatTab = (typeof tabs)[number];
@@ -249,6 +250,7 @@ export function connectionHealthPresentation(
 }
 
 export function ChatEndpointDetail() {
+  const { t } = useTranslation();
   const { userId, settled: identitySettled } = useAccountIdentity();
   const { endpointId = "", tab: routeTab, reviewId } = useParams<{
     endpointId: string;
@@ -344,7 +346,7 @@ export function ChatEndpointDetail() {
             {endpoint.provider === "github" ? (endpoint.botLabel ?? endpoint.assignedAgentName) : endpoint.assignedAgentName}{endpoint.provider === "speko" ? " in Speko" : ""}
           </h1>
           <p className={cn("mt-1 flex flex-wrap items-center gap-2 text-sm text-muted-foreground", ANALYTICS_MASK_CLASS)}>
-            {endpoint.provider === "github" ? <><AppLogo name="GitHub" brandKey="github" compact className="size-4! rounded-sm bg-transparent" /><Link to={`/agents/${endpoint.assignedAgentId}`} className="hover:underline">{endpoint.assignedAgentName}</Link>{endpoint.providerAccountLabel && <span>· {endpoint.providerAccountLabel}</span>}</> : endpoint.providerAccountLabel ?? (endpoint.provider === "agentmail" ? endpoint.botExternalId ?? "Email connection" : "Chat connection")}
+            {endpoint.provider === "github" ? <><AppLogo name="GitHub" brandKey="github" compact className="size-4! rounded-sm bg-transparent" /><Link to={`/agents/${endpoint.assignedAgentId}`} className="hover:underline">{endpoint.assignedAgentName}</Link>{endpoint.providerAccountLabel && <span>· {endpoint.providerAccountLabel}</span>}</> : endpoint.providerAccountLabel ?? (endpoint.provider === "agentmail" ? endpoint.botExternalId ?? t("agentMailSetup.emailConnection") : "Chat connection")}
           </p>
           {endpoint.provider === "github" && <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
             <GitHubBotMention endpoint={endpoint} />
@@ -455,23 +457,24 @@ function EmailAccess({ endpoint }: { endpoint: ChatEndpoint }) {
   });
   const agentsView = useQueryView(agents);
   const connectionView = useQueryView(connection);
-  if (!endpoint.connectionId) return <p role="alert" className="text-sm text-destructive">Connection access could not be loaded.</p>;
+  const { t } = useTranslation();
+  if (!endpoint.connectionId) return <p role="alert" className="text-sm text-destructive">{t("agentMailSetup.accessUnavailable")}</p>;
   if (agentsView.kind === "error" || connectionView.kind === "error") return (
     <QueryErrorState
       error={agentsView.kind === "error" ? agents.error : connection.error}
-      action="load connection access"
+      action={t("agentMailSetup.loadConnectionAccess")}
       onRetry={() => { agentsView.retry(); connectionView.retry(); }}
       retrying={agents.isFetching || connection.isFetching}
     />
   );
   if (agents.isPending || connection.isPending || agentsView.kind === "reconnecting" || connectionView.kind === "reconnecting") {
-    return <p role="status" className="text-sm text-muted-foreground">Loading access…</p>;
+    return <p role="status" className="text-sm text-muted-foreground">{t("agentMailSetup.loadingAccess")}</p>;
   }
   const sourceId = connection.data?.config?.credentialConnectionId;
   const credentialId = typeof sourceId === "string" ? sourceId : endpoint.connectionId;
   return <section className="max-w-3xl space-y-4">
-    <h2 className="text-lg font-semibold">Access</h2>
-    {credentialId !== endpoint.connectionId && <p className="text-sm text-muted-foreground">These settings apply to the saved AgentMail account and all inboxes using it.</p>}
+    <h2 className="text-lg font-semibold">{t("agentMailSetup.access")}</h2>
+    {credentialId !== endpoint.connectionId && <p className="text-sm text-muted-foreground">{t("agentMailSetup.savedAccountScope")}</p>}
     <EmailConnectionAccess key={credentialId} companyId={endpoint.companyId} connectionId={credentialId} agents={agents.data ?? []} />
   </section>;
 }
@@ -483,6 +486,7 @@ function Settings({
   endpointId: string;
   endpoint: Awaited<ReturnType<typeof chatEndpointsApi.get>>;
 }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToast();
   const resourcesQuery = useQuery({
@@ -698,6 +702,7 @@ function Access({
   allowUnlinked: boolean;
   endpoint: ChatEndpoint;
 }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToast();
   const [confirmationUrl, setConfirmationUrl] = useState<string | null>(null);
@@ -898,6 +903,7 @@ function Activity({
   endpointId: string;
   endpoint: Awaited<ReturnType<typeof chatEndpointsApi.get>>;
 }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { pushToast } = useToast();
@@ -1175,9 +1181,9 @@ function Activity({
                 }
               >
                 <RefreshCw />
-                {status === "draft" || status === "verifying"
-                  ? "Finish setup"
-                  : "Reconnect"}
+                {endpoint.provider === "agentmail"
+                  ? status === "draft" || status === "verifying" ? t("agentMailSetup.finishSetupAction") : t("agentMailSetup.reconnectAction")
+                  : status === "draft" || status === "verifying" ? "Finish setup" : "Reconnect"}
               </Button>
             )}
             <Button
@@ -1192,7 +1198,7 @@ function Activity({
           </div>
           {status !== "draft" && status !== "verifying" && (
             <p className="text-xs text-muted-foreground">
-              {providerLifecycleGuidance[endpoint.provider].reconnect}
+              {endpoint.provider === "agentmail" ? t("agentMailSetup.reconnectSameInbox") : providerLifecycleGuidance[endpoint.provider].reconnect}
             </p>
           )}
         </div>
@@ -1206,7 +1212,7 @@ function Activity({
         </div>
         {endpoint.provider === "agentmail" && rows.some((item) => item.kind === "publication" && item.status === "delivery_unknown") && (
           <p className="text-sm text-muted-foreground">
-            Review unconfirmed email delivery in the{" "}
+            {t("agentMailSetup.reviewDelivery")} {" "}
             <Link to={`/apps/chat/${endpointId}/conversations`} className="underline underline-offset-4">conversation’s task</Link>.
           </p>
         )}
