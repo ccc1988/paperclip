@@ -725,7 +725,7 @@ export function AgentDetail() {
 
   if (isLoading || agentView.kind === "reconnecting") return <PageSkeleton variant="detail" />;
   if (agentView.kind === "error") {
-    return <QueryErrorState size="page" error={error} action="load this agent" onRetry={agentView.retry} retrying={agentView.isFetching} />;
+    return <QueryErrorState size="page" error={error} action={t("agentDetail.messages.loadAgentAction")} onRetry={agentView.retry} retrying={agentView.isFetching} />;
   }
   if (!agent) return null;
   if (!urlRunId && !urlTab) {
@@ -847,11 +847,11 @@ export function AgentDetail() {
           <AgentActionButtons
             agent={agent}
             companyId={resolvedCompanyId}
-            assignLabel="Assign Task"
-            runLabel="Run Heartbeat"
+            assignLabel={t("agentDetail.messages.assignTask")}
+            runLabel={t("agentDetail.messages.runHeartbeat")}
             actionsDisabled={agentAction.isPending}
             workActionsDisabled={hasInvalidOrgChain}
-            workActionsDisabledReason="Repair this agent's reporting chain before assigning tasks or starting runs"
+            workActionsDisabledReason={t("agentDetail.messages.repairChain")}
             hasPendingNavigationChanges={configDirty}
             onBeforeNavigate={prepareAgentNavigation}
             onActionError={setActionError}
@@ -881,7 +881,7 @@ export function AgentDetail() {
                   <span className="animate-pulse absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75" />
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
                 </span>
-                <span className="text-(length:--text-micro) font-medium text-blue-600 dark:text-blue-400">Live</span>
+                <span className="text-(length:--text-micro) font-medium text-blue-600 dark:text-blue-400">{t("agentDetail.messages.live")}</span>
               </Link>
             )}
           </AgentActionButtons>
@@ -891,7 +891,7 @@ export function AgentDetail() {
       {builtInState && (
         <InlineBanner
           tone="info"
-          title="Built-in agent"
+          title={t("agentDetail.messages.builtIn")}
           actions={
             <Button
               variant="outline"
@@ -899,7 +899,7 @@ export function AgentDetail() {
               onClick={() => resetBuiltIn.mutate()}
               disabled={resetBuiltIn.isPending}
             >
-              {resetBuiltIn.isPending ? "Resetting…" : "Reset to defaults"}
+              {resetBuiltIn.isPending ? t("agentDetail.messages.resetting") : t("agentDetail.messages.resetDefaults")}
             </Button>
           }
         >
@@ -980,14 +980,14 @@ export function AgentDetail() {
               onClick={() => cancelConfigActionRef.current?.()}
               disabled={configSaving}
             >
-              Cancel
+              {t("agentDetail.messages.cancel")}
             </Button>
             <Button
               size="sm"
               onClick={() => saveConfigActionRef.current?.()}
               disabled={configSaving}
             >
-              {configSaving ? "Saving…" : "Save"}
+              {configSaving ? t("agentDetail.messages.saving") : t("agentDetail.messages.save")}
             </Button>
           </div>
         </div>
@@ -1006,14 +1006,14 @@ export function AgentDetail() {
               onClick={() => cancelConfigActionRef.current?.()}
               disabled={configSaving}
             >
-              Cancel
+              {t("agentDetail.messages.cancel")}
             </Button>
             <Button
               size="sm"
               onClick={() => saveConfigActionRef.current?.()}
               disabled={configSaving}
             >
-              {configSaving ? "Saving…" : "Save"}
+              {configSaving ? t("agentDetail.messages.saving") : t("agentDetail.messages.save")}
             </Button>
           </div>
         </div>
@@ -1635,6 +1635,7 @@ export function ConfigurationTab({
   hideInstructionsFile?: boolean;
   content?: "configuration" | "secrets";
 }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { tab: urlTab } = useParams<{ tab?: string }>();
@@ -1679,7 +1680,7 @@ export function ConfigurationTab({
       if (!syncAgentRouteAfterRename(queryClient, navigate, agent, updated, urlTab ?? content)) {
         queryClient.invalidateQueries({ queryKey: queryKeys.agents.detail(agent.urlKey) });
       }
-      pushToast({ title: "Agent saved", tone: "success" });
+      pushToast({ title: t("agentDetail.messages.agentSaved"), tone: "success" });
     },
     onError: (err) => {
       setAwaitingRefreshAfterSave(false);
@@ -1688,8 +1689,8 @@ export function ConfigurationTab({
           ? err.message
           : err instanceof Error
             ? err.message
-            : "Could not save agent";
-      pushToast({ title: "Save failed", body: message, tone: "error" });
+            : t("agentDetail.messages.couldNotSave");
+      pushToast({ title: t("agentDetail.messages.saveFailed"), body: message, tone: "error" });
     },
   });
 
@@ -1712,14 +1713,14 @@ export function ConfigurationTab({
   const taskAssignLocked = agent.role === "ceo" || canCreateAgents;
   const taskAssignHint =
     taskAssignSource === "ceo_role"
-      ? "Enabled automatically for CEO agents."
+      ? t("agentDetail.messages.taskAssignCeo")
       : taskAssignSource === "agent_creator"
-        ? "Enabled automatically while this agent can create new agents."
+        ? t("agentDetail.messages.taskAssignCreator")
         : taskAssignSource === "explicit_grant"
-          ? "Enabled via explicit company permission grant."
+          ? t("agentDetail.messages.taskAssignExplicit")
           : taskAssignSource === "simple_default"
-            ? "Enabled by simple company-wide task assignment defaults."
-            : "Disabled unless explicitly granted.";
+            ? t("agentDetail.messages.taskAssignDefault")
+            : t("agentDetail.messages.taskAssignDisabled");
 
   return (
     <div className="space-y-6">
