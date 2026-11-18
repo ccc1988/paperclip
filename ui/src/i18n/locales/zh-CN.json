@@ -793,6 +793,32 @@
       "sharedConcurrency": "共享工作区并发方式"
     }
   },
+  "connectionSetup": {
+    "selectOrganization": "请选择要连接应用的组织。",
+    "finishFailedTitle": "无法完成设置",
+    "loadFailedTitle": "无法加载连接设置",
+    "loadRetainedFailedBody": "Paperclip 无法检查已保留的连接，现有连接未被修改。",
+    "loadProviderFailedBody": "Paperclip 无法加载恢复此连接所需的提供方详情，现有连接未被修改。",
+    "tryAgain": "重试",
+    "backToApps": "返回应用",
+    "resumeUnavailableTitle": "无法继续此设置",
+    "savedConnectionUnavailable": "保存的连接已不存在，或当前组织无法使用该连接。",
+    "savedDraftProviderMismatch": "保存的草稿与请求的提供方不匹配，连接未被修改。",
+    "reconnectUnavailableTitle": "无法重新连接此连接",
+    "reconnectProviderMismatch": "已保留的连接与请求的提供方不匹配，连接未被修改。",
+    "noSupportedReconnectMethod": "Paperclip 已没有可用于此已保留连接的支持设置方式，连接未被修改。",
+    "loadingSaved": "正在加载已保存的连接设置",
+    "loadingRetained": "正在加载已保留的连接设置",
+    "useExistingTitle": "使用现有{{kind}}",
+    "connection": "连接",
+    "appConnection": "应用连接",
+    "useExistingDescription": "复用现有连接，不改变已有访问权限；也可以新建连接。",
+    "readyToUse": "可以使用",
+    "setupNeedsAttention": "设置需要处理",
+    "reviewSetup": "检查连接设置",
+    "connectNew": "新建连接",
+    "cancel": "取消"
+  },
   "appsConnect": {
     "checkingSavedComposio": "正在检查已保存的 Composio 账户……",
     "loadComposioAccounts": "加载您的 Composio 账户",

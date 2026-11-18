@@ -1988,7 +1988,7 @@ function StandardConnectionSetupFlow({
       // rather than stranding them on a half-made connection.
       setAppStep("key");
       pushToast({
-        title: "Couldn’t finish setup",
+        title: t("connectionSetup.finishFailedTitle"),
         body: describeError(error).body,
         tone: "error",
       });
@@ -1996,7 +1996,7 @@ function StandardConnectionSetupFlow({
   });
 
   if (!selectedCompanyId) {
-    return <div className="p-6 text-sm text-muted-foreground">Select an organization to connect apps.</div>;
+    return <div className="p-6 text-sm text-muted-foreground">{t("connectionSetup.selectOrganization")}</div>;
   }
 
   if (
@@ -2005,9 +2005,9 @@ function StandardConnectionSetupFlow({
   ) {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold text-foreground">Couldn’t load connection setup</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("connectionSetup.loadFailedTitle")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Paperclip couldn’t check the retained connection. The retained connection was not changed.
+          {t("connectionSetup.loadRetainedFailedBody")}
         </p>
         <div className="mt-5 flex flex-wrap gap-2">
           <Button
@@ -2023,10 +2023,10 @@ function StandardConnectionSetupFlow({
               }
             }}
           >
-            Try again
+            {t("connectionSetup.tryAgain")}
           </Button>
           <Button type="button" variant="outline" onClick={() => navigate("/apps")}>
-            Back to apps
+            {t("connectionSetup.backToApps")}
           </Button>
         </div>
       </div>
@@ -2040,7 +2040,7 @@ function StandardConnectionSetupFlow({
     && [connectionsView, applicationsView, galleryView].some((view) => view.kind === "reconnecting")
   ) {
     return (
-      <div className="mx-auto max-w-xl space-y-4" aria-label={resumeConnectionId ? "Loading saved connection setup" : "Loading retained connection setup"}>
+      <div className="mx-auto max-w-xl space-y-4" aria-label={resumeConnectionId ? t("connectionSetup.loadingSaved") : t("connectionSetup.loadingRetained")}>
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-40 w-full rounded-xl" />
       </div>
@@ -2050,12 +2050,12 @@ function StandardConnectionSetupFlow({
   if (resumeConnectionId && connectionsQuery.isFetchedAfterMount && !resumeConnection) {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold text-foreground">This setup can’t be resumed</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("connectionSetup.resumeUnavailableTitle")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          The saved connection no longer exists or is not available to this organization.
+          {t("connectionSetup.savedConnectionUnavailable")}
         </p>
         <Button type="button" variant="outline" className="mt-5" onClick={() => navigate("/apps")}>
-          Back to apps
+          {t("connectionSetup.backToApps")}
         </Button>
       </div>
     );
@@ -2070,12 +2070,12 @@ function StandardConnectionSetupFlow({
   ) {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold text-foreground">This setup can’t be resumed</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("connectionSetup.resumeUnavailableTitle")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          This saved draft does not match the requested provider. The connection was not changed.
+          {t("connectionSetup.savedDraftProviderMismatch")}
         </p>
         <Button type="button" variant="outline" className="mt-5" onClick={() => navigate("/apps")}>
-          Back to apps
+          {t("connectionSetup.backToApps")}
         </Button>
       </div>
     );
@@ -2089,14 +2089,14 @@ function StandardConnectionSetupFlow({
   ) {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold text-foreground">This connection can’t be reconnected</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("connectionSetup.reconnectUnavailableTitle")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           {!reconnectConnection
-            ? "The retained connection no longer exists or is not available to this organization."
-            : "This reconnect link does not match the retained connection's provider."}
+            ? t("connectionSetup.savedConnectionUnavailable")
+            : t("connectionSetup.reconnectProviderMismatch")}
         </p>
         <Button type="button" variant="outline" className="mt-5" onClick={() => navigate("/apps")}>
-          Back to apps
+          {t("connectionSetup.backToApps")}
         </Button>
       </div>
     );
@@ -2105,16 +2105,16 @@ function StandardConnectionSetupFlow({
   if ((resumeConnectionId || reconnectConnectionId) && galleryView.kind === "error") {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold text-foreground">Couldn’t load connection setup</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("connectionSetup.loadFailedTitle")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Paperclip couldn’t load the provider details needed to restore this connection. The retained connection was not changed.
+          {t("connectionSetup.loadProviderFailedBody")}
         </p>
         <div className="mt-5 flex flex-wrap gap-2">
           <Button type="button" onClick={galleryView.retry} disabled={galleryView.isFetching}>
-            Try again
+            {t("connectionSetup.tryAgain")}
           </Button>
           <Button type="button" variant="outline" onClick={() => navigate("/apps")}>
-            Back to apps
+            {t("connectionSetup.backToApps")}
           </Button>
         </div>
       </div>
@@ -2124,12 +2124,12 @@ function StandardConnectionSetupFlow({
   if (reconnectConnectionId && unavailableReconnectId === reconnectConnectionId) {
     return (
       <div className="mx-auto max-w-xl rounded-xl border border-border bg-card p-6">
-        <h2 className="text-lg font-semibold text-foreground">This connection can’t be reconnected</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("connectionSetup.reconnectUnavailableTitle")}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          Paperclip no longer has a supported setup method for this retained connection. The retained connection was not changed.
+          {t("connectionSetup.noSupportedReconnectMethod")}
         </p>
         <Button type="button" variant="outline" className="mt-5" onClick={() => navigate("/apps")}>
-          Back to apps
+          {t("connectionSetup.backToApps")}
         </Button>
       </div>
     );
@@ -2142,7 +2142,7 @@ function StandardConnectionSetupFlow({
     || hydratedResumeConnectionId !== resumeConnection?.id
   )) {
     return (
-      <div className="mx-auto max-w-xl space-y-4" aria-label="Loading saved connection setup">
+      <div className="mx-auto max-w-xl space-y-4" aria-label={t("connectionSetup.loadingSaved")}>
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-40 w-full rounded-xl" />
       </div>
@@ -2156,7 +2156,7 @@ function StandardConnectionSetupFlow({
     || Boolean(requestedAppKey && !entry)
   )) {
     return (
-      <div className="mx-auto max-w-xl space-y-4" aria-label="Loading retained connection setup">
+      <div className="mx-auto max-w-xl space-y-4" aria-label={t("connectionSetup.loadingRetained")}>
         <Skeleton className="h-8 w-48" />
         <Skeleton className="h-40 w-full rounded-xl" />
       </div>
@@ -2168,16 +2168,16 @@ function StandardConnectionSetupFlow({
       <div className="max-w-5xl" data-testid="connection-existing-choice">
         <div className="mb-6">
           <h1 className="text-2xl font-bold tracking-tight">
-            Use an existing {requestedAppKey ? "connection" : "app connection"}
+            {t("connectionSetup.useExistingTitle", { kind: requestedAppKey ? t("connectionSetup.connection") : t("connectionSetup.appConnection") })}
           </h1>
           <p className="mt-1 text-sm text-muted-foreground">
-            Reuse a connection without changing who already has access, or connect a new one.
+            {t("connectionSetup.useExistingDescription")}
           </p>
         </div>
         <ConnectionChoiceList
           choices={existingConnections.map((connection) => ({
             id: connection.id, name: connection.name,
-            description: connection.status === "active" && connection.enabled ? "Ready to use" : "Setup needs attention",
+            description: connection.status === "active" && connection.enabled ? t("connectionSetup.readyToUse") : t("connectionSetup.setupNeedsAttention"),
           }))}
           pendingId={existingConnectionPendingId}
           onSelect={async (id) => {
@@ -2195,9 +2195,9 @@ function StandardConnectionSetupFlow({
         ) : null}
         <div className="mt-5 flex flex-wrap gap-2">
           <Button type="button" variant="outline" onClick={() => setShowConnectionChoice(false)}>
-            {configuredConnection ? "Review connection setup" : "Connect new"}
+            {configuredConnection ? t("connectionSetup.reviewSetup") : t("connectionSetup.connectNew")}
           </Button>
-          {onCancel ? <Button type="button" variant="ghost" onClick={onCancel}>Cancel</Button> : null}
+          {onCancel ? <Button type="button" variant="ghost" onClick={onCancel}>{t("connectionSetup.cancel")}</Button> : null}
         </div>
       </div>
     );

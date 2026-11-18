@@ -793,6 +793,32 @@
       "sharedConcurrency": "Shared workspace concurrency"
     }
   },
+  "connectionSetup": {
+    "selectOrganization": "Select an organization to connect apps.",
+    "finishFailedTitle": "Couldn’t finish setup",
+    "loadFailedTitle": "Couldn’t load connection setup",
+    "loadRetainedFailedBody": "Paperclip couldn’t check the retained connection. The retained connection was not changed.",
+    "loadProviderFailedBody": "Paperclip couldn’t load the provider details needed to restore this connection. The retained connection was not changed.",
+    "tryAgain": "Try again",
+    "backToApps": "Back to apps",
+    "resumeUnavailableTitle": "This setup can’t be resumed",
+    "savedConnectionUnavailable": "The saved connection no longer exists or is not available to this organization.",
+    "savedDraftProviderMismatch": "This saved draft does not match the requested provider. The connection was not changed.",
+    "reconnectUnavailableTitle": "This connection can’t be reconnected",
+    "reconnectProviderMismatch": "The retained connection does not match the requested provider. The connection was not changed.",
+    "noSupportedReconnectMethod": "Paperclip no longer has a supported setup method for this retained connection. The retained connection was not changed.",
+    "loadingSaved": "Loading saved connection setup",
+    "loadingRetained": "Loading retained connection setup",
+    "useExistingTitle": "Use an existing {{kind}}",
+    "connection": "connection",
+    "appConnection": "app connection",
+    "useExistingDescription": "Reuse a connection without changing who already has access, or connect a new one.",
+    "readyToUse": "Ready to use",
+    "setupNeedsAttention": "Setup needs attention",
+    "reviewSetup": "Review connection setup",
+    "connectNew": "Connect new",
+    "cancel": "Cancel"
+  },
   "appsConnect": {
     "checkingSavedComposio": "Checking saved Composio accounts…",
     "loadComposioAccounts": "load your Composio accounts",
