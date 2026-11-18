@@ -377,7 +377,8 @@ function defaultGrantKindFor(method: ConnectionMethodDef | null, preferPersonal 
 }
 
 function defaultInstallChoiceFor(method: ConnectionMethodDef | null, requestedAgentId?: string): "specific" | "all" {
-  return requestedAgentId || method?.ai?.provider === "github" ? "specific" : "all";
+  // A dedicated agent identity belongs to exactly one chosen agent.
+  return requestedAgentId || method?.ai?.provider === "github" || defaultGrantKindFor(method) === "agent" ? "specific" : "all";
 }
 
 function configuredAgentIdentity(connection: ToolConnection): string | undefined {
@@ -463,7 +464,7 @@ function recommendedManagedConnectorMethod(
 // One-method sign-in skips the access step. These providers' warnings (Railway
 // project scope, Circleback sharing outside the workspace) must still be read
 // before authorizing, so the sign-in screen repeats them.
-const SIGN_IN_GUIDANCE_SLUGS = new Set(["railway", "circleback"]);
+const SIGN_IN_GUIDANCE_SLUGS = new Set(["railway", "circleback", "github"]);
 
 function canUseAutomaticOAuthFastPath(entry: AppDefinition | null | undefined): boolean {
   if (!entry) return false;
@@ -549,6 +550,59 @@ export function readConnectionIntentOAuthOutcome(
     || message.outcome === "failed"
     ? message.outcome
     : null;
+}
+
+export function readConnectionIntentGitHubRecovery(data: unknown): { installationUrl: string | null; managementUrl: string | null } | null {
+  if (!data || typeof data !== "object") return null;
+  const message = data as { code?: unknown; recovery?: unknown };
+  if (message.code !== "github_installation_required" || !message.recovery || typeof message.recovery !== "object") return null;
+  const recovery = message.recovery as { installationUrl?: unknown; managementUrl?: unknown };
+  const installationUrl = githubRecoveryUrl(typeof recovery.installationUrl === "string" ? recovery.installationUrl : null);
+  const managementUrl = githubRecoveryUrl(typeof recovery.managementUrl === "string" ? recovery.managementUrl : null);
+  return installationUrl || managementUrl ? { installationUrl, managementUrl } : null;
+}
+
+export function isMissingOAuthStateMessage(
+  event: Pick<MessageEvent, "origin" | "data" | "source">,
+  expectedOrigin: string,
+  activePopup: Window | null,
+): boolean {
+  if (!activePopup || event.source !== activePopup) return false;
+  if (event.origin !== expectedOrigin || !event.data || typeof event.data !== "object") return false;
+  const message = event.data as { type?: unknown; interactionId?: unknown; outcome?: unknown; code?: unknown };
+  return message.type === "paperclip.connection-intent.oauth"
+    && message.interactionId === undefined
+    && message.outcome === "failed"
+    && message.code === "oauth_state_missing";
+}
+
+export function readConnectionIntentOAuthFailureCode(data: unknown): string | null {
+  if (!data || typeof data !== "object") return null;
+  const code = (data as { code?: unknown }).code;
+  return typeof code === "string" && /^[a-z][a-z0-9_]{0,63}$/.test(code) ? code : null;
+}
+
+export function oauthFailureMessage(code: string | null): string {
+  switch (code) {
+    case "oauth_state_expired":
+    case "oauth_state_missing":
+      return "The sign-in took too long or was already used. Try again and finish signing in within a few minutes.";
+    case "oauth_session_mismatch":
+      return "Sign-in finished in a different Paperclip session. Stay signed in to Paperclip in this browser and try again.";
+    case "oauth_redirect_origin_unsupported":
+      return "Sign-in returned to a different Paperclip address than the one you started from. Open Paperclip at its usual address and try again.";
+    case "oauth_token_exchange_failed":
+    case "oauth_token_endpoint_rejected":
+    case "oauth_access_token_missing":
+      return "The provider accepted your sign-in but didn’t give Paperclip access. Try again; if it keeps happening, check that your account or organization allows this app.";
+    case "oauth_insufficient_scope":
+    case "oauth_scope_grant_invalid":
+      return "The provider didn’t grant the access Paperclip asked for. Try again and approve every requested permission.";
+    case "github_installation_required":
+      return "You signed in, but the Paperclip for GitHub app isn’t installed on any account you can use. Install it and choose at least one repository, then try again. An organization owner may need to approve the install.";
+    default:
+      return "Authorization did not complete. Try again when you’re ready.";
+  }
 }
 
 export interface ConnectionSetupFlowProps {
@@ -793,6 +847,7 @@ function StandardConnectionSetupFlow({
     if (!resumingAfterOAuthFailure) return null;
     return oauthCallbackErrorMessage(oauthCallbackOutcome, oauthCallbackCode);
   });
+  const [intentGitHubRecovery, setIntentGitHubRecovery] = useState<{ installationUrl: string | null; managementUrl: string | null } | null>(null);
   /** Host of the page the operator is about to be sent to, shown while redirecting. */
   const [authorizationHost, setAuthorizationHost] = useState<string | null>(null);
   const directOAuthAccessConfirmedRef = useRef(false);
@@ -866,6 +921,7 @@ function StandardConnectionSetupFlow({
     // proxy from window.open without opening a usable authorization tab.
     oauthPopupRef.current = null;
     setOAuthError(null);
+    setIntentGitHubRecovery(null);
     setOAuthPhase("redirecting");
     onPhaseChange?.("authorizing");
   }, [onPhaseChange]);
@@ -885,6 +941,7 @@ function StandardConnectionSetupFlow({
   const prepareAndOpenOAuth = useCallback(async (
     start: Pick<ToolOAuthStartResult, "authorizationUrl" | "handoff">,
   ) => {
+    setIntentGitHubRecovery(null);
     oauthHandoffAbortRef.current?.abort();
     const controller = new AbortController();
     oauthHandoffAbortRef.current = controller;
@@ -922,6 +979,11 @@ function StandardConnectionSetupFlow({
     let disposed = false;
     const receiveOAuthOutcome = async (event: MessageEvent) => {
       const outcome = readConnectionIntentOAuthOutcome(event, window.location.origin, connectionIntentId);
+      if (!outcome && isMissingOAuthStateMessage(event, window.location.origin, oauthPopupRef.current)) {
+        setOAuthPhase("error");
+        setOAuthError(oauthFailureMessage("oauth_state_missing"));
+        return;
+      }
       if (outcome === "connected") {
         setOAuthPhase("entry");
         setAuthorizationFallbackUrl(null);
@@ -949,6 +1011,7 @@ function StandardConnectionSetupFlow({
       }
       if (outcome !== "failed") return;
       setOAuthPhase("error");
+      setIntentGitHubRecovery(readConnectionIntentGitHubRecovery(event.data));
       setOAuthError(t("connectionSetup.oauth.incompleteRetry"));
     };
     window.addEventListener("message", receiveOAuthOutcome);
@@ -1465,6 +1528,11 @@ function StandardConnectionSetupFlow({
   };
 
   const effectiveGrantKind = fixedGrantKind ?? grantKind;
+  // A dedicated agent identity is never "all agents": keep the picker on so
+  // the connect request can name its one agent.
+  useEffect(() => {
+    if (effectiveGrantKind === "agent" && installChoice !== "specific") setInstallChoice("specific");
+  }, [effectiveGrantKind, installChoice]);
   // A connected result (from the link probe or machine sign-in) goes straight to
   // review with every discovered action enabled by default.
   function acceptConnectedResult(result: ConnectToolAppResult) {
@@ -1957,7 +2025,7 @@ function StandardConnectionSetupFlow({
       // The Access step asks one question about agent reach, so profile access
       // and installs are committed to the same target set instead of drifting
       // apart behind two separate wizard screens.
-      const selection: AppAccessSelection = installChoice === "all"
+      const selection: AppAccessSelection = installChoice === "all" && effectiveGrantKind !== "agent"
         ? "all_agents"
         : { agentIds: Array.from(installAgentIds) };
       const finished = await toolsApi.finishApp(selectedCompanyId!, connected.connectionId, {
@@ -2221,13 +2289,17 @@ function StandardConnectionSetupFlow({
         : "api_key";
   // PAP-659 C0: the resolved default is stated, not asked. `Change` opens the
   // same controls the deleted Access step owned, inline and never blocking.
+  // Reconnecting a signed-in account keeps its agent; any other dedicated
+  // agent identity must name exactly one agent before it can connect.
+  const preservesAgentAccess = Boolean((automaticOAuthEntry && (resumableOAuthConnection || reconnectConnection)) || reconnectConnection?.connectionPurpose === "ai");
+  const dedicatedAgentMissing = effectiveGrantKind === "agent" && !requestedAgentId && !preservesAgentAccess && installAgentIds.size !== 1;
   const renderConnectionDefaults = step === "key" ? (
     (extra?: ReactNode, forceOpen?: boolean) => (
     <>
     <ConnectionAccessDefaults
       key="connection-defaults"
       extra={extra}
-      forceOpen={forceOpen}
+      forceOpen={forceOpen || dedicatedAgentMissing}
       companyId={selectedCompanyId}
       sentence={connectionDefaultSummarySentence({
         grantKind: effectiveGrantKind,
@@ -2261,7 +2333,7 @@ function StandardConnectionSetupFlow({
       capabilities={galleryQuery.data?.capabilities}
       githubIdentity={entry?.slug === "github"}
       identityLoading={Boolean(automaticOAuthEntry) && directOAuthLookupPending}
-      preserveAgentAccess={Boolean((automaticOAuthEntry && (resumableOAuthConnection || reconnectConnection)) || reconnectConnection?.connectionPurpose === "ai")}
+      preserveAgentAccess={preservesAgentAccess}
       disabled={connectMutation.isPending || oauthStartMutation.isPending}
     />
     {entry && instructionTemplate && instructionValue && <div className="mt-6"><ConnectionInstructionsEditor provider={entry.name} template={instructionTemplate} value={instructionValue} onChange={(value) => setInstructionDraft({ slug: entry.slug, value })} disabled={connectMutation.isPending || oauthStartMutation.isPending} /></div>}
@@ -2347,7 +2419,7 @@ function StandardConnectionSetupFlow({
         recoveryActions={oauthCallbackCode === "github_installation_required" ? {
           installationUrl: githubInstallationUrl,
           managementUrl: githubManagementUrl,
-        } : undefined}
+        } : intentGitHubRecovery ?? undefined}
         authorizationHost={authorizationHost}
         authorizationUrl={authorizationFallbackUrl}
         guidance={entry && SIGN_IN_GUIDANCE_SLUGS.has(entry.slug) && accessStepMethod ? (
@@ -2696,7 +2768,7 @@ function StandardConnectionSetupFlow({
         </div>
       ) : step === "key" && entry && credentialStep !== undefined ? credentialStep : step === "key" && entry ? (
         <KeyStep
-          settingsValid={additionalSettingsValid && instructionsValid}
+          settingsValid={additionalSettingsValid && instructionsValid && !dedicatedAgentMissing}
           entry={entry}
           error={connectMutation.error ? describeError(connectMutation.error).body : null}
           values={credentials}
@@ -4112,7 +4184,8 @@ export function AccessStepContent({
   // scope stays legible instead of quietly disappearing.
   const canSetCompanyInstall = capabilities?.canSetCompanyInstall ?? true;
   const canCreateOrganizationGrant = capabilities?.canCreateOrganizationGrant ?? true;
-  const needsIdentityChoice = authKind !== "none";
+  // A dedicated agent identity is an identity even without a credential.
+  const needsIdentityChoice = authKind !== "none" || grantKind === "agent";
   const allowedGrantKinds = grantKinds ?? (["user", "organization"] satisfies ConnectionGrantKind[]);
   const identityChoiceAllowed = !needsIdentityChoice
     || grantKind === "user"
@@ -4132,9 +4205,11 @@ export function AccessStepContent({
     : null;
   const identityHeading = githubIdentity
     ? t("connectionSetup.access.connectGitHubAs")
-    : t("connectionSetup.access.whichHumansCanUse");
+    : allowedGrantKinds.length === 1 && allowedGrantKinds[0] === "agent"
+      ? t("connectionSetup.access.whoConnectionActsAs")
+      : t("connectionSetup.access.whichHumansCanUse");
   const agentAccessHeading = grantKind === "agent"
-    ? t("connectionSetup.access.whichAgentOwnsGitHub")
+    ? githubIdentity ? t("connectionSetup.access.whichAgentOwnsGitHub") : t("connectionSetup.access.whichAgentUsesConnection")
     : githubIdentity && grantKind === "user"
       ? t("connectionSetup.access.whichAgentsUseGitHubResponsible")
       : githubIdentity
@@ -4300,7 +4375,7 @@ export function AccessStepContent({
                 ]}
               />
             )}
-            {!preserveAgentAccess && !lockedAgentId && installChoice === "specific" ? (
+            {!preserveAgentAccess && !lockedAgentId && (installChoice === "specific" || grantKind === "agent") ? (
               <div className="mt-3">
                 <AgentMultiSelect
                   agents={agents}
@@ -4365,6 +4440,8 @@ export function connectionDefaultSummarySentence(input: {
     ? t("connectionSetup.summary.agentAccessUnchanged")
     : input.lockedAgentId
       ? t("connectionSetup.summary.availableToRequestingAgent")
+      : input.grantKind === "agent"
+        ? input.installCount === 1 ? t("connectionSetup.summary.availableOnlyToChosenAgent") : t("connectionSetup.summary.chooseOneAgentForConnection")
       : input.installChoice === "all"
         ? t("connectionSetup.summary.availableToAllAgents")
         : input.installCount === 0
@@ -4459,7 +4536,7 @@ export function accessSummaryLines(input: {
   installCount: number;
   enabledCount: number;
 }): Array<{ label: string; value: string }> {
-  const identity = input.authKind === "none"
+  const identity = input.authKind === "none" && input.grantKind !== "agent"
     ? t("connectionSetup.summary.noIdentityRequired")
     : input.grantKind === "user"
       ? t("connectionSetup.summary.yourIdentity")
