@@ -2336,17 +2336,17 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
               {environmentForm.driver === "ssh" ? (
                 <div className="grid gap-3 md:grid-cols-2">
                   <div className="md:col-span-2">
-                    {environmentForm.sshNetwork === "tailscale" || hasConnectedTailnet ? <Field label="Network" hint="Choose how Paperclip reaches this SSH server.">
-                      <select aria-label="SSH network" className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm" value={environmentForm.sshNetwork}
+                    {environmentForm.sshNetwork === "tailscale" || hasConnectedTailnet ? <Field label={t("environmentsPage.network")} hint={t("environmentsPage.networkHint")}>
+                      <select aria-label={t("environmentsPage.sshNetwork")} className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm" value={environmentForm.sshNetwork}
                         onChange={event => setEnvironmentForm(current => ({ ...current, sshNetwork: event.target.value === "tailscale" ? "tailscale" : "direct",
                           tailscaleConnectionId: "", tailscaleDeviceId: "", tailscaleAuthKeySecretId: "", sshHost: "", sshPrivateKey: "", sshPrivateKeySecretId: "", sshKnownHosts: "" }))}>
-                        <option value="direct">Direct connection</option>
+                        <option value="direct">{t("environmentsPage.directConnection")}</option>
                         <option value="tailscale">Tailscale</option>
                       </select>
                     </Field> : null}
                     {tailscaleConnections.error ? <p role="alert" className="text-sm text-destructive">{describeError(tailscaleConnections.error, { action: "load Tailscale connections" }).body}</p> : null}
                     {tailscaleConnections.data !== undefined && !hasConnectedTailnet && environmentForm.sshNetwork === "direct" ?
-                      <p className="text-sm text-muted-foreground"><Link className="underline" to="/apps/tailscale">Connect Tailscale Network</Link> to choose machines from your tailnet.</p> : null}
+                      <p className="text-sm text-muted-foreground"><Link className="underline" to="/apps/tailscale">{t("environmentsPage.connectTailscale")}</Link> {t("environmentsPage.connectTailscaleHint")}</p> : null}
                   </div>
                   {environmentForm.sshNetwork === "tailscale" && selectedCompanyId ? (
                     <div className="md:col-span-2">
@@ -2358,7 +2358,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                         onChange={selection => setEnvironmentForm(current => ({ ...current, tailscaleConnectionId: selection.connectionId, tailscaleDeviceId: selection.deviceId, sshHost: selection.host, sshPrivateKey: "", sshPrivateKeySecretId: "", sshKnownHosts: "" }))} />
                     </div>
                   ) : null}
-                  <Field label="Host" hint={environmentForm.sshNetwork === "tailscale" ? "Tailscale IP address or MagicDNS name of your machine." : "DNS name or IP address for the remote machine."}>
+                  <Field label={t("environmentsPage.host")} hint={environmentForm.sshNetwork === "tailscale" ? t("environmentsPage.tailscaleHostHint") : t("environmentsPage.remoteHostHint")}>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -2367,7 +2367,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshHost: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Port" hint="Defaults to 22.">
+                  <Field label={t("environmentsPage.port")} hint={t("environmentsPage.portHint")}>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="number"
@@ -2377,7 +2377,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                       onChange={(e) => setEnvironmentForm((current) => ({ ...current, sshPort: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Username" hint="SSH username.">
+                  <Field label={t("environmentsPage.username")} hint={t("environmentsPage.usernameHint")}>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -2392,7 +2392,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                     the platform-managed environment owns; an SSH environment the
                     user configured is outside that contract.
                   */}
-                  <Field label="Remote workspace path" hint="Absolute path that Paperclip will verify during SSH connection tests.">
+                  <Field label={t("environmentsPage.remoteWorkspacePath")} hint={t("environmentsPage.remoteWorkspacePathHint")}>
                     <input
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       type="text"
@@ -2402,7 +2402,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                         setEnvironmentForm((current) => ({ ...current, sshRemoteWorkspacePath: e.target.value }))}
                     />
                   </Field>
-                  <Field label="Private key" hint="Optional PEM private key. Leave blank to rely on the server's SSH agent or default keychain.">
+                  <Field label={t("environmentsPage.privateKey")} hint={t("environmentsPage.privateKeyHint")}>
                     <div className="space-y-2">
                       <select
                         className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
@@ -2414,7 +2414,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                             sshPrivateKey: e.target.value ? "" : current.sshPrivateKey,
                           }))}
                       >
-                        <option value="">No saved secret</option>
+                        <option value="">{t("environmentsPage.noSavedSecret")}</option>
                         {(secrets ?? []).map((secret) => (
                           <option key={secret.id} value={secret.id}>{secret.name}</option>
                         ))}
@@ -2427,7 +2427,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                       />
                     </div>
                   </Field>
-                  <Field label="Known hosts" hint="Optional known_hosts block used when strict host key checking is enabled.">
+                  <Field label={t("environmentsPage.knownHosts")} hint={t("environmentsPage.knownHostsHint")}>
                     <textarea
                       className="h-32 w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-xs font-mono outline-none"
                       value={environmentForm.sshKnownHosts}
@@ -2435,11 +2435,11 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                     />
                   </Field>
                   <details className="md:col-span-2">
-                    <summary className="cursor-pointer text-sm font-medium">Advanced</summary>
+                    <summary className="cursor-pointer text-sm font-medium">{t("environmentsPage.advanced")}</summary>
                     <div className="pt-3">
                       <ToggleField
-                        label="Use authentication configured on the remote machine"
-                        hint="Use the remote user's provider login instead of the agent's Paperclip AI account."
+                        label={t("environmentsPage.useHostAuth")}
+                        hint={t("environmentsPage.useHostAuthHint")}
                         checked={environmentForm.sshUseHostAuth}
                         onChange={(checked) => setEnvironmentForm((current) => ({ ...current, sshUseHostAuth: checked }))}
                       />
@@ -2447,8 +2447,8 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                   </details>
                   <div className="md:col-span-2">
                     <ToggleField
-                      label="Strict host key checking"
-                      hint="Keep this on unless you deliberately want probe-time host key acceptance disabled."
+                      label={t("environmentsPage.strictHostKeyChecking")}
+                      hint={t("environmentsPage.strictHostKeyCheckingHint")}
                       checked={environmentForm.sshStrictHostKeyChecking}
                       onChange={(checked) =>
                         setEnvironmentForm((current) => ({ ...current, sshStrictHostKeyChecking: checked }))}
@@ -2459,7 +2459,7 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
 
               {environmentForm.driver === "sandbox" ? (
                 <div className="space-y-3">
-                  <Field label="Provider" hint="Installed run-capable sandbox provider plugins appear here.">
+                  <Field label={t("environmentsPage.provider")} hint={t("environmentsPage.providerHint")}>
                     <select
                       className="w-full rounded-md border border-border bg-transparent px-2.5 py-1.5 text-sm outline-none"
                       value={environmentForm.sandboxProvider}
@@ -2504,8 +2504,8 @@ export function CompanyEnvironments({ mode = "list" }: CompanyEnvironmentsProps)
                     </div>
                   )}
                   <ToggleField
-                    label="Stream run logs"
-                    hint="Stream the agent CLI's output live while runs execute (recommended). Turn off to deliver output only when the run finishes."
+                    label={t("environmentsPage.streamRunLogs")}
+                    hint={t("environmentsPage.streamRunLogsHint")}
                     checked={environmentForm.sandboxConfig.streamRunLogs !== false}
                     onChange={(checked) =>
                       setEnvironmentForm((current) => ({
