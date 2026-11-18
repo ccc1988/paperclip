@@ -141,6 +141,93 @@
       "pluginViewUnavailable": "This plugin view is unavailable"
     }
   },
+  "projects": {
+    "controls": "Projects controls",
+    "search": "Search projects",
+    "searchPlaceholder": "Search projects…",
+    "sort": "Sort",
+    "sortPrefix": "Sort: {{label}}",
+    "name": "Name",
+    "updated": "Updated",
+    "created": "Created",
+    "targetDate": "Target date",
+    "asc": "Asc",
+    "desc": "Desc",
+    "create": "Create project",
+    "selectOrganization": "Select an organization to view projects.",
+    "load": "load projects",
+    "empty": "No projects yet.",
+    "createAction": "Create project",
+    "noMatch": "No projects match your search.",
+    "mine": "My Projects",
+    "other": "Other Projects",
+    "projectCount": "{{count}} project",
+    "projectCountPlural": "{{count}} projects",
+    "private": "Private project",
+    "taskCount": "{{count}} task",
+    "taskCountPlural": "{{count}} tasks"
+  },
+  "approvals": {
+    "title": "Approvals",
+    "pending": "Pending",
+    "all": "All",
+    "noPending": "No pending approvals.",
+    "none": "No approvals yet.",
+    "selectOrganization": "Select an organization first.",
+    "load": "load approvals"
+  },
+  "connectionsPage": {
+    "title": "Connections",
+    "selectOrganization": "No organization selected. Select an organization from the switcher above."
+  },
+  "taskViews": {
+    "groups": {
+      "myWork": "My work",
+      "organization": "Organization"
+    },
+    "labels": {
+      "mine": "Mine",
+      "unread": "Unread",
+      "blocked": "Blocked",
+      "recent": "Recent",
+      "everything": "Everything",
+      "needs_attention": "Needs attention",
+      "all": "All tasks",
+      "active": "Active",
+      "backlog": "Backlog",
+      "done": "Done"
+    },
+    "hints": {
+      "mine": "Assigned to you or waiting on you",
+      "unread": "Tasks you touched with new activity",
+      "blocked": "Blocked tasks, grouped by blocker",
+      "recent": "Everything you touched lately",
+      "everything": "Tasks, approvals, failed runs and join requests",
+      "needs_attention": "Tasks with pending decisions",
+      "all": "Every task in the organization",
+      "active": "Open tasks, running or not",
+      "backlog": "Not started yet",
+      "done": "Completed and cancelled"
+    },
+    "changeView": "Change view — currently {{label}}"
+  },
+  "tasks": {
+    "selectOrganization": "Select an organization to view tasks.",
+    "selectCompany": "Select a company to view tasks.",
+    "load": "load tasks",
+    "controls": "Task controls",
+    "search": "Search tasks",
+    "searchPlaceholder": "Search tasks...",
+    "new": "New Task",
+    "create": "Create Task",
+    "listView": "List view",
+    "boardView": "Board view",
+    "disableNesting": "Disable parent-child nesting",
+    "enableNesting": "Enable parent-child nesting",
+    "retryExternalStatuses": "Retry external statuses",
+    "retryHierarchy": "Retry hierarchy",
+    "noMatch": "No tasks match the current filters or search."
+  },
   "onboarding": {
     "steps": {
       "organization": "Name your organization",
@@ -159,7 +246,81 @@
     "organizationPlaceholder": "e.g. Northwind Labs",
     "agentName": "Agent name",
     "agentPlaceholder": "e.g. Chief of staff",
-    "getStarted": "Get started"
+    "getStarted": "Get started",
+    "connection": {
+      "modelSource": "Model source",
+      "providerUnavailable": "Claude and Codex are unavailable on this instance. Ask an administrator to enable one, or exit setup and choose New Agent on the Agents page to use another provider.",
+      "savedApiKey": "{{count}} saved API key available.",
+      "savedApiKeys": "{{count}} saved API keys available.",
+      "existingProvider": "An existing provider connection is available.",
+      "chooseSavedModel": "Choose a model for your saved connection",
+      "chooseSavedKey": "Choose a saved API key or enter a new one",
+      "provideApiKey": "Provide your {{provider}} API key to connect",
+      "apiKey": "API key",
+      "enterApiKey": "Enter API key here",
+      "defaultAccount": "This will be your default {{provider}} account.",
+      "gatewayLoadFailed": "Your saved gateway connection could not be loaded. Retry to choose a model and connect your agent.",
+      "retryLoading": "Retry loading connection",
+      "gatewayLoading": "Loading your saved gateway connection…",
+      "gatewaySaved": "Gateway connection saved. Choose a model, then Connect to test it and finish setting up your agent.",
+      "differentApiKey": "Use a different API key",
+      "noBrowserSignIn": "This environment does not support browser sign-in. Choose another sign-in environment or connect with an API key.",
+      "advanced": "Advanced",
+      "passed": "Passed",
+      "retrySetup": "Retry setup",
+      "retrying": "Retrying…",
+      "unsetApiKey": "Unset ANTHROPIC_API_KEY",
+      "manualDebug": "Manual debug",
+      "prompt": "Prompt:",
+      "authFailedSubscription": "If authentication fails, connect your subscription in the browser above or use an API key.",
+      "authFailedProvider": "If login is required, connect the provider above and retry."
+    },
+    "credentialMode": {
+      "subscription": "Use subscription instead",
+      "api": "Use API key instead"
+    },
+    "credentialLabels": {
+      "subscription": "Subscription",
+      "api": "API key",
+      "advanced": "Custom Gateway"
+    },
+    "login": {
+      "preparing": "Preparing the sign-in",
+      "copied": "Copied!",
+      "copyCode": "Copy the code",
+      "authorizationCode": "Authorization code",
+      "pasteAuthorizationCode": "Paste authorization code here"
+    },
+    "adapterLogin": {
+      "signInTo": "Sign in to {{provider}}",
+      "signInEnvironment": "Sign in to the environment",
+      "cancelPreviousAndRetry": "Cancel previous sign-in and retry",
+      "cancel": "Cancel",
+      "signIn": "Sign in",
+      "signInToReplace": "Sign in to replace",
+      "useSavedLogin": "Use saved login",
+      "savedLoginDescription": "You have a saved Claude login. Use it to bind this agent, or log in again to replace the stored token.",
+      "savedLoginBound": "The saved Claude login is bound to this agent now.",
+      "preparing": "Preparing…",
+      "copyCodeThenOpen": "Copy the code, then open the authentication page.",
+      "code": "Code",
+      "authenticationUrl": "Authentication URL",
+      "copyCode": "Copy code",
+      "copyUrl": "Copy URL",
+      "openAuthentication": "Open the authentication page",
+      "binding": "Binding this agent to the signed-in account…",
+      "bound": "Agent bound to the signed-in account.",
+      "bindFailed": "Could not bind this agent to the signed-in account.",
+      "retry": "Retry",
+      "connectionInsecure": "This connection is not encrypted. The login code travels in clear text on this network. Continue only on a network you trust.",
+      "openAuthorizationEnterCode": "Open the authorization page, then enter the browser code it shows.",
+      "browserCode": "Browser code",
+      "submit": "Submit",
+      "completing": "Completing the login…",
+      "authenticated": "Authenticated. The environment has credentials now.",
+      "loginFailed": "The login did not finish. Start the login again.",
+      "loginTimedOut": "The login timed out. Start the login again."
+    }
   },
   "agentSkills": {
     "application": {

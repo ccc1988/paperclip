@@ -14,6 +14,7 @@ import {
 } from "./onboarding/onboarding-motion";
 import { ANALYTICS_MASK_CLASS, ANALYTICS_NO_CAPTURE_CLASS } from "@/lib/analytics/privacy";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 /**
  * Which shell a login panel draws itself in.
@@ -92,12 +93,13 @@ export function OnboardingLoginCard({
   loading?: boolean;
   children: ReactNode;
 }) {
+  const { t } = useTranslation();
   if (loading) {
     return (
       <div
         className="flex min-h-(--sz-108px) items-center justify-center rounded-xl bg-muted/40"
         role="status"
-        aria-label="Preparing the sign-in"
+        aria-label={t("onboarding.login.preparing")}
       >
         <Loader2 className="size-4 animate-spin text-muted-foreground" />
       </div>
@@ -227,6 +229,7 @@ export function OnboardingLoginCodeRow({
   code: string;
   autoCopy?: boolean;
 }) {
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const autoCopiedRef = useRef(false);
@@ -307,13 +310,13 @@ export function OnboardingLoginCodeRow({
             animate={{ opacity: 1, y: 0, transition: COPIED_REVEAL }}
             exit={{ opacity: 0, transition: COPIED_REVEAL }}
           >
-            Copied!
+            {t("onboarding.login.copied")}
           </motion.span>
         )}
       </AnimatePresence>
       <LoginCardCopyButton
         value={code}
-        label="Copy the code"
+        label={t("onboarding.login.copyCode")}
         onCopied={() => {
           // No wait here. A press is a direct action, and delaying its
           // acknowledgement would read as the button having missed.
@@ -363,8 +366,8 @@ export function OnboardingCardField({
   onSubmit,
   onPaste,
   disabled,
-  label = "Authorization code",
-  placeholder = "Paste authorization code here",
+  label,
+  placeholder,
   masked = false,
   autoFocus = false,
 }: {
@@ -392,15 +395,18 @@ export function OnboardingCardField({
    */
   autoFocus?: boolean;
 }) {
+  const { t } = useTranslation();
+  const resolvedLabel = label ?? t("onboarding.login.authorizationCode");
+  const resolvedPlaceholder = placeholder ?? t("onboarding.login.pasteAuthorizationCode");
   return (
     <input
       // eslint-disable-next-line jsx-a11y/no-autofocus -- see the prop's note
       autoFocus={autoFocus}
-      aria-label={label}
+      aria-label={resolvedLabel}
       type={masked ? "password" : "text"}
       autoComplete="off"
       spellCheck={false}
-      placeholder={placeholder}
+      placeholder={resolvedPlaceholder}
       value={value}
       disabled={disabled}
       onChange={(event) => onChange(event.target.value)}

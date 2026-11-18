@@ -68,6 +68,7 @@ import {
 import { environmentDisplayLabel } from "../lib/managed-sandbox-environment";
 import { adapterCuratesModelOrder, extractModelName, extractProviderId } from "../lib/model-utils";
 import { queryKeys } from "../lib/queryKeys";
+import { useTranslation } from "@/i18n";
 import { useCompany } from "../context/CompanyContext";
 import {
   Field,
@@ -2631,6 +2632,7 @@ function DisplayedCodeLoginPanel({
   onOpenAuthorization,
   onRetryReady,
 }: AdapterLoginPanelProps) {
+  const { t } = useTranslation();
   const [sessionId, setSessionId] = useState<string | null>(null);
   const automaticComputer = Boolean(requiresAgent && !agentId && aiConnection);
   const cancellation = useAdapterLoginCancellation(loginActive, companyId, adapterType, false, sessionId, { environmentId, aiConnection });
@@ -2970,7 +2972,7 @@ function DisplayedCodeLoginPanel({
           activeSessionQuery.error instanceof AdapterLoginConflictError && (
             <Button type="button" variant="outline" disabled={cancelConflictingLogin.isPending}
               onClick={() => cancelConflictingLogin.mutate()}>
-              Cancel previous sign-in and retry
+              {t("onboarding.adapterLogin.cancelPreviousAndRetry")}
             </Button>
           )
         ) : !retryLogin.isPending && <OnboardingLoginCodeRow code={prompt?.code ?? ""} autoCopy />}
@@ -2986,7 +2988,7 @@ function DisplayedCodeLoginPanel({
           inside the card that pushes the row off centre. A gap only
           applies between children that render. */}
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-medium text-foreground">{adapterLoginTitle(adapterType)}</span>
+        <span className="text-xs font-medium text-foreground">{ADAPTER_LOGIN_PROVIDER[adapterType] ? t("onboarding.adapterLogin.signInTo", { provider: ADAPTER_LOGIN_PROVIDER[adapterType] }) : t("onboarding.adapterLogin.signInEnvironment")}</span>
         <div className="flex items-center gap-1.5">
           {isActive && (
             <Button
@@ -2997,7 +2999,7 @@ function DisplayedCodeLoginPanel({
               disabled={cancelLogin.isPending}
               onClick={() => cancelLogin.mutate()}
             >
-              Cancel
+              {t("onboarding.adapterLogin.cancel")}
             </Button>
           )}
           <Button
@@ -3008,7 +3010,7 @@ function DisplayedCodeLoginPanel({
             disabled={startDisabled}
             onClick={() => startLogin.mutate()}
           >
-            Sign in
+            {t("onboarding.adapterLogin.signIn")}
           </Button>
         </div>
       </div>
@@ -3025,14 +3027,14 @@ function DisplayedCodeLoginPanel({
         {isActive && !prompt && (
           <div className="flex items-center gap-2 text-(length:--text-micro) text-muted-foreground">
             <Loader2 className="size-3 animate-spin shrink-0" />
-            <span>Preparing...</span>
+            <span>{t("onboarding.adapterLogin.preparing")}</span>
           </div>
         )}
 
         {isActive && prompt && (
           <div className="space-y-2">
             <div className="text-(length:--text-micro) text-muted-foreground">
-              Copy the code, then open the authentication page.
+              {t("onboarding.adapterLogin.copyCodeThenOpen")}
             </div>
           {/* Code first, then the URL, and the sentence and the numbering both
               say so.
@@ -3052,28 +3054,28 @@ function DisplayedCodeLoginPanel({
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">
               <div className="text-(length:--text-micro) uppercase tracking-wide text-muted-foreground">
-                1. Code
+                1. {t("onboarding.adapterLogin.code")}
               </div>
               <span className={cn("font-mono text-xs text-foreground break-all", ANALYTICS_NO_CAPTURE_CLASS)}>{prompt.code}</span>
             </div>
-            <AdapterLoginCopyButton value={prompt.code} label="Copy code" />
+            <AdapterLoginCopyButton value={prompt.code} label={t("onboarding.adapterLogin.copyCode")} />
           </div>
           <div className="flex items-center justify-between gap-2">
             <div className="min-w-0">
               <div className="text-(length:--text-micro) uppercase tracking-wide text-muted-foreground">
-                2. Authentication URL
+                2. {t("onboarding.adapterLogin.authenticationUrl")}
               </div>
               <span className="font-mono text-xs text-foreground break-all">{prompt.url}</span>
             </div>
             <div className="flex items-center">
-              <AdapterLoginCopyButton value={prompt.url} label="Copy URL" />
+              <AdapterLoginCopyButton value={prompt.url} label={t("onboarding.adapterLogin.copyUrl")} />
               <Button
                 asChild
                 type="button"
                 variant="ghost"
                 size="icon-xs"
-                aria-label="Open the authentication page"
-                title="Open the authentication page"
+                aria-label={t("onboarding.adapterLogin.openAuthentication")}
+                title={t("onboarding.adapterLogin.openAuthentication")}
                 className="text-muted-foreground hover:text-foreground"
               >
                 <a href={prompt.url} target="_blank" rel="noreferrer noopener">
@@ -3095,20 +3097,20 @@ function DisplayedCodeLoginPanel({
         {status === "authenticated" && accountBindState === "saving" && (
           <div className="flex items-center gap-2 text-(length:--text-micro) text-muted-foreground">
             <Loader2 className="size-3 animate-spin shrink-0" />
-            <span>Binding this agent to the signed-in account...</span>
+            <span>{t("onboarding.adapterLogin.binding")}</span>
           </div>
         )}
         {status === "authenticated" && accountBindState === "bound" && (
           <div className="flex items-center gap-2 text-(length:--text-micro) text-foreground">
             <Check className="size-3 shrink-0" />
-            <span>Agent bound to the signed-in account.</span>
+            <span>{t("onboarding.adapterLogin.bound")}</span>
           </div>
         )}
         {status === "authenticated" && accountBindState === "failed" && (
           <div className="flex items-center gap-2 text-(length:--text-micro)">
             <TriangleAlert className="size-3 shrink-0 text-destructive" />
             <span className="text-destructive">
-              Could not bind this agent to the signed-in account.
+              {t("onboarding.adapterLogin.bindFailed")}
             </span>
             <Button
               type="button"
@@ -3119,7 +3121,7 @@ function DisplayedCodeLoginPanel({
                 if (accountBinding) void runAccountBinding(accountBinding);
               }}
             >
-              Retry
+              {t("onboarding.adapterLogin.retry")}
             </Button>
           </div>
         )}
@@ -3183,6 +3185,7 @@ function SubmittedBrowserCodeLoginPanel({
   onSubmitReady,
   onRetryReady,
 }: AdapterLoginPanelProps) {
+  const { t } = useTranslation();
   const [sessionId, setSessionId] = useState<string | null>(null);
   const automaticComputer = Boolean(requiresAgent && !agentId && aiConnection);
   const cancellation = useAdapterLoginCancellation(loginActive, companyId, adapterType, true, sessionId, { environmentId, aiConnection });
@@ -3775,8 +3778,7 @@ function SubmittedBrowserCodeLoginPanel({
         {transportInsecure && (
           <p className="flex items-start gap-2 pl-2 text-xs text-amber-700 dark:text-amber-200">
             <TriangleAlert className="mt-0.5 size-3 shrink-0" />
-            This connection is not encrypted. The login code travels in clear text on this
-            network. Continue only on a network you trust.
+            {t("onboarding.adapterLogin.connectionInsecure")}
           </p>
         )}
         {!failure && !retryLogin.isPending && (
@@ -3806,7 +3808,7 @@ function SubmittedBrowserCodeLoginPanel({
           inside the card that pushes the row off centre. A gap only
           applies between children that render. */}
       <div className="flex items-center justify-between gap-2">
-        <span className="text-xs font-medium text-foreground">{adapterLoginTitle(adapterType)}</span>
+        <span className="text-xs font-medium text-foreground">{ADAPTER_LOGIN_PROVIDER[adapterType] ? t("onboarding.adapterLogin.signInTo", { provider: ADAPTER_LOGIN_PROVIDER[adapterType] }) : t("onboarding.adapterLogin.signInEnvironment")}</span>
         <div className="flex items-center gap-1.5">
           {isActive && (
             <Button
@@ -3817,7 +3819,7 @@ function SubmittedBrowserCodeLoginPanel({
               disabled={cancelLogin.isPending}
               onClick={() => cancelLogin.mutate()}
             >
-              Cancel
+              {t("onboarding.adapterLogin.cancel")}
             </Button>
           )}
           {/* Apply the existing stored login with no new login round trip. The
@@ -3834,7 +3836,7 @@ function SubmittedBrowserCodeLoginPanel({
                 setAppliedStored(true);
               }}
             >
-              Use saved login
+              {t("onboarding.adapterLogin.useSavedLogin")}
             </Button>
           )}
           <Button
@@ -3845,7 +3847,7 @@ function SubmittedBrowserCodeLoginPanel({
             disabled={startDisabled}
             onClick={() => startLogin.mutate()}
           >
-            {storedToken && !isActive && !isStored ? "Sign in to replace" : "Sign in"}
+            {storedToken && !isActive && !isStored ? t("onboarding.adapterLogin.signInToReplace") : t("onboarding.adapterLogin.signIn")}
           </Button>
         </div>
       </div>
@@ -3855,15 +3857,14 @@ function SubmittedBrowserCodeLoginPanel({
           token; a replacement login rotates it under the captured version. */}
       {storedToken && !isActive && !isStored && !appliedStored && (
         <div className="text-(length:--text-micro) text-muted-foreground">
-          You have a saved Claude login. Use it to bind this agent, or log in again to replace the
-          stored token.
+          {t("onboarding.adapterLogin.savedLoginDescription")}
         </div>
       )}
 
       {appliedStored && (
         <div className="flex items-center gap-2 text-(length:--text-micro) text-foreground">
           <Check className="size-3 shrink-0" />
-          <span>The saved Claude login is bound to this agent now.</span>
+          <span>{t("onboarding.adapterLogin.savedLoginBound")}</span>
         </div>
       )}
 
@@ -3879,7 +3880,7 @@ function SubmittedBrowserCodeLoginPanel({
         {isActive && !authorizationUrl && !isCompleting && (
           <div className="flex items-center gap-2 text-(length:--text-micro) text-muted-foreground">
             <Loader2 className="size-3 animate-spin shrink-0" />
-            <span>Preparing...</span>
+            <span>{t("onboarding.adapterLogin.preparing")}</span>
           </div>
         )}
 
@@ -3891,13 +3892,12 @@ function SubmittedBrowserCodeLoginPanel({
               >
                 <TriangleAlert className="size-3 shrink-0 mt-0.5" />
                 <span>
-                  This connection is not encrypted. The login code travels in clear text on this
-                  network. Continue only on a network you trust.
+                  {t("onboarding.adapterLogin.connectionInsecure")}
                 </span>
               </div>
             )}
             <div className="text-(length:--text-micro) text-muted-foreground">
-              Open the authorization page, then enter the browser code it shows.
+              {t("onboarding.adapterLogin.openAuthorizationEnterCode")}
             </div>
             <div className="flex items-center justify-between gap-2">
               <div className="min-w-0">
@@ -3907,14 +3907,14 @@ function SubmittedBrowserCodeLoginPanel({
                 <span className="font-mono text-xs text-foreground break-all">{authorizationUrl}</span>
               </div>
               <div className="flex items-center">
-                <AdapterLoginCopyButton value={authorizationUrl} label="Copy URL" />
+                  <AdapterLoginCopyButton value={authorizationUrl} label={t("onboarding.adapterLogin.copyUrl")} />
                 <Button
                   asChild
                   type="button"
                   variant="ghost"
                   size="icon-xs"
-                  aria-label="Open the authorization page"
-                  title="Open the authorization page"
+                  aria-label={t("onboarding.adapterLogin.openAuthentication")}
+                  title={t("onboarding.adapterLogin.openAuthentication")}
                   className="text-muted-foreground hover:text-foreground"
                 >
                   <a href={authorizationUrl} target="_blank" rel="noreferrer noopener">
@@ -3925,11 +3925,11 @@ function SubmittedBrowserCodeLoginPanel({
             </div>
             <div className="space-y-1">
               <div className="text-(length:--text-micro) uppercase tracking-wide text-muted-foreground">
-                2. Browser code
+                2. {t("onboarding.adapterLogin.browserCode")}
               </div>
               <div className="flex items-center gap-2">
                 <input
-                  aria-label="Browser code"
+                  aria-label={t("onboarding.adapterLogin.browserCode")}
                   type="text"
                   autoComplete="off"
                   spellCheck={false}
@@ -3951,7 +3951,7 @@ function SubmittedBrowserCodeLoginPanel({
                   disabled={!canSubmit}
                   onClick={handleSubmit}
                 >
-                  Submit
+                  {t("onboarding.adapterLogin.submit")}
                 </Button>
               </div>
             </div>
@@ -3961,28 +3961,28 @@ function SubmittedBrowserCodeLoginPanel({
         {isCompleting && (
           <div className="flex items-center gap-2 text-(length:--text-micro) text-muted-foreground">
             <Loader2 className="size-3 animate-spin shrink-0" />
-            <span>Completing the login…</span>
+            <span>{t("onboarding.adapterLogin.completing")}</span>
           </div>
         )}
 
         {isStored && (
           <div className="flex items-center gap-2 text-(length:--text-micro) text-foreground">
             <Check className="size-3 shrink-0" />
-            <span>Authenticated. The environment has credentials now.</span>
+            <span>{t("onboarding.adapterLogin.authenticated")}</span>
           </div>
         )}
 
         {isFailure && (
           <div className="flex items-start gap-2 text-(length:--text-micro) text-destructive">
             <TriangleAlert className="size-3 shrink-0" />
-            <span>{CLAUDE_LOGIN_FAILED_MESSAGE}</span>
+            <span>{t("onboarding.adapterLogin.loginFailed")}</span>
           </div>
         )}
 
         {timedOut && !isFailure && !isStored && (
           <div className="flex items-start gap-2 text-(length:--text-micro) text-destructive">
             <TriangleAlert className="size-3 shrink-0" />
-            <span>{CLAUDE_LOGIN_TIMED_OUT_MESSAGE}</span>
+            <span>{t("onboarding.adapterLogin.loginTimedOut")}</span>
           </div>
         )}
       </div>

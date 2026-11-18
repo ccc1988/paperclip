@@ -141,6 +141,93 @@
       "pluginViewUnavailable": "此插件页面不可用"
     }
   },
+  "projects": {
+    "controls": "项目控制",
+    "search": "搜索项目",
+    "searchPlaceholder": "搜索项目…",
+    "sort": "排序",
+    "sortPrefix": "排序：{{label}}",
+    "name": "名称",
+    "updated": "更新时间",
+    "created": "创建时间",
+    "targetDate": "目标日期",
+    "asc": "升序",
+    "desc": "降序",
+    "create": "创建项目",
+    "selectOrganization": "请选择组织以查看项目。",
+    "load": "加载项目",
+    "empty": "暂无项目。",
+    "createAction": "创建项目",
+    "noMatch": "没有匹配搜索条件的项目。",
+    "mine": "我的项目",
+    "other": "其他项目",
+    "projectCount": "{{count}} 个项目",
+    "projectCountPlural": "{{count}} 个项目",
+    "private": "私有项目",
+    "taskCount": "{{count}} 个任务",
+    "taskCountPlural": "{{count}} 个任务"
+  },
+  "approvals": {
+    "title": "审批",
+    "pending": "待处理",
+    "all": "全部",
+    "noPending": "暂无待处理审批。",
+    "none": "暂无审批。",
+    "selectOrganization": "请先选择组织。",
+    "load": "加载审批"
+  },
+  "connectionsPage": {
+    "title": "连接",
+    "selectOrganization": "未选择组织，请从上方切换器选择组织。"
+  },
+  "taskViews": {
+    "groups": {
+      "myWork": "我的工作",
+      "organization": "组织"
+    },
+    "labels": {
+      "mine": "我的任务",
+      "unread": "未读",
+      "blocked": "已阻塞",
+      "recent": "最近",
+      "everything": "全部事项",
+      "needs_attention": "需要关注",
+      "all": "全部任务",
+      "active": "进行中",
+      "backlog": "待开始",
+      "done": "已完成"
+    },
+    "hints": {
+      "mine": "分配给您或等待您处理",
+      "unread": "您参与过且有新活动的任务",
+      "blocked": "按阻塞原因归类的任务",
+      "recent": "您最近参与过的所有事项",
+      "everything": "任务、审批、失败运行和加入请求",
+      "needs_attention": "有待处理决策的任务",
+      "all": "组织中的全部任务",
+      "active": "尚未结束的任务，无论是否正在运行",
+      "backlog": "尚未开始",
+      "done": "已完成和已取消"
+    },
+    "changeView": "切换视图，当前为 {{label}}"
+  },
+  "tasks": {
+    "selectOrganization": "请选择组织以查看任务。",
+    "selectCompany": "请选择公司以查看任务。",
+    "load": "加载任务",
+    "controls": "任务控制",
+    "search": "搜索任务",
+    "searchPlaceholder": "搜索任务…",
+    "new": "新建任务",
+    "create": "创建任务",
+    "listView": "列表视图",
+    "boardView": "看板视图",
+    "disableNesting": "关闭父子任务嵌套",
+    "enableNesting": "启用父子任务嵌套",
+    "retryExternalStatuses": "重试外部状态",
+    "retryHierarchy": "重试层级加载",
+    "noMatch": "没有符合当前筛选条件或搜索结果的任务。"
+  },
   "onboarding": {
     "steps": {
       "organization": "命名组织",
@@ -159,7 +246,81 @@
     "organizationPlaceholder": "例如：北风实验室",
     "agentName": "Agent 名称",
     "agentPlaceholder": "例如：首席助理",
-    "getStarted": "开始使用"
+    "getStarted": "开始使用",
+    "connection": {
+      "modelSource": "模型来源",
+      "providerUnavailable": "此实例未启用 Claude 和 Codex。请让管理员启用其中一个，或退出引导后前往 Agent 页面新建 Agent 并选择其他提供商。",
+      "savedApiKey": "已有 {{count}} 个 API 密钥可用。",
+      "savedApiKeys": "已有 {{count}} 个 API 密钥可用。",
+      "existingProvider": "已有可用的提供商连接。",
+      "chooseSavedModel": "为已保存的连接选择模型",
+      "chooseSavedKey": "选择已保存的 API 密钥，或输入新的密钥",
+      "provideApiKey": "输入 {{provider}} API 密钥以连接",
+      "apiKey": "API 密钥",
+      "enterApiKey": "在此输入 API 密钥",
+      "defaultAccount": "这将成为您的默认 {{provider}} 账户。",
+      "gatewayLoadFailed": "无法加载已保存的网关连接。请重试后选择模型并连接 Agent。",
+      "retryLoading": "重试加载连接",
+      "gatewayLoading": "正在加载已保存的网关连接…",
+      "gatewaySaved": "网关连接已保存。请选择模型，然后点击连接进行测试并完成 Agent 设置。",
+      "differentApiKey": "改用其他 API 密钥",
+      "noBrowserSignIn": "此环境不支持浏览器登录。请选择其他登录环境，或使用 API 密钥连接。",
+      "advanced": "高级",
+      "passed": "通过",
+      "retrySetup": "重试设置",
+      "retrying": "正在重试…",
+      "unsetApiKey": "取消设置 ANTHROPIC_API_KEY",
+      "manualDebug": "手动调试",
+      "prompt": "提示词：",
+      "authFailedSubscription": "如果认证失败，请在上方浏览器中连接订阅，或改用 API 密钥。",
+      "authFailedProvider": "如果需要登录，请先在上方连接提供商，然后重试。"
+    },
+    "credentialMode": {
+      "subscription": "改用订阅",
+      "api": "改用 API 密钥"
+    },
+    "credentialLabels": {
+      "subscription": "订阅",
+      "api": "API 密钥",
+      "advanced": "自定义网关"
+    },
+    "login": {
+      "preparing": "正在准备登录",
+      "copied": "已复制！",
+      "copyCode": "复制验证码",
+      "authorizationCode": "授权码",
+      "pasteAuthorizationCode": "在此粘贴授权码"
+    },
+    "adapterLogin": {
+      "signInTo": "登录 {{provider}}",
+      "signInEnvironment": "登录运行环境",
+      "cancelPreviousAndRetry": "取消上一次登录并重试",
+      "cancel": "取消",
+      "signIn": "登录",
+      "signInToReplace": "重新登录替换",
+      "useSavedLogin": "使用已保存登录",
+      "savedLoginDescription": "已有保存的 Claude 登录。可以使用它绑定此 Agent，或重新登录替换已保存的凭据。",
+      "savedLoginBound": "已保存的 Claude 登录现在已绑定到此 Agent。",
+      "preparing": "正在准备…",
+      "copyCodeThenOpen": "复制验证码，然后打开认证页面。",
+      "code": "验证码",
+      "authenticationUrl": "认证网址",
+      "copyCode": "复制验证码",
+      "copyUrl": "复制网址",
+      "openAuthentication": "打开认证页面",
+      "binding": "正在将此 Agent 绑定到已登录账户…",
+      "bound": "Agent 已绑定到已登录账户。",
+      "bindFailed": "无法将此 Agent 绑定到已登录账户。",
+      "retry": "重试",
+      "connectionInsecure": "此连接未加密。登录验证码会以明文在当前网络中传输，请仅在信任的网络中继续。",
+      "openAuthorizationEnterCode": "打开认证页面，然后输入页面显示的浏览器验证码。",
+      "browserCode": "浏览器验证码",
+      "submit": "提交",
+      "completing": "正在完成登录…",
+      "authenticated": "认证成功，运行环境现在已有凭据。",
+      "loginFailed": "登录未完成，请重新开始登录。",
+      "loginTimedOut": "登录已超时，请重新开始登录。"
+    }
   },
   "agentSkills": {
     "application": {

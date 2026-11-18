@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { TASK_VIEW_GROUPS, taskView, type TaskViewKey } from "@/lib/task-views";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 /**
  * The single control for Inbox views and task status presets (PAP-670).
@@ -28,7 +29,10 @@ export function TaskViewsMenu({
   badgeCount?: number;
   coordinator?: boolean;
 }) {
+  const { t } = useTranslation();
   const active = taskView(value);
+  const labelFor = (key: TaskViewKey, fallback: string) => t(`taskViews.labels.${key}`, { defaultValue: fallback });
+  const hintFor = (key: TaskViewKey, fallback: string) => t(`taskViews.hints.${key}`, { defaultValue: fallback });
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -36,9 +40,9 @@ export function TaskViewsMenu({
           size="sm"
           variant="outline"
           className="h-8 gap-1.5"
-          aria-label={`Change view — currently ${active.label}`}
+          aria-label={t("taskViews.changeView", { label: labelFor(active.key, active.label) })}
         >
-          <span className="max-w-(--sz-160px) truncate font-medium">{active.label}</span>
+          <span className="max-w-(--sz-160px) truncate font-medium">{labelFor(active.key, active.label)}</span>
           <ChevronDown aria-hidden="true" className="h-3.5 w-3.5 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
@@ -47,7 +51,7 @@ export function TaskViewsMenu({
           <div key={group.label}>
             {groupIndex > 0 ? <DropdownMenuSeparator /> : null}
             <DropdownMenuLabel className="flex items-center justify-between gap-2">
-              <span>{group.label}</span>
+              <span>{group.label === "My work" ? t("taskViews.groups.myWork") : t("taskViews.groups.organization")}</span>
               {groupIndex === 0 && badgeCount != null && badgeCount > 0 ? (
                 <span className="rounded-full bg-primary px-1.5 text-(length:--text-nano) leading-tight text-primary-foreground">
                   {badgeCount > 99 ? "99+" : badgeCount}
@@ -68,8 +72,8 @@ export function TaskViewsMenu({
                     className={cn("mt-0.5 size-3.5 shrink-0", selected ? "opacity-100" : "opacity-0")}
                   />
                   <span className="min-w-0">
-                    <span className={cn("block truncate", selected && "font-medium")}>{view.label}</span>
-                    <span className="block text-(length:--text-nano) text-muted-foreground">{view.hint}</span>
+                    <span className={cn("block truncate", selected && "font-medium")}>{labelFor(view.key, view.label)}</span>
+                    <span className="block text-(length:--text-nano) text-muted-foreground">{hintFor(view.key, view.hint)}</span>
                   </span>
                 </DropdownMenuItem>
               );
