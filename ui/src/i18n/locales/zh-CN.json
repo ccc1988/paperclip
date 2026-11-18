@@ -833,7 +833,29 @@
     "gallery": {
       "chooseReviewedApp": "选择经过审核、通过 Vercel 连接的应用。",
       "pickApp": "选择 Agent 要使用的应用。",
-      "stepOf": "第 {{current}} 步，共 {{total}} 步"
+      "stepOf": "第 {{current}} 步，共 {{total}} 步",
+      "fullHttpLinkRequired": "请输入完整的 http 或 https 地址。",
+      "vercelTitle": "通过 Vercel 连接",
+      "vercelDescription": "在 Vercel 中创建和管理提供方连接器。Paperclip 会在这里保存连接器引用，并应用 Agent 访问、策略、审批和审计控制。",
+      "openVercelConnect": "打开 Vercel Connect",
+      "vercelUnavailable": "此实例无法使用 Vercel Connect。",
+      "searchApps": "搜索应用……",
+      "unavailableOnInstance": "此实例不可用。",
+      "unavailable": "不可用",
+      "connectArrow": "连接 →",
+      "noAppsMatch": "没有匹配“{{search}}”的应用。",
+      "connectZapier": "连接 Zapier",
+      "connectOwnMcp": "连接自己的 MCP 服务器",
+      "connectWithLink": "通过链接连接",
+      "zapierDescription": "请输入 Zapier 提供的完整 MCP 地址，包括其中的令牌。",
+      "ownMcpDescription": "请输入 MCP 服务器地址，发现的工具会立即可用。",
+      "linkDescription": "请输入未列在此处的应用提供的设置链接。",
+      "remoteUrlDescription": "这里支持任何远程工具地址，包括本地 MCP 服务器，例如",
+      "looksLike": "这看起来像 {{app}}。",
+      "notAvailable": "不可用",
+      "continue": "继续",
+      "useApp": "使用 {{app}}",
+      "mcpServerUrl": "MCP 服务器地址"
     },
     "breadcrumbs": {
       "connectors": "连接器",
@@ -920,6 +942,28 @@
       "everyAgentUseSharedAccount": "每个 Agent 都可以使用共享账户。",
       "companyInstallUnavailable": "只有能够配置此连接的人员才能选择此项。",
       "noEditableAgents": "当前还没有可以编辑的 Agent。"
+    },
+    "key": {
+      "chooseAccessLevel": "请选择访问级别后继续。",
+      "usePaperclipInstead": "改用 Paperclip",
+      "useOwnOAuthApp": "使用自己的 {{app}} OAuth 应用",
+      "howToConnect": "你希望如何连接？",
+      "howToConnectApp": "如何连接 {{app}}",
+      "signInWith": "使用 {{app}} 登录",
+      "useApiKey": "使用 API 密钥",
+      "chooseMethod": "请选择连接方式后继续。",
+      "checking": "正在检查……",
+      "connect": "连接"
+    },
+    "googleSheets": {
+      "shareWithEmail": "使用此邮箱共享每个表格",
+      "copySharingEmail": "复制共享邮箱",
+      "shareInstructions": "在 Google 表格中点击“共享”，将此邮箱添加为编辑者，然后在下方粘贴表格链接。",
+      "unavailable": "此实例暂时无法使用 Google 表格。",
+      "pasteSharedLinks": "粘贴已共享表格的链接",
+      "readyOne": "已准备连接 {{count}} 个表格。",
+      "readyMany": "已准备连接 {{count}} 个表格。",
+      "pasteOnePerLine": "每行粘贴一个链接。支持 .../edit 和 .../edit#gid=... 链接。"
     }
   },
   "appsConnect": {

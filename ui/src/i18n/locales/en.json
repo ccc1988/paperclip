@@ -833,7 +833,29 @@
     "gallery": {
       "chooseReviewedApp": "Choose a reviewed app to connect through Vercel.",
       "pickApp": "Pick the app you want your agents to use.",
-      "stepOf": "Step {{current}} of {{total}}"
+      "stepOf": "Step {{current}} of {{total}}",
+      "fullHttpLinkRequired": "Paste a full http or https link.",
+      "vercelTitle": "Connect through Vercel",
+      "vercelDescription": "Create and manage the provider connector in Vercel. Paperclip stores its reference and applies agent access, policy, approval, and audit controls here.",
+      "openVercelConnect": "Open Vercel Connect",
+      "vercelUnavailable": "Vercel Connect is unavailable on this instance.",
+      "searchApps": "Search apps…",
+      "unavailableOnInstance": "Unavailable on this instance.",
+      "unavailable": "Unavailable",
+      "connectArrow": "Connect →",
+      "noAppsMatch": "No apps match “{{search}}”.",
+      "connectZapier": "Connect Zapier",
+      "connectOwnMcp": "Connect your own MCP server",
+      "connectWithLink": "Connect with a link",
+      "zapierDescription": "Paste the complete MCP URL Zapier gives you, including its token.",
+      "ownMcpDescription": "Paste your MCP server’s URL and every discovered tool will be available immediately.",
+      "linkDescription": "Paste a setup link from an app that is not listed here.",
+      "remoteUrlDescription": "Any remote tool URL works here — including a local MCP server like",
+      "looksLike": "This looks like {{app}}.",
+      "notAvailable": "Not available",
+      "continue": "Continue",
+      "useApp": "Use {{app}}",
+      "mcpServerUrl": "MCP server URL"
     },
     "breadcrumbs": {
       "connectors": "Connectors",
@@ -920,6 +942,28 @@
       "everyAgentUseSharedAccount": "Every agent may use the shared account.",
       "companyInstallUnavailable": "Only someone who can configure this connection can choose this.",
       "noEditableAgents": "You cannot edit any agents yet."
+    },
+    "key": {
+      "chooseAccessLevel": "Choose an access level to continue.",
+      "usePaperclipInstead": "Use Paperclip instead",
+      "useOwnOAuthApp": "Use your own {{app}} OAuth app",
+      "howToConnect": "How do you want to connect?",
+      "howToConnectApp": "How to connect {{app}}",
+      "signInWith": "Sign in with {{app}}",
+      "useApiKey": "Use an API key",
+      "chooseMethod": "Choose a connection method to continue.",
+      "checking": "Checking…",
+      "connect": "Connect"
+    },
+    "googleSheets": {
+      "shareWithEmail": "Share each sheet with this email",
+      "copySharingEmail": "Copy sharing email",
+      "shareInstructions": "In Google Sheets, click Share and add this email as an Editor. Then paste the sheet links below.",
+      "unavailable": "Google Sheets is not available on this instance yet.",
+      "pasteSharedLinks": "Paste links to the sheets you shared",
+      "readyOne": "{{count}} sheet ready to connect.",
+      "readyMany": "{{count}} sheets ready to connect.",
+      "pasteOnePerLine": "Paste one link per line. Both .../edit and .../edit#gid=... links work."
     }
   },
   "appsConnect": {
