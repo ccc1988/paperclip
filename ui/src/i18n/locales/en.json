@@ -862,6 +862,211 @@
     "archiveOrganization": "Archive organization",
     "ownerSaveError": "Couldn’t save this owner."
   },
+  "companyAccess": {
+    "organization": "Organization",
+    "settings": "Settings",
+    "members": "Members",
+    "invites": "Invites",
+    "access": "Access",
+    "title": "Organization Members",
+    "invitePeople": "Invite people",
+    "selectOrganization": "Select an organization to manage access.",
+    "loading": "Loading organization access…",
+    "forbidden": "You do not have permission to manage organization members.",
+    "loadAction": "load organization members",
+    "instanceAdminNotice": "This account can manage access here through instance-admin privileges, but it does not currently hold an active organization membership.",
+    "pendingHumanJoins": "Pending human joins",
+    "pendingHumanJoinsDescription": "Review pending join requests before they become active organization members.",
+    "pendingCountOne": "{{count}} pending",
+    "pendingCountMany": "{{count}} pending",
+    "unknownHumanRequester": "Unknown human requester",
+    "noEmail": "No email available",
+    "joinInvite": "{{allowedJoinTypes}} join invite",
+    "joinInviteWithRole": "{{allowedJoinTypes}} join invite · default role {{role}}",
+    "inviteMetadataUnavailable": "Invite metadata unavailable",
+    "submitted": "Submitted {{date}}",
+    "approveHuman": "Approve human",
+    "rejectHuman": "Reject human",
+    "table": {
+      "name": "Name",
+      "email": "Email",
+      "role": "Role",
+      "status": "Status",
+      "action": "Action"
+    },
+    "emptyMembers": "No user memberships found for this organization yet.",
+    "roleUnset": "Unset",
+    "roles": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "operator": "Operator",
+      "viewer": "Viewer"
+    },
+    "status": {
+      "active": "Active",
+      "pending": "Pending",
+      "suspended": "Suspended"
+    },
+    "actions": {
+      "edit": "Edit",
+      "remove": "Remove",
+      "saveMember": "Save member",
+      "removeMember": "Remove member"
+    },
+    "editDialog": {
+      "title": "Edit member",
+      "description": "Update organization role and membership status for {{member}}.",
+      "organizationRole": "Organization role",
+      "membershipStatus": "Membership status"
+    },
+    "removeDialog": {
+      "title": "Remove member",
+      "description": "Archive {{member}} and move active assignments before hiding this user from assignment fields.",
+      "checkingAssignedTasks": "Checking assigned tasks…",
+      "openAssignedTask": "{{count}} open assigned task",
+      "openAssignedTasks": "{{count}} open assigned tasks",
+      "taskReassignment": "Task reassignment",
+      "leaveUnassigned": "Leave unassigned",
+      "humans": "Humans",
+      "agents": "Agents",
+      "moreTask": "{{count}} more task",
+      "moreTasks": "{{count}} more tasks"
+    },
+    "toasts": {
+      "memberUpdated": "Member updated",
+      "memberUpdateFailed": "Failed to update member",
+      "joinRequestApproved": "Join request approved",
+      "joinRequestApproveFailed": "Failed to approve join request",
+      "joinRequestRejected": "Join request rejected",
+      "joinRequestRejectFailed": "Failed to reject join request",
+      "memberRemoved": "Member removed",
+      "memberRemoveFailed": "Failed to remove member",
+      "assignedTaskCleanedUp": "{{count}} assigned task cleaned up.",
+      "assignedTasksCleanedUp": "{{count}} assigned tasks cleaned up."
+    },
+    "memberFallback": "this member",
+    "advanced": {
+      "checkingExtensions": "Checking for advanced permission extensions…",
+      "title": "Advanced Permissions",
+      "description": "Advanced access, scoped assignment, and explicit grant controls are provided by installed organization settings extensions.",
+      "unavailable": "Advanced permissions unavailable",
+      "unavailableDescription": "Core Paperclip keeps enforcing organization boundaries and any existing restrictive policy data, but editing advanced permissions requires an installed extension.",
+      "extensionError": "Plugin extensions unavailable: {{error}}",
+      "openMembers": "Open Members",
+      "openInvites": "Open Invites"
+    }
+  },
+  "invites": {
+    "selectOrganization": "Select an organization to manage invites.",
+    "loading": "Loading invites…",
+    "forbidden": "You do not have permission to manage organization invites.",
+    "loadAction": "load invites",
+    "intro": "Invite people to request access to this organization. New invite links are copied to your clipboard when they are generated.",
+    "invitePerson": "Invite a person",
+    "invitePersonDescription": "Generate a human invite link and choose the default access it should request.",
+    "chooseRole": "Choose a role",
+    "defaultRole": "Default",
+    "roles": {
+      "viewer": {
+        "label": "Viewer",
+        "description": "Can view organization work and follow along.",
+        "gets": "View-only organization membership."
+      },
+      "operator": {
+        "label": "Operator",
+        "description": "Can edit organization work and invite people.",
+        "gets": "Full editing and audit access. Cannot approve join requests or manage member permissions."
+      },
+      "admin": {
+        "label": "Admin",
+        "description": "Recommended for operators who need to invite people, create agents, and approve joins.",
+        "gets": "Can create agents, invite users, assign tasks, and approve join requests."
+      },
+      "owner": {
+        "label": "Owner",
+        "description": "Full organization access, including membership management.",
+        "gets": "Everything in Admin, plus managing members."
+      }
+    },
+    "singleUse": "Each invite link is single-use. Human invitees get the selected role immediately after sign-in; agent invites still create a join request for approval.",
+    "createInvite": "Create invite",
+    "historyAuditHint": "Invite history below keeps the audit trail.",
+    "latestInviteLink": "Latest invite link",
+    "copied": "Copied",
+    "currentDomainDescription": "This URL includes the current Paperclip domain returned by the server.",
+    "latestInviteUrl": "Latest invite URL",
+    "copyLink": "Copy link",
+    "history": "Invite history",
+    "historyDescription": "Review invite status, audience, inviter, and any linked join request.",
+    "openJoinRequestQueue": "Open join request queue",
+    "empty": "No invites have been created for this organization yet.",
+    "table": {
+      "state": "State",
+      "for": "For",
+      "invitedBy": "Invited by",
+      "created": "Created",
+      "joinRequest": "Join request",
+      "action": "Action"
+    },
+    "unknownInviter": "Unknown inviter",
+    "reviewRequest": "Review request",
+    "revoke": "Revoke",
+    "inactive": "Inactive",
+    "loadingMore": "Loading more…",
+    "viewMore": "View more",
+    "copyUrlManually": "The invite URL is selected. Copy it manually from the field.",
+    "copyUrlBelow": "Copy the invite URL manually from the field below.",
+    "clipboardUnavailable": "Clipboard unavailable",
+    "states": {
+      "active": "Active",
+      "accepted": "Accepted",
+      "expired": "Expired",
+      "revoked": "Revoked"
+    },
+    "audience": {
+      "agent": "Agent",
+      "humanOrAgent": "Human or agent",
+      "humanOrAgentWithRole": "Human or agent · {{role}}",
+      "human": "Human"
+    },
+    "toasts": {
+      "created": "Invite created",
+      "readyCopied": "Invite ready below and copied to clipboard.",
+      "ready": "Invite ready below.",
+      "createFailed": "Failed to create invite",
+      "revoked": "Invite revoked",
+      "revokeFailed": "Failed to revoke invite"
+    }
+  },
+  "projectAccess": {
+    "manageAccess": "Manage access",
+    "viewAccess": "View access",
+    "title": "Private project access",
+    "description": "Members can discover this project and read every task in it. A task can still be shared directly.",
+    "directoryLoadFailed": "Couldn’t load the company access directory.",
+    "addPersonOrAgent": "Add a person or agent",
+    "searchPeopleAndAgents": "Search people and agents",
+    "noMoreMembers": "No more company members to add",
+    "add": "Add",
+    "people": "People",
+    "agents": "Agents",
+    "sharedAgentWarning": "This agent can retain private project context in its memory and workspace for later runs. Removing access cannot erase what it has already learned.",
+    "unknownMember": "Unknown member",
+    "unknownUser": "Unknown user",
+    "owner": "Owner",
+    "agent": "Agent",
+    "person": "Person",
+    "member": "member",
+    "removeMember": "Remove {{member}}",
+    "loading": "Loading access…",
+    "membersLoadFailed": "Couldn’t load project access members.",
+    "toasts": {
+      "added": "Project access added",
+      "addFailed": "Couldn’t add project access",
+      "removed": "Project access removed",
+      "removeFailed": "Couldn’t remove project access"
+    }
+  },
   "profileSettings": {
     "title": "Profile",
     "description": "Control how your account appears in the sidebar and other board surfaces.",

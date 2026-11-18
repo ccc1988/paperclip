@@ -862,6 +862,211 @@
     "archiveOrganization": "归档组织",
     "ownerSaveError": "无法保存负责人。"
   },
+  "companyAccess": {
+    "organization": "组织",
+    "settings": "设置",
+    "members": "成员",
+    "invites": "邀请",
+    "access": "访问控制",
+    "title": "组织成员",
+    "invitePeople": "邀请成员",
+    "selectOrganization": "请选择组织以管理访问权限。",
+    "loading": "正在加载组织访问权限……",
+    "forbidden": "您没有管理组织成员的权限。",
+    "loadAction": "加载组织成员",
+    "instanceAdminNotice": "此账户可以通过实例管理员权限在此管理访问，但当前没有有效的组织成员身份。",
+    "pendingHumanJoins": "待处理的人员加入申请",
+    "pendingHumanJoinsDescription": "在申请人成为有效组织成员前，先审核待处理的加入申请。",
+    "pendingCountOne": "{{count}} 项待处理",
+    "pendingCountMany": "{{count}} 项待处理",
+    "unknownHumanRequester": "未知申请人",
+    "noEmail": "无可用邮箱",
+    "joinInvite": "{{allowedJoinTypes}} 加入邀请",
+    "joinInviteWithRole": "{{allowedJoinTypes}} 加入邀请 · 默认角色：{{role}}",
+    "inviteMetadataUnavailable": "邀请信息不可用",
+    "submitted": "提交于 {{date}}",
+    "approveHuman": "批准人员加入",
+    "rejectHuman": "拒绝人员加入",
+    "table": {
+      "name": "姓名",
+      "email": "邮箱",
+      "role": "角色",
+      "status": "状态",
+      "action": "操作"
+    },
+    "emptyMembers": "此组织暂时没有人员成员。",
+    "roleUnset": "未设置",
+    "roles": {
+      "owner": "所有者",
+      "admin": "管理员",
+      "operator": "操作员",
+      "viewer": "查看者"
+    },
+    "status": {
+      "active": "有效",
+      "pending": "待处理",
+      "suspended": "已暂停"
+    },
+    "actions": {
+      "edit": "编辑",
+      "remove": "移除",
+      "saveMember": "保存成员",
+      "removeMember": "移除成员"
+    },
+    "editDialog": {
+      "title": "编辑成员",
+      "description": "更新 {{member}} 的组织角色和成员状态。",
+      "organizationRole": "组织角色",
+      "membershipStatus": "成员状态"
+    },
+    "removeDialog": {
+      "title": "移除成员",
+      "description": "归档 {{member}}，并在从任务分配字段中隐藏此用户前转移其有效任务。",
+      "checkingAssignedTasks": "正在检查已分配任务……",
+      "openAssignedTask": "{{count}} 项未完成的已分配任务",
+      "openAssignedTasks": "{{count}} 项未完成的已分配任务",
+      "taskReassignment": "任务重新分配",
+      "leaveUnassigned": "保持未分配",
+      "humans": "人员",
+      "agents": "Agent",
+      "moreTask": "另有 {{count}} 项任务",
+      "moreTasks": "另有 {{count}} 项任务"
+    },
+    "toasts": {
+      "memberUpdated": "成员已更新",
+      "memberUpdateFailed": "成员更新失败",
+      "joinRequestApproved": "加入申请已批准",
+      "joinRequestApproveFailed": "批准加入申请失败",
+      "joinRequestRejected": "加入申请已拒绝",
+      "joinRequestRejectFailed": "拒绝加入申请失败",
+      "memberRemoved": "成员已移除",
+      "memberRemoveFailed": "移除成员失败",
+      "assignedTaskCleanedUp": "已清理 {{count}} 项已分配任务。",
+      "assignedTasksCleanedUp": "已清理 {{count}} 项已分配任务。"
+    },
+    "memberFallback": "此成员",
+    "advanced": {
+      "checkingExtensions": "正在检查高级权限扩展……",
+      "title": "高级权限",
+      "description": "高级访问控制、范围分配和明确授权由已安装的组织设置扩展提供。",
+      "unavailable": "高级权限不可用",
+      "unavailableDescription": "Paperclip 核心仍会执行组织边界和已有的限制性策略数据，但编辑高级权限需要安装扩展。",
+      "extensionError": "插件扩展不可用：{{error}}",
+      "openMembers": "打开成员",
+      "openInvites": "打开邀请"
+    }
+  },
+  "invites": {
+    "selectOrganization": "请选择组织以管理邀请。",
+    "loading": "正在加载邀请……",
+    "forbidden": "您没有管理组织邀请的权限。",
+    "loadAction": "加载邀请",
+    "intro": "邀请成员申请加入此组织。新生成的邀请链接会自动复制到剪贴板。",
+    "invitePerson": "邀请人员",
+    "invitePersonDescription": "生成一个人员邀请链接，并选择申请加入时使用的默认权限。",
+    "chooseRole": "选择角色",
+    "defaultRole": "默认",
+    "roles": {
+      "viewer": {
+        "label": "查看者",
+        "description": "可以查看组织工作并跟进进展。",
+        "gets": "仅查看组织成员权限。"
+      },
+      "operator": {
+        "label": "操作员",
+        "description": "可以编辑组织工作并邀请成员。",
+        "gets": "拥有完整编辑和审计权限，但不能批准加入申请或管理成员权限。"
+      },
+      "admin": {
+        "label": "管理员",
+        "description": "适合需要邀请成员、创建 Agent 和批准加入申请的操作员。",
+        "gets": "可以创建 Agent、邀请用户、分配任务和批准加入申请。"
+      },
+      "owner": {
+        "label": "所有者",
+        "description": "拥有完整组织权限，包括成员管理。",
+        "gets": "拥有管理员的全部权限，并可以管理成员。"
+      }
+    },
+    "singleUse": "每个邀请链接只能使用一次。人员登录后会立即获得所选角色；Agent 邀请仍会创建一条待审批的加入申请。",
+    "createInvite": "创建邀请",
+    "historyAuditHint": "下方的邀请历史会保留审计记录。",
+    "latestInviteLink": "最新邀请链接",
+    "copied": "已复制",
+    "currentDomainDescription": "此链接包含服务器返回的当前 Paperclip 域名。",
+    "latestInviteUrl": "最新邀请链接地址",
+    "copyLink": "复制链接",
+    "history": "邀请历史",
+    "historyDescription": "查看邀请状态、对象、邀请人以及关联的加入申请。",
+    "openJoinRequestQueue": "打开加入申请队列",
+    "empty": "此组织还没有创建邀请。",
+    "table": {
+      "state": "状态",
+      "for": "对象",
+      "invitedBy": "邀请人",
+      "created": "创建时间",
+      "joinRequest": "加入申请",
+      "action": "操作"
+    },
+    "unknownInviter": "未知邀请人",
+    "reviewRequest": "查看申请",
+    "revoke": "撤销",
+    "inactive": "未激活",
+    "loadingMore": "正在加载更多……",
+    "viewMore": "查看更多",
+    "copyUrlManually": "邀请链接已选中，请从输入框中手动复制。",
+    "copyUrlBelow": "请从下方输入框中手动复制邀请链接。",
+    "clipboardUnavailable": "剪贴板不可用",
+    "states": {
+      "active": "有效",
+      "accepted": "已接受",
+      "expired": "已过期",
+      "revoked": "已撤销"
+    },
+    "audience": {
+      "agent": "Agent",
+      "humanOrAgent": "人员或 Agent",
+      "humanOrAgentWithRole": "人员或 Agent · {{role}}",
+      "human": "人员"
+    },
+    "toasts": {
+      "created": "邀请已创建",
+      "readyCopied": "邀请已生成并复制到剪贴板，请查看下方链接。",
+      "ready": "邀请已生成，请查看下方链接。",
+      "createFailed": "创建邀请失败",
+      "revoked": "邀请已撤销",
+      "revokeFailed": "撤销邀请失败"
+    }
+  },
+  "projectAccess": {
+    "manageAccess": "管理访问权限",
+    "viewAccess": "查看访问权限",
+    "title": "私有项目访问权限",
+    "description": "成员可以发现此项目并读取其中的所有任务。任务仍然可以单独共享。",
+    "directoryLoadFailed": "无法加载组织访问目录。",
+    "addPersonOrAgent": "添加人员或 Agent",
+    "searchPeopleAndAgents": "搜索人员和 Agent",
+    "noMoreMembers": "没有更多可添加的组织成员",
+    "add": "添加",
+    "people": "人员",
+    "agents": "Agent",
+    "sharedAgentWarning": "此 Agent 可能会在记忆和工作区中保留私有项目上下文，以供后续运行使用。移除访问权限无法抹除它已经学习的内容。",
+    "unknownMember": "未知成员",
+    "unknownUser": "未知用户",
+    "owner": "所有者",
+    "agent": "Agent",
+    "person": "人员",
+    "member": "成员",
+    "removeMember": "移除 {{member}}",
+    "loading": "正在加载访问权限……",
+    "membersLoadFailed": "无法加载项目访问成员。",
+    "toasts": {
+      "added": "项目访问权限已添加",
+      "addFailed": "添加项目访问权限失败",
+      "removed": "项目访问权限已移除",
+      "removeFailed": "移除项目访问权限失败"
+    }
+  },
   "profileSettings": {
     "title": "个人资料",
     "description": "控制您的账户在侧栏和其他控制台界面中的显示方式。",

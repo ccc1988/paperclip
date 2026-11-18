@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "@/api/client";
 import { queryKeys } from "@/lib/queryKeys";
+import { setLocale } from "@/i18n";
 import { CompanyAccess, CompanyAccessLegacyRoute } from "./CompanyAccess";
 
 const listMembersMock = vi.hoisted(() => vi.fn());
@@ -499,6 +500,32 @@ describe("CompanyAccess", () => {
     await act(async () => {
       root.unmount();
     });
+  });
+
+  it("renders organization access controls in Simplified Chinese", async () => {
+    await act(async () => { await setLocale("zh-CN"); });
+    try {
+      const root = createRoot(container);
+      await act(async () => {
+        root.render(
+          <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
+            <CompanyAccess />
+          </QueryClientProvider>,
+        );
+      });
+      await flushReact();
+      await flushReact();
+
+      expect(container.textContent).toContain("组织成员");
+      expect(container.textContent).toContain("姓名");
+      expect(container.textContent).toContain("所有者");
+      expect(container.textContent).toContain("有效");
+      expect(container.textContent).toContain("编辑");
+
+      await act(async () => root.unmount());
+    } finally {
+      await act(async () => { await setLocale("en"); });
+    }
   });
 });
 

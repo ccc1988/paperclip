@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "@/api/client";
 import { InvitesSection } from "./InvitesSection";
 import { queryKeys } from "@/lib/queryKeys";
+import { setLocale } from "@/i18n";
 
 const listInvitesMock = vi.hoisted(() => vi.fn());
 const createCompanyInviteMock = vi.hoisted(() => vi.fn());
@@ -404,5 +405,22 @@ describe("InvitesSection", () => {
     expect(container.querySelector('[data-query-view="error"]')).toBeNull();
 
     await act(async () => root.unmount());
+  });
+
+  it("renders invite controls in Simplified Chinese", async () => {
+    await act(async () => { await setLocale("zh-CN"); });
+    try {
+      const root = await renderSection(new QueryClient({ defaultOptions: { queries: { retry: false } } }));
+
+      expect(container.textContent).toContain("邀请人员");
+      expect(container.textContent).toContain("选择角色");
+      expect(container.textContent).toContain("创建邀请");
+      expect(container.textContent).toContain("邀请历史");
+      expect(container.textContent).toContain("查看申请");
+
+      await act(async () => root.unmount());
+    } finally {
+      await act(async () => { await setLocale("en"); });
+    }
   });
 });
