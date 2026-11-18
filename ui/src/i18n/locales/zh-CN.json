@@ -674,6 +674,29 @@
       "cancel": "取消",
       "archiveProject": "归档项目",
       "unarchiveProject": "取消归档项目"
+    },
+    "codebase": {
+      "title": "代码库",
+      "help": "代码库帮助",
+      "helpManaged": "仓库用于标识事实来源，Agent 会在平台托管的环境中检出代码。",
+      "helpLocal": "仓库用于标识事实来源，本地文件夹是 Agent 写入代码的默认位置。",
+      "managedFolder": "Paperclip 托管文件夹。",
+      "localFolder": "本地文件夹",
+      "changeLocal": "更换本地文件夹",
+      "setLocal": "设置本地文件夹",
+      "clearLocal": "清除本地文件夹",
+      "additionalLegacy": "此项目存在其他旧版工作区记录。Paperclip 使用主工作区作为代码库视图。"
+    },
+    "executionWorkspaces": {
+      "title": "执行工作区",
+      "help": "项目级隔离任务检出和执行工作区默认设置。",
+      "enable": "启用隔离任务检出",
+      "enableDescription": "允许任务在项目主检出目录和隔离执行工作区之间选择。",
+      "enabled": "已启用",
+      "disabled": "已禁用",
+      "defaultIsolated": "新任务默认使用隔离检出",
+      "defaultIsolatedDescription": "关闭后，新任务会留在项目主检出目录，除非有人主动选择隔离工作区。",
+      "sharedConcurrency": "共享工作区并发方式"
     }
   },
   "connectionsPage": {

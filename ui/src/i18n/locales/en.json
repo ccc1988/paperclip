@@ -674,6 +674,29 @@
       "cancel": "Cancel",
       "archiveProject": "Archive project",
       "unarchiveProject": "Unarchive project"
+    },
+    "codebase": {
+      "title": "Codebase",
+      "help": "Codebase help",
+      "helpManaged": "Repo identifies the source of truth. Agents check it out in the platform-managed environment.",
+      "helpLocal": "Repo identifies the source of truth. Local folder is the default place agents write code.",
+      "managedFolder": "Paperclip-managed folder.",
+      "localFolder": "Local folder",
+      "changeLocal": "Change local folder",
+      "setLocal": "Set local folder",
+      "clearLocal": "Clear local folder",
+      "additionalLegacy": "Additional legacy workspace records exist on this project. Paperclip is using the primary workspace as the codebase view."
+    },
+    "executionWorkspaces": {
+      "title": "Execution Workspaces",
+      "help": "Project-owned defaults for isolated task checkouts and execution workspace behavior.",
+      "enable": "Enable isolated task checkouts",
+      "enableDescription": "Let tasks choose between the project's primary checkout and an isolated execution workspace.",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "defaultIsolated": "New tasks default to isolated checkout",
+      "defaultIsolatedDescription": "If disabled, new tasks stay on the project's primary checkout unless someone opts in.",
+      "sharedConcurrency": "Shared workspace concurrency"
     }
   },
   "connectionsPage": {
