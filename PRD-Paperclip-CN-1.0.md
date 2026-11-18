@@ -12,7 +12,7 @@
 
 **当前实施基线（2026-11-19）：**
 
-- 当前中文实现代码基线：`793848e47`；本 PRD 当前版本以 Git `HEAD` 为准；相对 `upstream/master`（`1c556d5340403112b39e9c7cb068483f58d79dfd`）当前分支领先 30 个提交。
+- 当前中文实现代码基线：`793848e47`；本 PRD 当前版本以 Git `HEAD` 为准；该代码基线相对 `upstream/master`（`1c556d5340403112b39e9c7cb068483f58d79dfd`）领先 30 个提交，文档提交不计入代码基线。
 - `origin` 保持为 `https://github.com/ccc1988/paperclip.git`，`upstream` 保持为 `https://github.com/paperclipai/paperclip.git`。
 - S2 引导登录中文化已提交；本地 `.playwright-cli/` 临时目录已清理，不属于交付内容。
 - 当前提交和工作树均未推送 GitHub，未替换用户正在使用的 npm 安装版本。
