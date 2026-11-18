@@ -376,7 +376,21 @@
     "noPending": "No pending approvals.",
     "none": "No approvals yet.",
     "selectOrganization": "Select an organization first.",
-    "load": "load approvals"
+    "load": "load approvals",
+    "requestedBy": "Requested by",
+    "created": "Approval request created {{time}}",
+    "decisionNote": "Decision note.",
+    "approving": "Approving...",
+    "approve": "Approve",
+    "rejecting": "Rejecting...",
+    "reject": "Reject",
+    "viewDetails": "View details",
+    "status": {
+      "pending": "pending",
+      "approved": "approved",
+      "rejected": "rejected",
+      "revision_requested": "revision requested"
+    }
   },
   "connectionsPage": {
     "title": "Connections",
