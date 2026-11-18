@@ -19,52 +19,50 @@ import { useToast } from "@/context/ToastContext";
 import { queryKeys } from "@/lib/queryKeys";
 import { relativeTime } from "@/lib/utils";
 import { ANALYTICS_MASK_CLASS } from "@/lib/analytics/privacy";
-
-function plural(count: number, one: string, many: string) {
-  return `${count.toLocaleString()} ${count === 1 ? one : many}`;
-}
+import { t, useTranslation } from "@/i18n";
 
 export function storedContentSummary(content: ToolConnectionStoredContent, appName: string): string {
   const { toolCalls, approvals, appViews, runs } = content.stored;
   const parts = [
-    toolCalls > 0 ? plural(toolCalls, "tool call", "tool calls") : null,
-    approvals > 0 ? plural(approvals, "approval request", "approval requests") : null,
-    appViews > 0 ? plural(appViews, "app view", "app views") : null,
-    runs > 0 ? `the full transcripts of ${plural(runs, "run", "runs")}` : null,
+    toolCalls > 0 ? t(toolCalls === 1 ? "connectionsPage.detail.storedContent.toolCallOne" : "connectionsPage.detail.storedContent.toolCallMany", { count: toolCalls }) : null,
+    approvals > 0 ? t(approvals === 1 ? "connectionsPage.detail.storedContent.approvalOne" : "connectionsPage.detail.storedContent.approvalMany", { count: approvals }) : null,
+    appViews > 0 ? t(appViews === 1 ? "connectionsPage.detail.storedContent.appViewOne" : "connectionsPage.detail.storedContent.appViewMany", { count: appViews }) : null,
+    runs > 0 ? t("connectionsPage.detail.storedContent.fullTranscripts", { runs: t(runs === 1 ? "connectionsPage.detail.storedContent.runOne" : "connectionsPage.detail.storedContent.runMany", { count: runs }) }) : null,
   ].filter((part): part is string => part !== null);
-  if (parts.length === 0) return `Paperclip found no saved data from ${appName}'s tool calls. You can still delete to check again.`;
-  const list = parts.length > 1 ? `${parts.slice(0, -1).join(", ")} and ${parts[parts.length - 1]}` : parts[0];
-  return `Paperclip will delete what it saved from ${list} that used ${appName}${runs > 0 ? " or received its results" : ""}.`;
+  if (parts.length === 0) return t("connectionsPage.detail.storedContent.noSavedData", { app: appName });
+  const list = parts.length > 1 ? `${parts.slice(0, -1).join(", ")} ${t("connectionsPage.and")} ${parts[parts.length - 1]}` : parts[0];
+  return t("connectionsPage.detail.storedContent.summary", { items: list, app: appName, results: runs > 0 ? t("connectionsPage.detail.storedContent.resultsSuffix") : "" });
 }
 
 export function storedContentStatus(content: ToolConnectionStoredContent): string | null {
   const deletion = content.deletion;
   if (deletion?.status === "pending") {
     return deletion.retrying
-      ? "Deleting was interrupted. Paperclip keeps trying until it finishes."
-      : "Deleting now. You can close this window.";
+      ? t("connectionsPage.detail.storedContent.deletingInterrupted")
+      : t("connectionsPage.detail.storedContent.deletingNow");
   }
   if (deletion?.status === "completed" && deletion.completedAt) {
     const skipped = deletion.counts.runsInProgress;
     return skipped > 0
-      ? `Last deleted ${relativeTime(deletion.completedAt)}. ${plural(skipped, "run was", "runs were")} still working and kept their data.`
-      : `Last deleted ${relativeTime(deletion.completedAt)}.`;
+      ? t("connectionsPage.detail.storedContent.lastDeletedKept", { time: relativeTime(deletion.completedAt), runs: t(skipped === 1 ? "connectionsPage.detail.storedContent.runStillWorkingOne" : "connectionsPage.detail.storedContent.runStillWorkingMany", { count: skipped }) })
+      : t("connectionsPage.detail.storedContent.lastDeleted", { time: relativeTime(deletion.completedAt) });
   }
   return null;
 }
 
 export function StoredContentDeletionRow({ connectionId, appName }: { connectionId: string; appName: string }) {
+  const { t: translate } = useTranslation();
   const [open, setOpen] = useState(false);
   return (
     <div className="flex flex-wrap items-center justify-between gap-3 py-4">
       <div>
-        <p className="text-sm font-medium text-foreground">Delete data read through this app</p>
+        <p className="text-sm font-medium text-foreground">{translate("connectionsPage.detail.storedContent.deleteTitle")}</p>
         <p className="text-xs text-muted-foreground">
-          Permanently removes the results and run transcripts Paperclip saved from this app's tool calls.
+          {translate("connectionsPage.detail.storedContent.deleteDescription")}
         </p>
       </div>
       <Button variant="destructive" size="sm" onClick={() => setOpen(true)}>
-        Delete data
+        {translate("connectionsPage.detail.storedContent.delete")}
       </Button>
       {open ? (
         <StoredContentDeletionDialog connectionId={connectionId} appName={appName} onClose={() => setOpen(false)} />
@@ -82,6 +80,7 @@ export function StoredContentDeletionDialog({
   appName: string;
   onClose: () => void;
 }) {
+  const { t: translate } = useTranslation();
   const queryClient = useQueryClient();
   const { pushToast } = useToast();
   const countsKey = queryKeys.tools.connectionStoredContent(connectionId);
@@ -115,7 +114,7 @@ export function StoredContentDeletionDialog({
       queryClient.setQueryData(statusKey, result);
       setTracking(true);
     },
-    onError: (error) => pushToast({ title: "Couldn't delete the data", body: describeError(error).body, tone: "error" }),
+    onError: (error) => pushToast({ title: translate("connectionsPage.detail.storedContent.deleteFailed"), body: describeError(error).body, tone: "error" }),
   });
   const content = query.data ? { ...query.data, deletion: latest } : undefined;
   const pending = deletion.isPending || latest?.status === "pending";
@@ -126,9 +125,9 @@ export function StoredContentDeletionDialog({
     <AlertDialog open onOpenChange={(next) => { if (!next) onClose(); }}>
       <AlertDialogContent className={ANALYTICS_MASK_CLASS}>
         <AlertDialogHeader>
-          <AlertDialogTitle>{`Delete data read through ${appName}?`}</AlertDialogTitle>
+          <AlertDialogTitle>{translate("connectionsPage.detail.storedContent.deleteDialogTitle", { app: appName })}</AlertDialogTitle>
           <AlertDialogDescription>
-            {content ? storedContentSummary(content, appName) : "Counting saved data…"}
+            {content ? storedContentSummary(content, appName) : translate("connectionsPage.detail.storedContent.counting")}
           </AlertDialogDescription>
         </AlertDialogHeader>
         {query.error ? (
@@ -136,12 +135,12 @@ export function StoredContentDeletionDialog({
         ) : null}
         {content ? (
           <div className="space-y-2 text-sm text-muted-foreground">
-            <p>Whole transcripts are deleted, including other steps of those runs. Call times, sizes and outcomes stay in the activity history.</p>
-            <p className="font-medium text-foreground">This does not remove anything your agents wrote into tasks, such as comments, documents and files. Delete or edit those yourself.</p>
+            <p>{translate("connectionsPage.detail.storedContent.wholeTranscripts")}</p>
+            <p className="font-medium text-foreground">{translate("connectionsPage.detail.storedContent.doesNotRemove")}</p>
             {inProgress > 0 ? (
-              <p>{`${plural(inProgress, "run is", "runs are")} still working and will be skipped. Delete again after ${inProgress === 1 ? "it finishes" : "they finish"}.`}</p>
+              <p>{translate("connectionsPage.detail.storedContent.runStillWorking", { runs: t(inProgress === 1 ? "connectionsPage.detail.storedContent.runIs" : "connectionsPage.detail.storedContent.runsAre", { count: inProgress }), finish: t(inProgress === 1 ? "connectionsPage.detail.storedContent.itFinishes" : "connectionsPage.detail.storedContent.theyFinish") })}</p>
             ) : null}
-            <p className="font-medium text-foreground">This cannot be undone.</p>
+            <p className="font-medium text-foreground">{translate("connectionsPage.detail.storedContent.cannotUndo")}</p>
           </div>
         ) : null}
         {status ? (
@@ -151,7 +150,7 @@ export function StoredContentDeletionDialog({
           </p>
         ) : null}
         <AlertDialogFooter>
-          <AlertDialogCancel autoFocus>{pending ? "Close" : "Cancel"}</AlertDialogCancel>
+          <AlertDialogCancel autoFocus>{pending ? translate("connectionsPage.detail.storedContent.close") : translate("connectionsPage.detail.storedContent.cancel")}</AlertDialogCancel>
           {content ? (
             <AlertDialogAction
               className={buttonVariants({ variant: "destructive" })}
@@ -162,7 +161,7 @@ export function StoredContentDeletionDialog({
               }}
             >
               {pending ? <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" /> : null}
-              Delete data
+              {translate("connectionsPage.detail.storedContent.delete")}
             </AlertDialogAction>
           ) : null}
         </AlertDialogFooter>

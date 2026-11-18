@@ -22,6 +22,7 @@ function NoIcon() {
 }
 import type { AccessDraft, AppDetailSectionProps } from "./types";
 import { ANALYTICS_MASK_CLASS } from "@/lib/analytics/privacy";
+import { useTranslation } from "@/i18n";
 
 type ActionPermission = "off" | "ask" | "allowed";
 type ActionKindFilter = "all" | "read" | "write";
@@ -73,6 +74,7 @@ export function PermissionsPanel({
   /** Supplemental agent settings share the existing connection configuration page. */
   afterAgentAccess?: ReactNode;
 }) {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   return (
     <div className="space-y-10">
@@ -122,6 +124,7 @@ function AgentAccessSection({
   disabled: boolean;
   onSave: (next: AccessDraft) => void;
 }) {
+  const { t } = useTranslation();
   const liveAgents = useMemo(() => agents.filter((agent) => agent.status !== "terminated"), [agents]);
   const canManage = capabilities?.canConfigure ?? false;
   const editableAgentIds = capabilities?.editableAgentIds;
@@ -136,14 +139,14 @@ function AgentAccessSection({
   return (
     <section className="space-y-4 border-t border-border pt-8">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-sm font-semibold text-foreground">Which agents can use this connection?</h2>
-        {disabled ? <span className="text-xs text-muted-foreground">Saving…</span> : null}
+        <h2 className="text-sm font-semibold text-foreground">{t("connectionsPage.detail.permissions.agentAccessTitle")}</h2>
+        {disabled ? <span className="text-xs text-muted-foreground">{t("connectionsPage.detail.permissions.saving")}</span> : null}
       </div>
 
       {canManage ? (
         <div className="space-y-3">
           <RadioCardGroup
-            ariaLabel="Which agents can use this connection"
+            ariaLabel={t("connectionsPage.detail.permissions.agentAccessAria")}
             value={access.mode}
             disabled={disabled}
             className="sm:grid-cols-2"
@@ -157,16 +160,16 @@ function AgentAccessSection({
             options={[
               {
                 value: "specific",
-                title: "Just agents I pick",
+                title: t("connectionsPage.detail.permissions.justPicked"),
                 description: install.onAll
-                  ? "Unavailable while this connection is installed for every agent."
-                  : "Available only to selected agents.",
+                  ? t("connectionsPage.detail.permissions.unavailableAll")
+                  : t("connectionsPage.detail.permissions.selectedOnly"),
                 disabled: install.onAll,
               },
               {
                 value: "all",
-                title: "Any agent",
-                description: "Available across your company.",
+                title: t("connectionsPage.detail.permissions.anyAgent"),
+                description: t("connectionsPage.detail.permissions.companyWide"),
               },
             ]}
           />
@@ -177,11 +180,11 @@ function AgentAccessSection({
               selectedAgentIds={access.agentIds}
               disabled={disabled}
               triggerLabel={access.agentIds.size === 0
-                ? "Choose agents"
-                : `${access.agentIds.size} ${access.agentIds.size === 1 ? "agent" : "agents"} selected`}
-              emptyMessage="You cannot edit any agents yet."
+                ? t("connectionsPage.detail.permissions.chooseAgents")
+                : t(access.agentIds.size === 1 ? "connectionsPage.detail.permissions.selectedOne" : "connectionsPage.detail.permissions.selectedMany", { count: access.agentIds.size })}
+              emptyMessage={t("connectionsPage.detail.permissions.cannotEdit")}
               isAgentDisabled={(agent) => requiredAgentIds.has(agent.id)}
-              getDescription={(agent) => requiredAgentIds.has(agent.id) ? "Required by this connection's install setting" : agent.title}
+              getDescription={(agent) => requiredAgentIds.has(agent.id) ? t("connectionsPage.detail.permissions.requiredByInstall") : agent.title}
               onChange={(agentIds) => onSave({
                 mode: "specific",
                 agentIds: new Set([...agentIds, ...requiredAgentIds]),
@@ -190,9 +193,9 @@ function AgentAccessSection({
           ) : null}
         </div>
       ) : access.mode === "all" ? (
-        <p className="text-sm text-muted-foreground">Any agent can use this connection.</p>
+        <p className="text-sm text-muted-foreground">{t("connectionsPage.detail.permissions.anyCanUse")}</p>
       ) : selectedAgents.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No agents can use this connection.</p>
+        <p className="text-sm text-muted-foreground">{t("connectionsPage.detail.permissions.noneCanUse")}</p>
       ) : (
         <div className="space-y-0.5">
           {selectedAgents.map((agent) => (
@@ -240,6 +243,7 @@ export function ActionsSection({
   onReviewQuarantined: (enabledIds: string[]) => void;
   onRefreshActions: () => void;
 }) {
+  const { t } = useTranslation();
   const [query, setQuery] = useState("");
   const [kindFilter, setKindFilter] = useState<ActionKindFilter>("all");
   const [showPermissionChangeWarning, setShowPermissionChangeWarning] = useState(false);
@@ -258,10 +262,10 @@ export function ActionsSection({
     <TooltipProvider>
     <section className="space-y-6 border-t border-border pt-8">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <h2 className="text-lg font-semibold text-foreground">Actions</h2>
+        <h2 className="text-lg font-semibold text-foreground">{t("connectionsPage.detail.permissions.actionsTitle")}</h2>
         {canConfigure ? (
           <div className="flex items-center gap-2">
-            {disabled ? <span className="text-xs text-muted-foreground">Saving…</span> : null}
+            {disabled ? <span className="text-xs text-muted-foreground">{t("connectionsPage.detail.permissions.saving")}</span> : null}
             <Button
               variant="outline"
               size="sm"
@@ -273,7 +277,7 @@ export function ActionsSection({
               ) : (
                 <RefreshCw className="mr-1.5 h-3.5 w-3.5" />
               )}
-              Refresh actions
+              {t("connectionsPage.detail.permissions.refreshActions")}
             </Button>
           </div>
         ) : null}
@@ -298,30 +302,30 @@ export function ActionsSection({
           <div className="relative min-w-(--sz-12rem) flex-1">
             <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input
-              aria-label="Find an action"
-              placeholder="Find an action…"
+              aria-label={t("connectionsPage.detail.permissions.findAction")}
+              placeholder={t("connectionsPage.detail.permissions.findActionPlaceholder")}
               className="pl-9"
               value={query}
               onChange={(event) => setQuery(event.target.value)}
             />
           </div>
-          <FilterChip label={`All ${readOnly.length + canChange.length}`} active={kindFilter === "all"} onClick={() => setKindFilter("all")} />
-          <FilterChip label={`Read ${readOnly.length}`} active={kindFilter === "read"} onClick={() => setKindFilter("read")} />
-          <FilterChip label={`Write ${canChange.length}`} active={kindFilter === "write"} onClick={() => setKindFilter("write")} />
+          <FilterChip label={t("connectionsPage.detail.permissions.all", { count: readOnly.length + canChange.length })} active={kindFilter === "all"} onClick={() => setKindFilter("all")} />
+          <FilterChip label={t("connectionsPage.detail.permissions.read", { count: readOnly.length })} active={kindFilter === "read"} onClick={() => setKindFilter("read")} />
+          <FilterChip label={t("connectionsPage.detail.permissions.write", { count: canChange.length })} active={kindFilter === "write"} onClick={() => setKindFilter("write")} />
         </div>
-        <p className="text-xs text-muted-foreground">{visibleCount} matches · sorted A–Z</p>
+        <p className="text-xs text-muted-foreground">{t("connectionsPage.detail.permissions.matches", { count: visibleCount })}</p>
       </div>
 
       {visibleCount === 0 ? (
         <div className="py-6 text-center text-sm text-muted-foreground">
-          No actions match “{query}”. Clear the search to see them all.
+          {t("connectionsPage.detail.permissions.noMatches", { query })}
         </div>
       ) : (
         <div className="space-y-6">
           <ActionGroup
             key={`read:${needle}:${kindFilter}`}
             kind="read"
-            title={`Read (${visibleRead.length})`}
+            title={t("connectionsPage.detail.permissions.readGroup", { count: visibleRead.length })}
             actions={visibleRead}
             connectionId={connectionId}
             appName={appName}
@@ -335,7 +339,7 @@ export function ActionsSection({
           <ActionGroup
             key={`write:${needle}:${kindFilter}`}
             kind="write"
-            title={`Write (${visibleWrite.length})`}
+            title={t("connectionsPage.detail.permissions.writeGroup", { count: visibleWrite.length })}
             actions={visibleWrite}
             connectionId={connectionId}
             appName={appName}
@@ -406,6 +410,7 @@ function ActionGroup({
   canConfigure: boolean;
   onSetPermission: (ids: string[], next: ActionPermission) => void;
 }) {
+  const { t } = useTranslation();
   const [visibleLimit, setVisibleLimit] = useState(ACTION_PAGE_SIZE);
   const visibleActions = actions.slice(0, visibleLimit);
   const focusedAction = focusId ? actions.find(action => action.id === focusId) : undefined;
@@ -464,7 +469,7 @@ function ActionGroup({
       </div>
       {visibleLimit < actions.length ? (
         <Button type="button" variant="outline" size="sm" className="mt-3" onClick={() => setVisibleLimit(limit => limit + ACTION_PAGE_SIZE)}>
-          Show more {kind} actions
+          {t("connectionsPage.detail.permissions.showMore", { kind })}
         </Button>
       ) : null}
     </div>
