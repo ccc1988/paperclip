@@ -1,7 +1,7 @@
 # Paperclip CN 1.0 实施 PRD
 
 **文档状态：** 已确认实施规格，语言底座、S2 引导/连接、P0 连接表单/认证展示、Agent 详情控制区/成本/密钥/运行状态/配置权限、运行详情/日志、任务主工具栏/新版筛选面板、审批卡片、决策卡片、任务异常提示、任务详情属性面板、项目基础/代码库设置、组织成员/邀请/组织访问、项目成员访问、插件管理、适配器管理、环境基础入口/连接字段/自定义镜像终端/删除影响分析、插件路由/来源/设置、W3 任务审批/连接核心固定文案、连接设置状态、OAuth 主流程、连接访问权限选择、应用入口表单、凭据表单、连接异常路径、连接成功摘要、机器登录表单、Generic MCP 表单和 Google Workspace 授权表单中文化已通过本地门禁；当前仍为已提交未部署，1.0 尚未完成
-**版本：** 5.8
+**版本：** 5.11
 **日期：** 2026-11-19
 **项目：** `ccc1988/paperclip` 自有发行版  
 **权威代码仓库：** `/Users/landonclark/Paperclip AI agents/paperclip-cn`  
@@ -16,6 +16,7 @@
 - `origin` 保持为 `https://github.com/ccc1988/paperclip.git`，`upstream` 保持为 `https://github.com/paperclipai/paperclip.git`。
 - S2 引导登录中文化已提交；本地 `.playwright-cli/` 临时目录已清理，不属于交付内容。
 - 当前提交和工作树均未推送 GitHub，未替换用户正在使用的 npm 安装版本。
+- 上游同步候选已在独立 worktree 形成，尚未合并回 `master`；候选分支、提交和验证证据见第 12.5 节。
 
 ## 0. 本次决策
 
@@ -821,6 +822,17 @@ release decision:
 - **门禁判断：** 上游尚未合并。待 W4 真实 OpenAI 账户绑定和初始化闭环完成后，从 `master` 创建新的独立同步分支或 worktree，解决冲突并重新运行 locale 审计、UI 类型检查、相关测试、UI 构建和中文浏览器回归。
 - **回滚点：** 同步前恢复点为 `master` 当前基线；本次预演未改变主分支代码。若后续同步失败，保留同步前 SHA，并仅在同步分支上返工。
 
+### 12.5 2026-11-19 上游同步候选
+
+- **候选分支：** `sync/upstream-20261119-v2`，基于本地 `master` 的 `dc6f9ce9b` 合并 `upstream/master` 的 `07d931621803e33106d688261e481c88cbceb5aa`。
+- **候选提交：** `c5abcda66`，只存在于独立同步 worktree `/Users/landonclark/.codex/worktrees/paperclip-cn-upstream-sync/paperclip-cn`，尚未合并回 `master`，尚未推送 GitHub。
+- **冲突处理：** 已解决 `CoordinatorSidebar.tsx`、`LogViewer.tsx`、`ConnectionSetupFlow.tsx` 和 `ProfileSettings.tsx` 四个冲突；保留上游导航固定项、日志 Provider 限制提示、GitHub OAuth 恢复信息、连接访问语义和产品分析设置，同时保留本地中文翻译、语言切换和 Profile 语言入口。
+- **已验证：** `pnpm check:i18n` 通过，`2599` 条 `zh-CN` 消息与 `en.json` 键集合一致；UI 类型检查通过；定向 UI 回归 `10` 个测试文件、`654` 项通过；UI 生产构建通过。构建保留仓库既有 CSS `::highlight`、大 chunk 和 `MarkdownEditor` 动态导入警告。
+- **全仓库门禁：** `pnpm -r typecheck` 已执行；共享包、数据库迁移检查、插件 SDK 和 Runner TypeScript 检查通过，最终在 Runner Rust 检查处因本机没有 `cargo/rustc` 退出，不能标记为全仓库类型检查通过。
+- **全量测试：** `pnpm test:run` 已实际启动，但第一个服务端集成测试 shard 在 `chat-channels.integration.test.ts` 的嵌入式 PostgreSQL 初始化处失败，未进入业务断言；不能标记为全量测试通过。
+- **已知非阻塞项：** 上游新增的 `tests/runner-e2e/report-lock.patch` 自带空白行，未因同步候选而改写；完整仓库测试、上游同步后的全量浏览器回归、真实 OpenAI 账户绑定和正式发布仍未完成。
+- **放行判断：** 候选可供审查和后续回归，不得直接替换用户当前 `3100` 实例。只有完成 W4 真实账户闭环、全量浏览器验收并得到用户确认后，才允许把候选合并到 `master` 或发布。
+
 ## 13. 验收证据模板
 
 1.0 收口时必须填满以下表格；空白项表示未验收，不得写“完成”。
@@ -956,3 +968,6 @@ type LocalePackManifest = {
 | 5.6 | 2026-11-19 | 收口 AgentMail 独立邮箱设置/端点详情/任务提示和通用 schema 表单固定控件文案；更新为 2595 条翻译消息、127 项相关回归通过，代码提交为 `328f419b9`；真实凭据绑定、动态错误、全量视觉回归和上游同步仍未完成 |
 | 5.7 | 2026-11-19 | 修正通用 schema 表单在运行时切换语言后刷新高级分组标签；代码提交为 `c1a163292`，不改变业务协议或数据行为 |
 | 5.8 | 2026-11-19 | 校正上游同步事实：`upstream/master=07d931621`、本地领先 102/上游领先 39；记录真实合并预演的 4 个冲突文件，并明确上游尚未合并到 `master`；同步门禁和发布边界不变 |
+| 5.9 | 2026-11-19 | 完成独立上游同步候选 `sync/upstream-20261119-v2`，提交 `c5abcda66`；解决 4 个冲突并通过 2599 条 locale 审计、UI 类型检查、654 项定向回归和 UI 构建；明确候选尚未合并 `master`、未推送、未发布 |
+| 5.10 | 2026-11-19 | 记录全仓库类型检查已执行但在 Runner Rust 门禁处因本机缺少 `cargo/rustc` 阻断；不把部分通过写成全量通过 |
+| 5.11 | 2026-11-19 | 记录全量测试已启动但在首个服务端集成 shard 的嵌入式 PostgreSQL 初始化处阻断；保留 654 项定向 UI 回归为有效证据，不宣称全量测试通过 |
