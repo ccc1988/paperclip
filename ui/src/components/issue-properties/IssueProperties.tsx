@@ -72,6 +72,7 @@ import { Identity } from "../Identity";
 import { ProjectTile } from "../ProjectTile";
 import { IssueReferencePill } from "../IssueReferencePill";
 import { formatDate, formatDateTime, cn, projectUrl, agentUrl } from "../../lib/utils";
+import { useTranslation } from "@/i18n";
 import { AgentRateLimitPropertyValue } from "../AgentRateLimitGauge";
 import type { IssueExternalObjectGroup } from "../../hooks/useIssueExternalObjects";
 import { timeAgo } from "../../lib/timeAgo";
@@ -258,6 +259,7 @@ export function IssueProperties({
   sidePanelContentOnly = false,
   contextUsage,
 }: IssuePropertiesProps) {
+  const { t } = useTranslation();
   const policyResult = useExecutionPolicy(issue.executionPolicy);
   const policyAvailable = policyResult.success;
   const executionPolicy = policyResult.success ? policyResult.data : null;
@@ -1068,10 +1070,10 @@ export function IssueProperties({
   const approverLabel = approverValues.map((value) => executionParticipantLabel(value)).join(", ");
   const reviewerTrigger = reviewerValues.length > 0
     ? <span className="text-sm truncate min-w-0" title={reviewerLabel}>{reviewerLabel}</span>
-    : <span className="text-sm text-muted-foreground">None</span>;
+    : <span className="text-sm text-muted-foreground">{t("issueProperties.values.none")}</span>;
   const approverTrigger = approverValues.length > 0
     ? <span className="text-sm truncate min-w-0" title={approverLabel}>{approverLabel}</span>
-    : <span className="text-sm text-muted-foreground">None</span>;
+    : <span className="text-sm text-muted-foreground">{t("issueProperties.values.none")}</span>;
   // PAP-16506 P4: who may give the `in_review` verdict. Only an agent sets this,
   // and only the two opt-in constraints are worth a row — the default (`null` ≡
   // "anyone can approve") is what every issue already does, so it shows nothing.
@@ -1200,18 +1202,18 @@ export function IssueProperties({
       ) : null}
     </span>
   ) : (
-    <span className="text-sm text-muted-foreground">None</span>
+    <span className="text-sm text-muted-foreground">{t("issueProperties.values.none")}</span>
   );
   const labelsExtra = !streamlinedPropertiesEnabled && (issue.labelIds ?? []).length > 0 ? (
     <button
       type="button"
       className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-0.5 text-xs text-muted-foreground transition-colors hover:bg-accent/50 hover:text-foreground"
       onClick={() => setLabelsOpen(true)}
-      aria-label="Add label"
-      title="Add label"
+      aria-label={t("issueProperties.actions.addLabel")}
+      title={t("issueProperties.actions.addLabel")}
     >
       <Plus className="h-3 w-3" />
-      Add label
+      {t("issueProperties.actions.addLabel")}
     </button>
   ) : undefined;
   const watchdogContent = (
@@ -1678,7 +1680,7 @@ export function IssueProperties({
       )}
     </div>
   ) : (
-    <span className="text-sm text-muted-foreground">None</span>
+    <span className="text-sm text-muted-foreground">{t("issueProperties.values.none")}</span>
   );
   const labelsContent = (
     <>
@@ -1739,7 +1741,7 @@ export function IssueProperties({
           }
         >
           <Plus className="h-3 w-3" />
-          {createLabel.isPending ? "Creating…" : "Create label"}
+          {createLabel.isPending ? t("common.creating") : t("issueProperties.actions.addLabel")}
         </button>
       </div>
     </>
@@ -1753,7 +1755,7 @@ export function IssueProperties({
       <span className="min-w-0 truncate text-sm" title={assigneeUserLabel}>{assigneeUserLabel}</span>
     </>
   ) : (
-    <span className="text-sm text-muted-foreground">Unassigned</span>
+    <span className="text-sm text-muted-foreground">{t("issueProperties.values.unassigned")}</span>
   );
 
   // Grouped picker options (design surface 2): a board-users section and an
@@ -2004,7 +2006,7 @@ export function IssueProperties({
       <span className="text-sm truncate min-w-0" title={projectName(issue.projectId)}>{projectName(issue.projectId)}</span>
     </>
   ) : (
-    <span className="text-sm text-muted-foreground">None</span>
+    <span className="text-sm text-muted-foreground">{t("issueProperties.values.none")}</span>
   );
   const projectPickerOptions = orderItemsBySelectedAndRecent(
     [
@@ -2094,7 +2096,7 @@ export function IssueProperties({
       ) : null}
     </div>
   ) : (
-    <span className="text-sm text-muted-foreground">None</span>
+    <span className="text-sm text-muted-foreground">{t("issueProperties.values.none")}</span>
   );
   const subtasksTrigger = childIssues.length > 0 ? (
     <div className="flex min-w-0 flex-col items-start gap-1">
@@ -2108,7 +2110,7 @@ export function IssueProperties({
       ) : null}
     </div>
   ) : (
-    <span className="text-sm text-muted-foreground">None</span>
+    <span className="text-sm text-muted-foreground">{t("issueProperties.values.none")}</span>
   );
   const visibleRelatedTasks = relatedTasksExpanded
     ? relatedTasks
@@ -2316,7 +2318,7 @@ export function IssueProperties({
       onClick={onClick}
     >
       <Plus className="h-3 w-3" />
-      Add blocker
+      {t("issueProperties.actions.addBlocker")}
     </button>
   );
   const subtasksContent = (
@@ -2351,7 +2353,7 @@ export function IssueProperties({
             }}
           >
             <Plus className="h-3 w-3" />
-            Add subtask
+            {t("issueProperties.actions.addSubtask")}
           </button>
         </div>
       ) : null}
@@ -2361,11 +2363,11 @@ export function IssueProperties({
   const propertiesBody = (
     <div className={cn(streamlinedPropertiesEnabled && "task-detail-properties pl-4")}>
       <PropertySection
-        title={streamlinedPropertiesEnabled ? "Work" : "Triage"}
+        title={streamlinedPropertiesEnabled ? t("issueProperties.sections.work") : t("issueProperties.sections.triage")}
         first
         streamlined={streamlinedPropertiesEnabled}
       >
-        <PropertyRow label="Status">
+        <PropertyRow label={t("issueProperties.labels.status")}>
           <StatusIcon
             {...taskStatusIconProps(issue)}
             glyphContainerClassName="inline-flex size-6 shrink-0 items-center justify-center"
@@ -2377,7 +2379,7 @@ export function IssueProperties({
 
         {/* PAP-411: priority UI is hidden behind SHOW_TASK_PRIORITY_UI. Revive by flipping the flag. */}
         {SHOW_TASK_PRIORITY_UI && (
-          <PropertyRow label="Priority">
+          <PropertyRow label={t("issueProperties.labels.priority")}>
             <PriorityIcon
               priority={issue.priority}
               onChange={(priority) => onUpdate({ priority })}
@@ -2388,7 +2390,7 @@ export function IssueProperties({
 
         <PropertyPicker
           inline={inline}
-          label="Assignee"
+          label={t("issueProperties.labels.assignee")}
           open={assigneeOpen}
           onOpenChange={(open) => { setAssigneeOpen(open); if (!open) { setAssigneeSearch(""); setPendingAssignee(null); } }}
           triggerContent={assigneeTrigger}
@@ -2409,7 +2411,7 @@ export function IssueProperties({
         {showAssigneeAdapterOptions ? (
           <PropertyPicker
             inline={inline}
-            label="Model"
+            label={t("issueProperties.labels.model")}
             open={assigneeOptionsOpen}
             onOpenChange={setAssigneeOptionsOpen}
             triggerContent={assigneeOptionsTrigger}
@@ -2421,7 +2423,7 @@ export function IssueProperties({
         ) : null}
 
         {assigneeRuntimeStateLoading || (assigneeRateLimits && summarizeProviderRateLimits(assigneeRateLimits, Date.now())) ? (
-          <PropertyRow label="Usage limit">
+          <PropertyRow label={t("issueProperties.labels.usageLimit")}>
             {assigneeRuntimeStateLoading ? (
               <Skeleton className="h-4 w-32" role="status" aria-label="Loading usage limit" />
             ) : (
@@ -2435,7 +2437,7 @@ export function IssueProperties({
 
         <PropertyPicker
           inline={inline}
-          label="Project"
+          label={t("issueProperties.labels.project")}
           open={projectOpen}
           onOpenChange={(open) => { setProjectOpen(open); if (!open) setProjectSearch(""); }}
           triggerContent={projectTrigger}
@@ -2456,7 +2458,7 @@ export function IssueProperties({
 
         <PropertyPicker
           inline={inline}
-          label="Labels"
+          label={t("issueProperties.labels.labels")}
           open={labelsOpen}
           onOpenChange={(open) => { setLabelsOpen(open); if (!open) setLabelSearch(""); }}
           triggerContent={labelsTrigger}
@@ -2469,10 +2471,10 @@ export function IssueProperties({
         </PropertyPicker>
       </PropertySection>
 
-      <PropertySection title="Relationships" streamlined={streamlinedPropertiesEnabled}>
+      <PropertySection title={t("issueProperties.sections.relationships")} streamlined={streamlinedPropertiesEnabled}>
         <PropertyPicker
           inline={inline}
-          label="Parent"
+          label={t("issueProperties.labels.parent")}
           open={parentOpen}
           onOpenChange={(open) => {
             setParentOpen(open);
@@ -2493,7 +2495,7 @@ export function IssueProperties({
         {streamlinedPropertiesEnabled ? (
           <PropertyPicker
             inline={inline}
-            label="Blocked by"
+            label={t("issueProperties.labels.blockedBy")}
             open={blockedByOpen}
             onOpenChange={(open) => {
               setBlockedByOpen(open);
@@ -2509,7 +2511,7 @@ export function IssueProperties({
           </PropertyPicker>
         ) : inline ? (
           <div>
-            <PropertyRow label="Blocked by" wrap>
+            <PropertyRow label={t("issueProperties.labels.blockedBy")} wrap>
               {visibleBlockedByRelations.map((relation) => (
                 <RemovableIssueReferencePill
                   key={relation.id}
@@ -2532,7 +2534,7 @@ export function IssueProperties({
             ) : null}
           </div>
         ) : (
-          <PropertyRow label="Blocked by" wrap>
+          <PropertyRow label={t("issueProperties.labels.blockedBy")} wrap>
             {visibleBlockedByRelations.map((relation) => (
               <RemovableIssueReferencePill
                 key={relation.id}
@@ -2561,7 +2563,7 @@ export function IssueProperties({
           </PropertyRow>
         )}
 
-        <PropertyRow label="Blocking" wrap>
+        <PropertyRow label={t("issueProperties.labels.blocking")} wrap>
           {blockingIssues.length > 0 ? (
             <div className="flex flex-col items-start gap-1.5">
               {visibleBlockingIssues.map((relation) => (
@@ -2574,14 +2576,14 @@ export function IssueProperties({
               />
             </div>
           ) : (
-            <span className="text-sm text-muted-foreground">None</span>
+            <span className="text-sm text-muted-foreground">{t("issueProperties.values.none")}</span>
           )}
         </PropertyRow>
 
         {streamlinedPropertiesEnabled ? (
           <PropertyPicker
             inline={inline}
-            label="Subtasks"
+            label={t("issueProperties.labels.subtasks")}
             open={subtasksOpen}
             onOpenChange={setSubtasksOpen}
             separateTrigger={childIssues.length > 0}
@@ -2593,7 +2595,7 @@ export function IssueProperties({
             {subtasksContent}
           </PropertyPicker>
         ) : !taskChatShellEnabled ? (
-          <PropertyRow label="Sub-tasks" wrap>
+          <PropertyRow label={t("issueProperties.labels.subTasks")} wrap>
             <div className="flex flex-col items-start gap-1.5">
               {visibleChildIssues.map((child) => (
                 <IssueReferencePill key={child.id} issue={child} />
@@ -2610,7 +2612,7 @@ export function IssueProperties({
                   onClick={onAddSubIssue}
                 >
                   <Plus className="h-3 w-3" />
-                  Add sub-task
+                  {t("issueProperties.actions.addSubTask")}
                 </button>
               ) : null}
             </div>
@@ -2618,7 +2620,7 @@ export function IssueProperties({
         ) : null}
 
         {(!streamlinedPropertiesEnabled || !taskChatShellEnabled) && relatedTasks.length > 0 ? (
-          <PropertyRow label={streamlinedPropertiesEnabled ? "Referenced" : "Related tasks"} wrap>
+          <PropertyRow label={streamlinedPropertiesEnabled ? t("issueProperties.labels.referenced") : t("issueProperties.labels.relatedTasks")} wrap>
             <div className="flex flex-col items-start gap-1.5">
               {visibleRelatedTasks.map((related) => (
                 <IssueReferencePill key={related.id} issue={related} />
@@ -2633,7 +2635,7 @@ export function IssueProperties({
         ) : null}
 
         {pullRequests.length > 0 || workProductsError ? (
-          <PropertyRow label="Pull requests" wrap>
+          <PropertyRow label={t("issueProperties.labels.pullRequests")} wrap>
             <div className="flex min-w-0 flex-col gap-2">
               <IssuePullRequestLinks products={pullRequests} externalObjects={externalObjects?.map((entry) => entry.pill)} />
               {workProductsError ? (
@@ -2652,10 +2654,10 @@ export function IssueProperties({
         />
       </PropertySection>
 
-      <PropertySection title="Execution" streamlined={streamlinedPropertiesEnabled}>
+      <PropertySection title={t("issueProperties.sections.execution")} streamlined={streamlinedPropertiesEnabled}>
         {/* Read-only: agents set the policy, the board does not. */}
         {reviewPolicyBadge ? (
-          <PropertyRow label="Approvals">
+          <PropertyRow label={t("issueProperties.labels.approvals")}>
             <PropertyChip title={reviewPolicyBadge.description}>
               <reviewPolicyBadge.Icon className="shrink-0 text-muted-foreground" aria-hidden />
               <span className="min-w-0 truncate">{reviewPolicyBadge.label}</span>
@@ -2664,13 +2666,13 @@ export function IssueProperties({
         ) : null}
 
         {!policyAvailable ? (
-          <PropertyRow label="Execution policy" wrap>
+          <PropertyRow label={t("issueProperties.labels.executionPolicy")} wrap>
             <span role="status" className="text-sm text-muted-foreground">Execution policy unavailable. Refresh to try again.</span>
           </PropertyRow>
         ) : (<>
         <PropertyPicker
           inline={inline}
-          label="Reviewers"
+          label={t("issueProperties.labels.reviewers")}
           open={reviewersOpen}
           onOpenChange={(open) => { setReviewersOpen(open); if (!open) setReviewerSearch(""); }}
           triggerContent={reviewerTrigger}
@@ -2689,7 +2691,7 @@ export function IssueProperties({
 
         <PropertyPicker
           inline={inline}
-          label="Approvers"
+          label={t("issueProperties.labels.approvers")}
           open={approversOpen}
           onOpenChange={(open) => { setApproversOpen(open); if (!open) setApproverSearch(""); }}
           triggerContent={approverTrigger}
@@ -2708,23 +2710,23 @@ export function IssueProperties({
         </>)}
 
         {currentExecutionLabel && (
-          <PropertyRow label="Execution">
+          <PropertyRow label={t("issueProperties.labels.execution")}>
             <span className="text-sm truncate min-w-0" title={currentExecutionLabel}>{currentExecutionLabel}</span>
           </PropertyRow>
         )}
 
         {showScheduledRetryRow && scheduledRetry?.scheduledRetryReason === "workspace_busy" ? (
-          <PropertyRow label="Workspace">
+          <PropertyRow label={t("issueProperties.labels.workspace")}>
             <span className="text-sm text-muted-foreground">Waiting for workspace</span>
           </PropertyRow>
         ) : showScheduledRetryRow && scheduledRetry?.scheduledRetryReason === "environment_provider_wait" ? (
-          <PropertyRow label="Sandbox">
+          <PropertyRow label={t("issueProperties.labels.sandbox")}>
             <span className="text-sm text-muted-foreground">Waiting for the provider</span>
           </PropertyRow>
         ) : showScheduledRetryRow && scheduledRetryContent ? (
           <PropertyPicker
             inline={inline}
-            label="Scheduled retry"
+            label={t("issueProperties.labels.scheduledRetry")}
             open={scheduledRetryOpen}
             onOpenChange={setScheduledRetryOpen}
             triggerContent={scheduledRetryTrigger}
@@ -2739,7 +2741,7 @@ export function IssueProperties({
         {policyAvailable ? (
         <PropertyPicker
           inline={inline}
-          label="Monitor"
+          label={t("issueProperties.labels.monitor")}
           open={monitorOpen}
           onOpenChange={setMonitorOpen}
           triggerContent={monitorTrigger}
@@ -2752,7 +2754,7 @@ export function IssueProperties({
 
         <PropertyPicker
           inline={inline}
-          label="Watchdog"
+          label={t("issueProperties.labels.watchdog")}
           open={watchdogOpen}
           onOpenChange={setWatchdogOpen}
           triggerContent={watchdogTrigger}
@@ -2763,8 +2765,8 @@ export function IssueProperties({
               <Link
                 to={`/issues/${watchdogIssueRef.id}`}
                 className="inline-flex items-center justify-center h-5 w-5 rounded hover:bg-accent/50 transition-colors text-muted-foreground hover:text-foreground"
-                title="Open watchdog task"
-                aria-label="Open watchdog task"
+                title={t("issueProperties.actions.openWatchdogTask")}
+                aria-label={t("issueProperties.actions.openWatchdogTask")}
                 onClick={(e) => e.stopPropagation()}
               >
                 <ArrowUpRight className="h-3 w-3" />
@@ -2776,16 +2778,16 @@ export function IssueProperties({
         </PropertyPicker>
 
         {contextUsage !== undefined
-          ? contextUsage ? <PropertyRow label="Context">{contextUsage}</PropertyRow> : null
+        ? contextUsage ? <PropertyRow label={t("issueProperties.labels.context")}>{contextUsage}</PropertyRow> : null
           : <IssueContextUsageRow issueId={issue.id} assigneeAgentId={issue.assigneeAgentId ?? null} issueStatus={issue.status} hasActiveRun={hasActiveRun} />}
       </PropertySection>
 
       {workspacePickerEligible || hasWorkspaceRuntimeControls || issue.currentExecutionWorkspace?.branchName || issue.currentExecutionWorkspace?.cwd || issue.executionWorkspaceId ? (
-        <PropertySection title="Workspace" streamlined={streamlinedPropertiesEnabled}>
+      <PropertySection title={t("issueProperties.sections.workspace")} streamlined={streamlinedPropertiesEnabled}>
           {workspacePickerEligible ? (
             <PropertyPicker
               inline={inline}
-              label="Execution"
+              label={t("issueProperties.labels.execution")}
               open={workspacePickerOpen}
               onOpenChange={(open) => {
                 setWorkspacePickerOpen(open);
@@ -2899,19 +2901,19 @@ export function IssueProperties({
             </PropertyPicker>
           ) : null}
           {showWorkspaceDetailLink && issue.executionWorkspaceId && (
-            <PropertyRow label="Workspace">
+            <PropertyRow label={t("issueProperties.labels.workspace")}>
               <Link
                 to={`/execution-workspaces/${issue.executionWorkspaceId}`}
                 className="text-sm text-primary hover:underline inline-flex min-w-0 items-center gap-1.5"
               >
                 <HardDrive className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-                View workspace
+                {t("issueProperties.actions.viewWorkspace")}
                 <ArrowUpRight className="h-3 w-3 shrink-0" />
               </Link>
             </PropertyRow>
           )}
           {hasWorkspaceRuntimeControls && (
-            <PropertyRow label="Service">
+            <PropertyRow label={t("issueProperties.labels.service")}>
               <div className="flex min-w-0 flex-1 flex-col gap-1.5">
                 <WorkspaceRuntimeQuickControls
                   sections={workspaceRuntimeSections}
@@ -2932,7 +2934,7 @@ export function IssueProperties({
             </PropertyRow>
           )}
           {issue.currentExecutionWorkspace?.branchName && (
-            <PropertyRow label="Branch">
+            <PropertyRow label={t("issueProperties.labels.branch")}>
               <TruncatedCopyable
                 value={issue.currentExecutionWorkspace.branchName}
                 icon={GitBranch}
@@ -2940,7 +2942,7 @@ export function IssueProperties({
             </PropertyRow>
           )}
           {issue.currentExecutionWorkspace?.cwd && !hideHostPaths && (
-            <PropertyRow label="Folder">
+            <PropertyRow label={t("issueProperties.labels.folder")}>
               <TruncatedCopyable
                 value={issue.currentExecutionWorkspace.cwd}
                 icon={FolderOpen}
@@ -2950,9 +2952,9 @@ export function IssueProperties({
         </PropertySection>
       ) : null}
 
-      <PropertySection title="About" streamlined={streamlinedPropertiesEnabled}>
+      <PropertySection title={t("issueProperties.sections.about")} streamlined={streamlinedPropertiesEnabled}>
         {originatingActor ? (
-          <PropertyRow label="Originating">
+          <PropertyRow label={t("issueProperties.labels.originating")}>
             {originatingActor.kind === "agent" ? (
               <Link
                 to={`/agents/${originatingActor.id}`}
@@ -2977,7 +2979,7 @@ export function IssueProperties({
           </PropertyRow>
         ) : null}
         {issue.startedAt && (
-          <PropertyRow label="Started">
+          <PropertyRow label={t("issueProperties.labels.started")}>
             <span
               className={streamlinedPropertiesEnabled ? "min-w-0 truncate whitespace-nowrap text-sm" : "text-sm"}
               title={streamlinedPropertiesEnabled ? formatDateTime(issue.startedAt) : undefined}
@@ -2985,20 +2987,20 @@ export function IssueProperties({
           </PropertyRow>
         )}
         {issue.completedAt && (
-          <PropertyRow label="Completed">
+          <PropertyRow label={t("issueProperties.labels.completed")}>
             <span
               className={streamlinedPropertiesEnabled ? "min-w-0 truncate whitespace-nowrap text-sm" : "text-sm"}
               title={streamlinedPropertiesEnabled ? formatDateTime(issue.completedAt) : undefined}
             >{formatDateTime(issue.completedAt)}</span>
           </PropertyRow>
         )}
-        <PropertyRow label="Created">
+        <PropertyRow label={t("issueProperties.labels.created")}>
           <span
             className={streamlinedPropertiesEnabled ? "min-w-0 truncate whitespace-nowrap text-sm" : "text-sm"}
             title={streamlinedPropertiesEnabled ? formatDateTime(issue.createdAt) : undefined}
           >{formatDateTime(issue.createdAt)}</span>
         </PropertyRow>
-        <PropertyRow label="Updated">
+        <PropertyRow label={t("issueProperties.labels.updated")}>
           <span
             className={streamlinedPropertiesEnabled ? "min-w-0 truncate whitespace-nowrap text-sm" : "text-sm"}
             title={streamlinedPropertiesEnabled ? timeAgo(issue.updatedAt) : undefined}
@@ -3009,7 +3011,7 @@ export function IssueProperties({
             const archivedByAgent = (agents ?? []).find((candidate) => candidate.id === issue.archivedByAgentId);
             const archivedByName = agentName(issue.archivedByAgentId);
             return (
-              <PropertyRow label="Archived">
+              <PropertyRow label={t("issueProperties.labels.archived")}>
                 <div className="flex min-w-0 max-w-full flex-col items-start gap-1">
                   {/* The row label already reads "Archived", so the value shows just
                       the attributing agent (icon + name) — this gives the name the
@@ -3037,7 +3039,7 @@ export function IssueProperties({
                       disabled={unarchiveFromInbox.isPending}
                     >
                       <ArchiveRestore className="h-3 w-3" />
-                      {unarchiveFromInbox.isPending ? "Unarchiving…" : "Unarchive"}
+                      {unarchiveFromInbox.isPending ? t("issueProperties.actions.unarchiving") : t("issueProperties.actions.unarchive")}
                     </button>
                   </div>
                   {unarchiveErrorMessage ? (
@@ -3051,7 +3053,7 @@ export function IssueProperties({
           })()
         ) : null}
         {issue.requestDepth > 0 && (
-          <PropertyRow label="Depth">
+          <PropertyRow label={t("issueProperties.labels.depth")}>
             <span className="text-sm font-mono">{issue.requestDepth}</span>
           </PropertyRow>
         )}
@@ -3072,18 +3074,18 @@ export function IssueProperties({
   const hasReferencesTab = streamlinedPropertiesEnabled
     && (panelReferencedTasks.length > 0 || panelMentionedInTasks.length > 0);
   const availablePaneTabs: IssuePaneTabDescriptor[] = [
-    { value: "properties", label: "Properties", closable: false },
+    { value: "properties", label: t("issueProperties.tabs.properties"), closable: false },
     ...(hasSubtasksTab
-      ? [{ value: "subtasks" as const, label: "Subtasks", count: childIssues.length, closable: true }]
+      ? [{ value: "subtasks" as const, label: t("issueProperties.tabs.subtasks"), count: childIssues.length, closable: true }]
       : []),
     ...(hasReferencesTab
-      ? [{ value: "references" as const, label: "References", closable: true }]
+      ? [{ value: "references" as const, label: t("issueProperties.tabs.references"), closable: true }]
       : []),
     ...(hasPlanTab
-      ? [{ value: "plans" as const, label: "Plan", closable: true }]
+      ? [{ value: "plans" as const, label: t("issueProperties.tabs.plan"), closable: true }]
       : []),
     ...(hasArtifactsTab
-      ? [{ value: "artifacts" as const, label: "Artifacts", closable: true }]
+      ? [{ value: "artifacts" as const, label: t("issueProperties.tabs.artifacts"), closable: true }]
       : []),
   ];
   const visiblePaneTabs = availablePaneTabs.filter(
@@ -3098,7 +3100,7 @@ export function IssueProperties({
       <>
         {paneHeaderSlot
           ? streamlinedPropertiesEnabled ? createPortal(
-              <div className="flex items-center" role="tablist" aria-label="Properties panel sections">
+              <div className="flex items-center" role="tablist" aria-label={t("issueProperties.tabs.panelSections")}>
                 <button
                   type="button"
                   role="tab"
@@ -3227,7 +3229,7 @@ export function IssueProperties({
               <button
                 type="button"
                 className="absolute right-2.5 top-1/2 z-20 inline-flex size-5 -translate-y-1/2 items-center justify-center rounded-sm text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground focus-visible:opacity-100 focus-visible:outline-none focus-visible:ring-(length:--rad-3) focus-visible:ring-ring group-hover/pane-tab:opacity-100 group-focus-within/pane-tab:opacity-100"
-                aria-label={`Close ${tab.label} tab`}
+                aria-label={t("issueProperties.tabs.close", { label: tab.label })}
                 onPointerDown={(event) => {
                   event.preventDefault();
                   event.stopPropagation();
@@ -3256,8 +3258,8 @@ export function IssueProperties({
             size="icon-xs"
             className="size-6 shrink-0 text-muted-foreground"
             disabled={hiddenPaneTabs.length === 0}
-            aria-label="Open closed sidebar tab"
-            title={hiddenPaneTabs.length === 0 ? "All sidebar tabs are open" : "Open closed sidebar tab"}
+            aria-label={t("issueProperties.tabs.openClosed")}
+            title={hiddenPaneTabs.length === 0 ? t("issueProperties.tabs.allOpen") : t("issueProperties.tabs.openClosed")}
           >
             <Plus className="size-3.5" aria-hidden />
           </Button>

@@ -19,6 +19,7 @@ import { IssueProperties } from "./IssueProperties";
 import { applyOptimisticIssueFieldUpdate } from "../lib/optimistic-issue-comments";
 import { queryKeys } from "../lib/queryKeys";
 import { ApiError } from "../api/client";
+import { setLocale } from "@/i18n";
 
 const mockAgentsApi = vi.hoisted(() => ({
   list: vi.fn(),
@@ -516,6 +517,27 @@ function reviewPolicyStages(): Pick<IssueExecutionPolicy, "stages"> {
 
 describe("IssueProperties", () => {
   let container: HTMLDivElement;
+
+  it("renders core property labels in Simplified Chinese", async () => {
+    await act(async () => { await setLocale("zh-CN"); });
+    let root: ReturnType<typeof createRoot> | null = null;
+    try {
+      root = renderProperties(container, {
+        issue: createIssue(),
+        childIssues: [],
+        onUpdate: vi.fn(),
+        inline: true,
+      });
+      await waitForAssertion(() => {
+        expect(container.textContent).toContain("状态");
+        expect(container.textContent).toContain("关系");
+        expect(container.textContent).toContain("执行");
+      });
+    } finally {
+      if (root) act(() => root?.unmount());
+      await act(async () => { await setLocale("en"); });
+    }
+  });
 
   it("surfaces saved PR review links even when external objects are unavailable", async () => {
     mockIssuesApi.listWorkProducts.mockResolvedValue([{
