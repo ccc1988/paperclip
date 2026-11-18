@@ -5,7 +5,9 @@ import type { ReactNode } from "react";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { IssueFiltersPopover } from "./IssueFiltersPopover";
+import { IssueFilterPanel } from "./IssueFilterPanel";
 import { defaultIssueFilterState } from "../lib/issue-filters";
+import { setLocale } from "../i18n";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 (globalThis as any).IS_REACT_ACT_ENVIRONMENT = true;
@@ -48,8 +50,30 @@ describe("IssueFiltersPopover", () => {
     document.body.appendChild(container);
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     document.body.innerHTML = "";
+    await setLocale("en");
+  });
+
+  it("renders the refreshed filter panel in Chinese", async () => {
+    await setLocale("zh-CN");
+    const root = createRoot(container);
+    act(() => root.render(
+      <IssueFilterPanel
+        state={defaultIssueFilterState}
+        onChange={vi.fn()}
+        activeFilterCount={0}
+        onClear={vi.fn()}
+        enableLiveRunsFilter
+        enableAgentCreatedVisibilityFilter
+        enableRoutineTasksFilter
+      />,
+    ));
+    expect(container.textContent).toContain("筛选");
+    expect(container.textContent).toContain("状态");
+    expect(container.textContent).toContain("可见范围");
+    expect(container.textContent).toContain("负责人");
+    act(() => root.unmount());
   });
 
   it.each(["legacy", "streamlined", "refreshed"] as const)("groups the routine filter under Visibility in %s", presentation => {
