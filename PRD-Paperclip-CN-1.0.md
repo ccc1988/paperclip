@@ -1,14 +1,21 @@
 # Paperclip CN 1.0 实施 PRD
 
-**文档状态：** 已确认实施规格，首个可验证切片已完成，1.0 核心路径仍在实施
-**版本：** 1.1
-**日期：** 2026-11-18  
+**文档状态：** 已确认实施规格，语言底座与 S2 引导/连接中文化已通过本地门禁；1.0 尚未发布
+**版本：** 1.3
+**日期：** 2026-11-19
 **项目：** `ccc1988/paperclip` 自有发行版  
 **权威代码仓库：** `/Users/landonclark/Paperclip AI agents/paperclip-cn`  
 **官方上游：** `https://github.com/paperclipai/paperclip.git`  
 **自有仓库：** `https://github.com/ccc1988/paperclip.git`
 
 > 本文是 Paperclip CN 1.0 的实施权威规格。代码、测试和运行环境的当前事实以仓库和实际验证结果为准；本文用于锁定目标、范围、验收门禁和同步方式。候选方案、未完成页面和未发布版本不得写成已完成事实。
+
+**当前实施基线（2026-11-19）：**
+
+- 当前中文实现代码基线：`669de96d2`（完整 SHA 以 Git 日志为准）；相对 `upstream/master`（`1c556d5340403112b39e9c7cb068483f58d79dfd`）领先 10 个提交。
+- `origin` 保持为 `https://github.com/ccc1988/paperclip.git`，`upstream` 保持为 `https://github.com/paperclipai/paperclip.git`。
+- S2 引导登录中文化已提交；本地 `.playwright-cli/` 临时目录已清理，不属于交付内容。
+- 当前提交和工作树均未推送 GitHub，未替换用户正在使用的 npm 安装版本。
 
 ## 0. 本次决策
 
@@ -49,10 +56,10 @@ Paperclip CN 1.0 是基于官方 Paperclip 的自有发行版，目标是在保�
 - 已存在 `ui/src/i18n/locales/` 目录；
 - 已存在 `zh-CN.json`；
 - 已存在 locale 结构校验代码；
-- 当前语言层已接入引导首屏、主工作区侧栏、账户菜单、个人设置和 Agent 技能页；
-- Agent 详情、任务、项目、AI 连接、审批、运行状态和设置侧栏仍有硬编码英文，属于本次 1.0 实施范围；
-- 当前本地 `HEAD` 为 `fb44c3e4393fd7d63438af1badc728e18ec31e1a`，工作树另有 Agent 技能页未提交改动；
-- 官方上游当时落后的 3 个提交已经合并到本地基线；后续同步仍须在独立分支完成。
+- 当前语言层已接入引导、主工作区、账户菜单、个人设置、组织设置、决策连接设置、Agent 技能页、任务列表和部分 Agent 详情；
+- Agent 详情剩余状态、任务详情和筛选器、审批卡片、成员/邀请/权限、环境、插件及部分连接错误仍有硬编码英文，属于本次 1.0 实施范围；
+- 当前中文实现代码基线为 `669de96d2`；工作树中的 PRD 状态同步随后单独提交；
+- 官方上游基线已合并到本地，后续同步仍须在独立分支完成，不得直接覆盖 `master`。
 
 ### 3.2 为什么现在做
 
@@ -295,10 +302,12 @@ ui/src/i18n/locales/zh-CN.json
 | 类型 | 内容 | 验证方式 |
 |---|---|---|
 | 已确认 | fork 已有 i18next 和 locale 目录 | 代码检查 |
-| 已确认 | `zh-CN.json` 当前只有少量翻译键 | 文件检查 |
+| 已确认 | `en.json` 与 `zh-CN.json` 当前有 422 条正式消息键一致 | `pnpm check:i18n` |
 | 已确认 | 官方上游已登记为 Git remote | Git remote 检查 |
+| 已确认 | OpenAI subscription 点击会启动浏览器设备登录并返回认证地址/验证码 | 本地浏览器引导验收 |
+| 待验证 | OpenAI 设备登录完成后能否在当前环境稳定绑定账户 | 完成一次真实登录并回到引导 |
 | 待验证 | fork 与官方最新 master 的完整合并冲突规模 | 同步分支构建 |
-| 待验证 | 中文覆盖全部核心页面所需的翻译键数量 | 翻译审计脚本 |
+| 待验证 | 中文覆盖全部 P0 页面所需的翻译键数量 | 页面扫描和浏览器验收 |
 | 待验证 | 中文在桌面和移动宽度下无布局回归 | 浏览器截图和交互验收 |
 | 不纳入 1.0 | 第三方插件内部文本自动翻译 | 另立插件协议需求 |
 | 不纳入 1.0 | Agent 自由生成内容自动翻译 | 使用 Agent 提示词或用户设置解决 |
@@ -309,14 +318,14 @@ ui/src/i18n/locales/zh-CN.json
 
 | 优先级 | 用户路径 | 主要页面/组件 | 当前状态 | 1.0 门禁 |
 |---|---|---|---|---|
-| P0 | 首次初始化 | `Onboarding*.tsx`、连接选择、组织和 Agent 命名 | 首屏已完成，后续步骤待补齐 | 中文浏览器可从首次进入走到完成初始化；连接失败和重试可理解 |
+| P0 | 首次初始化 | `Onboarding*.tsx`、连接选择、组织和 Agent 命名 | 主要步骤已接入；OpenAI subscription 已观察到真实认证地址和验证码；完整完成仍待验证 | 中文浏览器可从首次进入走到完成初始化；连接失败和重试可理解 |
 | P0 | 进入控制台 | `App.tsx`、侧栏、账户菜单、空状态 | 已完成核心入口 | 导航、账户菜单、空状态和返回入口无原始英文 key |
-| P0 | 管理 Agent | `Agents*`、`NewAgent.tsx`、`AgentDetail*` | Agent 技能页已接入，详情页待补齐 | 可创建、编辑、查看状态、查看运行和处理错误 |
-| P0 | 管理任务和项目 | `Issues*`、`Projects*`、`ProjectDetail*`、任务详情 | 待实施 | 可创建、筛选、分派、查看执行状态和失败原因 |
-| P0 | 配置 AI 连接 | `CompanyConnections.tsx`、连接对话框、保存凭据提示 | 待实施 | OpenAI subscription、API key、Codex login 和连接测试状态有清晰中文文案 |
-| P0 | 处理审批和异常 | `Approvals*`、运行详情、错误和重试提示 | 待实施 | 能识别待处理事项、失败原因和下一步动作 |
-| P1 | 设置与权限 | `CompanySettings*`、设置侧栏、成员/邀请/权限 | 待实施 | 组织设置、成员、权限、环境、密钥入口可用 |
-| P1 | 技能、插件和环境 | `AgentSkills*`、`SkillSources*`、`Plugin*`、环境页 | 技能页部分完成 | 状态、搜索、保存、限制和空状态可理解 |
+| P0 | 管理 Agent | `Agents*`、`NewAgent.tsx`、`AgentDetail*` | 技能页和详情页部分标签已接入；完整详情状态仍待补齐 | 可创建、编辑、查看状态、查看运行和处理错误 |
+| P0 | 管理任务和项目 | `Issues*`、`Projects*`、`ProjectDetail*`、任务详情 | 任务列表、创建、搜索、列表/看板和项目入口已接入；详情和筛选器仍待补齐 | 可创建、筛选、分派、查看执行状态和失败原因 |
+| P0 | 配置 AI 连接 | `CompanyConnections.tsx`、连接对话框、保存凭据提示 | 引导中的 subscription、API key、登录状态和重试文案已接入；完整连接页仍待补齐 | OpenAI subscription、API key、Codex login 和连接测试状态有清晰中文文案 |
+| P0 | 处理审批和异常 | `Approvals*`、运行详情、错误和重试提示 | 审批入口已接入；审批卡片内部和部分登录错误仍待补齐 | 能识别待处理事项、失败原因和下一步动作 |
+| P1 | 设置与权限 | `CompanySettings*`、设置侧栏、成员/邀请/权限 | 组织设置、个人资料、决策连接和设置侧栏已接入；成员/邀请/权限/环境仍待补齐 | 组织设置、成员、权限、环境、密钥入口可用 |
+| P1 | 技能、插件和环境 | `AgentSkills*`、`SkillSources*`、`Plugin*`、环境页 | 技能页已接入；插件、技能来源和环境页仍待补齐 | 状态、搜索、保存、限制和空状态可理解 |
 | P2 | 低频和实验页面 | UX Lab、调试页、第三方插件内部页面 | 不纳入完整承诺 | 不阻塞主流程；缺失翻译时稳定回退英文 |
 
 ### 7.6 术语和文案决策
@@ -383,8 +392,10 @@ ui/src/i18n/locales/zh-CN.json
 pnpm install --frozen-lockfile
 pnpm check:i18n
 pnpm --filter @paperclipai/ui typecheck
-pnpm exec vitest run ui/src/i18n/locale-validation.test.ts
-pnpm exec vitest run ui/src/pages/agent-skills/AgentSkillsTab.test.ts
+pnpm exec vitest run \
+  ui/src/components/OnboardingWizard.step.test.tsx \
+  ui/src/components/OnboardingWizard.adapters.test.tsx \
+  ui/src/components/ai-connections/AiConnectionAuth.test.tsx
 pnpm --filter @paperclipai/ui build
 pnpm build
 pnpm dev:once --data-dir ./tmp/paperclip-cn-acceptance
@@ -413,6 +424,8 @@ curl http://127.0.0.1:3100/api/health
 - 验证 Agent 技能页的搜索、启用/禁用、保存和限制提示；
 - 验证不支持的浏览器语言回退英文；
 - 桌面和窄屏布局。
+
+本次本地验收实际使用 `http://127.0.0.1:3101/onboarding`，因为默认端口 `3100` 已被其他进程占用；服务使用架构匹配的现有 Runner 二进制启动。该环境只证明本机候选版本可运行，不代表已发布。
 
 ### 8.5 风险与回滚
 
@@ -490,13 +503,14 @@ curl http://127.0.0.1:3100/api/health
 - **已发布并验收：** 无；
 - **尚未验证：** 完整中文覆盖、构建、浏览器流程、官方同步后的回归。
 
-### 10.1 2026-11-18 实施更新
+### 10.1 2026-11-19 实施更新
 
-- **已实现：** 官方上游 3 个提交已合并到本地基线；语言运行时支持浏览器中文识别、`paperclip.locale` 持久化和英文回退；账户菜单与个人设置均提供语言入口；引导页首屏、账户菜单和主工作区侧栏已接入翻译键；新增 `pnpm check:i18n` 审计命令。
-- **已验证：** `pnpm check:i18n` 通过（当前正式中文消息数 92）；`ui/src/i18n/locale-validation.test.ts` 与 `ui/src/pages/agent-skills/AgentSkillsTab.test.ts` 共 10 个测试通过；`@paperclipai/ui` 类型检查通过；`@paperclipai/ui` 生产构建通过；`git diff --check` 通过；本地服务曾在 `127.0.0.1:3110` readiness 通过；浏览器验收确认中文默认显示、切换英文、刷新保持英文、切回中文、刷新保持中文，并确认 `paperclip.locale=zh-CN`。构建仍有现有 Vite CSS 伪元素和 chunk size 警告，但未阻塞构建。
-- **已提交未部署：** 本地实现已提交，当前实现 SHA 待本次收口后记录；尚未推送到 `ccc1988/paperclip`，尚未替换当前运行中的 npm 安装版本。
-- **尚未验证：** 完整引导业务流程、Agent/任务/连接器全页面中文覆盖、同步后回归和发布验收。
-- **环境处理：** 本机缺少 Cargo，使用已安装且架构匹配的 Paperclip Runner 二进制启动本地验收服务；本地依赖的嵌入式 PostgreSQL 动态库别名已补齐到工作区 `node_modules`，不属于源码提交。
+- **已实现：** 官方上游基线已合并到本地；语言运行时支持浏览器中文识别、`paperclip.locale` 持久化和英文回退；账户菜单、个人设置、组织设置、决策连接设置、引导、主工作区、Agent 技能页、任务/项目入口和部分 Agent 详情已接入翻译键；引导中的 OpenAI subscription、API key、浏览器登录、验证码、连接、重试、失败状态、终端登录说明和复制命令提示已接入中文资源；`useLocalAiLogin` 的已知登录生命周期错误已按当前语言显示。
+- **已验证：** `pnpm check:i18n` 通过，422 条 `zh-CN` 消息与 `en.json` 键集合一致；7 个相关测试文件通过，共 59 个测试通过；`pnpm --filter @paperclipai/ui typecheck` 通过；`pnpm --filter @paperclipai/ui build` 通过；`git diff --check` 通过。UI 构建仍有既有 CSS `::highlight` 伪元素和大 chunk 警告，但未阻塞构建。
+- **已完成本地浏览器观察：** 中文浏览器进入 `/onboarding` 时显示中文；模型来源显示“Claude 订阅”和“OpenAI 订阅”；点击“OpenAI 订阅”后实际出现 `https://auth.openai.com/codex/device` 和设备验证码；登录失败后“重新开始登录”按钮可见。该证据证明点击路径会响应并启动设备登录，不证明真实账户绑定已完成。
+- **已提交未部署：** 本轮 S2 代码已提交为 `669de96d2`；整个分支尚未推送到 GitHub，也未替换当前运行中的 npm 安装版本。
+- **尚未验证：** OpenAI 设备登录完成后的真实账户绑定和完整初始化闭环；未知服务端错误仍按原文显示；Agent 详情剩余状态、任务详情/筛选器、审批卡片、成员/邀请/权限、环境、插件和全量连接页；完整仓库构建、窄屏视觉回归、上游再次同步后的回归和正式发布。
+- **环境处理：** 本机缺少 Cargo，使用已安装且架构匹配的 Paperclip Runner 二进制启动本地验收服务；本次服务地址为 `http://127.0.0.1:3101`，嵌入式 PostgreSQL 动态库别名只补在工作区 `node_modules`，均不属于源码提交或发布证据。
 
 ## 11. 实施计划与切片
 
@@ -573,21 +587,22 @@ release decision:
 
 | 门禁 | 命令/动作 | 期望结果 | 实际证据 | 状态 |
 |---|---|---|---|---|
-| 代码卫生 | `git diff --check` | 无空白错误 | 待填 | 未验证 |
-| 翻译审计 | `pnpm check:i18n` | key、插值、链接和空值检查通过 | 待填 | 未验证 |
-| locale 单测 | `locale-validation.test.ts` | 全部通过 | 待填 | 未验证 |
-| Agent 技能单测 | `AgentSkillsTab.test.ts` | 全部通过 | 待填 | 未验证 |
-| UI 类型检查 | `pnpm --filter @paperclipai/ui typecheck` | 通过 | 待填 | 未验证 |
-| UI 构建 | `pnpm --filter @paperclipai/ui build` | 通过 | 待填 | 未验证 |
-| 服务健康 | `/api/health` 或 readiness | 返回成功 | 待填 | 未验证 |
-| 中文默认语言 | 中文浏览器首次进入 | 显示 `zh-CN` | 待填 | 未验证 |
-| 语言持久化 | 切换、刷新、重新进入 | 语言保持 | 待填 | 未验证 |
-| 初始化主流程 | 引导到控制台 | 可完成 | 待填 | 未验证 |
-| AI 连接 | subscription、API key、Codex login | 成功/失败/重试可理解 | 待填 | 未验证 |
-| Agent 主流程 | 创建、编辑、运行、查看错误 | 可完成 | 待填 | 未验证 |
-| 任务项目主流程 | 创建、分派、筛选、查看运行 | 可完成 | 待填 | 未验证 |
-| 英文回退 | 切换英文或使用非中文浏览器 | 不出现空白或 key | 待填 | 未验证 |
-| 响应式布局 | 桌面和窄屏 | 无重叠、无截断、可操作 | 待填 | 未验证 |
+| 代码卫生 | `git diff --check` | 无空白错误 | 命令退出码 0 | 已验证 |
+| 翻译审计 | `pnpm check:i18n` | key、插值、链接和空值检查通过 | 422 条 `zh-CN` 消息与 `en.json` 一致 | 已验证 |
+| locale 单测 | `locale-validation.test.ts` | 全部通过 | 1 个测试文件、7 个测试通过 | 已验证 |
+| Agent 技能单测 | `AgentSkillsTab.test.ts` | 全部通过 | 1 个测试文件、3 个测试通过 | 已验证 |
+| 引导/连接单测 | 引导、登录、连接、locale 和技能测试 | 全部通过 | 7 个测试文件、59 个测试通过 | 已验证 |
+| UI 类型检查 | `pnpm --filter @paperclipai/ui typecheck` | 通过 | 通过；仅输出 Storybook 结构提示 | 已验证 |
+| UI 构建 | `pnpm --filter @paperclipai/ui build` | 通过 | 通过；保留既有 CSS 伪元素和 chunk size 警告 | 已验证 |
+| 服务健康 | readiness | 返回成功 | 本地 `127.0.0.1:3101` readiness 已通过 | 已验证 |
+| 中文默认语言 | 中文浏览器首次进入 | 显示 `zh-CN` | `/onboarding` 核心步骤显示中文 | 已验证 |
+| 语言持久化 | 切换、刷新、重新进入 | 语言保持 | 已观察 `paperclip.locale=zh-CN`；英文/中文切换与刷新保持通过 | 已验证 |
+| 初始化主流程 | 引导到控制台 | 可完成 | 已验证主要步骤和连接入口；完整账户绑定闭环未完成 | 部分验证 |
+| AI 连接 | subscription、API key、Codex login | 成功/失败/重试可理解 | subscription 点击已启动设备登录并显示认证 URL/验证码；真实绑定和三类完整回归未完成 | 部分验证 |
+| Agent 主流程 | 创建、编辑、运行、查看错误 | 可完成 | 语言层部分覆盖；全流程未验收 | 未验证 |
+| 任务项目主流程 | 创建、分派、筛选、查看运行 | 可完成 | 列表/创建/视图部分覆盖；全流程未验收 | 未验证 |
+| 英文回退 | 切换英文或使用非中文浏览器 | 不出现空白或 key | 运行时回退已实现；全量页面未验收 | 部分验证 |
+| 响应式布局 | 桌面和窄屏 | 无重叠、无截断、可操作 | 尚未完成全量桌面/窄屏回归 | 未验证 |
 
 ## 14. 未来语言包方案边界
 
@@ -619,11 +634,11 @@ type LocalePackManifest = {
 ## 15. 本次交付状态
 
 - **已确认决策：** 源码级 i18next 中文层；正式支持 `en` / `zh-CN`；浏览器中文默认识别；语言切换持久化；核心路径优先；保留 upstream 同步能力。
-- **已实现：** 语言底座、账户菜单和个人设置入口、引导首屏、主工作区侧栏、Agent 技能页翻译接入、`pnpm check:i18n` 审计命令、`doc/LOCALIZATION.md`。
-- **已提交未部署：** `97fdf200c`、`0e63ff8eb`、`1873c9eba`、`fb44c3e43`；当前分支尚未推送，未替换现有安装版本。
-- **工作树未提交：** `ui/src/pages/agent-skills/AgentSkillsTab.tsx`、`ui/src/i18n/locales/en.json`、`ui/src/i18n/locales/zh-CN.json` 的 Agent 技能页改动；该改动需要先完成最终构建和提交，再进入后续切片。
-- **已验证：** 已有语言切换、刷新持久化、locale 审计、locale 单测、UI 类型检查和当前工作树 Agent 技能页改动后的 UI 生产构建；构建存在现有 Vite CSS 伪元素和 chunk size 警告，但未阻塞构建。
-- **未验证：** 完整引导业务流程、OpenAI 三类连接路径、Agent 详情、任务和项目、审批和异常、设置侧栏、上游同步后回归、正式发布。
+- **已实现：** 语言底座、账户菜单和个人资料入口、引导和连接核心文案、登录失败状态本地化、主工作区、组织设置、决策连接设置、Agent 技能页、任务/项目入口、部分 Agent 详情、`pnpm check:i18n` 审计命令和 `doc/LOCALIZATION.md`。
+- **已提交未部署：** 当前基线为 `b7340aa8bfc2ac11bb11f39dc0dd58088fa71d31`；中文化提交链为 `97fdf200c`、`0e63ff8eb`、`1873c9eba`、`fb44c3e43`、`d0f2bb359`、`95b164d9c`、`66e935559`、`40a7c4fbc`、`b7340aa8b`。当前分支尚未推送，未替换现有安装版本。
+- **本轮提交内容：** `669de96d2` 包含 `AdapterLoginChrome.tsx`、`OnboardingWizard.tsx`、`useLocalAiLogin.ts` 及其测试、引导 Footer/Stepper 和 `en.json` / `zh-CN.json` 的 S2 中文化改动；临时验收目录已清理。
+- **已验证：** 422 条中文消息审计通过；7 个测试文件共 59 项通过；UI 类型检查、UI 生产构建和 `git diff --check` 通过；本地浏览器已确认中文默认显示、语言持久化、OpenAI subscription 点击会启动设备登录并显示认证地址和验证码，已知设备登录失败文案已改为按语言显示。
+- **未验证：** OpenAI 设备登录完成后的真实账户绑定和完整初始化闭环；未知服务端错误仍保留原文；Agent 详情剩余状态、任务详情/筛选器、审批卡片、成员/邀请/权限、环境、插件、全量连接页、完整仓库构建、窄屏回归、上游同步后回归和正式发布。
 - **环境限制：** 默认 Node 25 因缺少 `libsimdjson.31.dylib` 无法启动；验证优先使用 Node 24.22.3。缺少 Cargo 时使用已有架构匹配的 Runner 二进制只作为本地验收辅助，不作为发布证据。
 
 ## 16. 变更记录
@@ -632,3 +647,5 @@ type LocalePackManifest = {
 |---|---|---|
 | 1.0 | 2026-11-18 | 建立 Paperclip CN 1.0 的中文化目标、范围、技术方案和首个实施切片 |
 | 1.1 | 2026-11-18 | 明确一次性交付策略、页面覆盖矩阵、实施切片、上游同步门禁、验收证据模板和未来语言包边界 |
+| 1.2 | 2026-11-19 | 按当前 `HEAD`、411 条翻译审计、34 项聚焦测试、UI 类型检查、构建和本地浏览器证据更新实施状态；明确 OpenAI 设备登录已启动但真实账户绑定和完整 1.0 仍未验收 |
+| 1.3 | 2026-11-19 | 收口 S2 登录生命周期、终端登录说明、复制命令和 API key 卡片的中文化；更新为 422 条翻译消息、59 项聚焦测试，并提交为 `669de96d2` |
