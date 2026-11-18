@@ -130,6 +130,7 @@ export {
   RunInvocationCard,
 } from "../components/run-log/RunDetails";
 import { ANALYTICS_NO_CAPTURE_CLASS, ANALYTICS_MASK_CLASS } from "@/lib/analytics/privacy";
+import { useTranslation } from "@/i18n";
 
 const runStatusIcons: Record<string, { icon: typeof CheckCircle2; color: string }> = {
   succeeded: { icon: CheckCircle2, color: "text-green-600 dark:text-green-400" },
@@ -281,6 +282,7 @@ export function runDetailRefetchIntervalMs(status: HeartbeatRun["status"]): 5000
 }
 
 export function AgentDetail() {
+  const { t } = useTranslation();
   const { companyPrefix, agentId, tab: urlTab, runId: urlRunId } = useParams<{
     companyPrefix?: string;
     agentId: string;
@@ -599,7 +601,7 @@ export function AgentDetail() {
 
   useEffect(() => {
     const crumbs: { label: string; href?: string }[] = [
-      { label: "Agents", href: "/agents" },
+      { label: t("nav.agents"), href: "/agents" },
     ];
     const agentName = agent?.name ?? routeAgentRef ?? "Agent";
     if (activeView === "dashboard" && !urlRunId) {
@@ -607,28 +609,28 @@ export function AgentDetail() {
     } else {
       crumbs.push({ label: agentName, href: `/agents/${canonicalAgentRef}/dashboard` });
       if (urlRunId) {
-        crumbs.push({ label: "Runs", href: `/agents/${canonicalAgentRef}/runs` });
-        crumbs.push({ label: `Run ${urlRunId.slice(0, 8)}` });
+        crumbs.push({ label: t("agentNavigation.items.runs"), href: `/agents/${canonicalAgentRef}/runs` });
+        crumbs.push({ label: `${t("agentDetail.run.latest")} ${urlRunId.slice(0, 8)}` });
       } else if (activeView === "instructions") {
-        crumbs.push({ label: "Instructions" });
+        crumbs.push({ label: t("agentNavigation.items.instructions") });
       } else if (activeView === "configuration") {
-        crumbs.push({ label: "Configuration" });
+        crumbs.push({ label: t("agentNavigation.items.runtime") });
       } else if (activeView === "secrets") {
-        crumbs.push({ label: "Secrets" });
+        crumbs.push({ label: t("agentNavigation.items.secrets") });
       // } else if (activeView === "skills") { // TODO: bring back later
       //   crumbs.push({ label: "Skills" });
       } else if (activeView === "tools") {
-        crumbs.push({ label: "Tools" });
+        crumbs.push({ label: t("agentNavigation.items.tools") });
       } else if (activeView === "runs") {
-        crumbs.push({ label: "Runs" });
+        crumbs.push({ label: t("agentNavigation.items.runs") });
       } else if (activeView === "budget") {
-        crumbs.push({ label: "Budget" });
+        crumbs.push({ label: t("agentNavigation.items.budgets") });
       } else {
-        crumbs.push({ label: "Dashboard" });
+        crumbs.push({ label: t("agentNavigation.items.overview") });
       }
     }
     setBreadcrumbs(crumbs);
-  }, [setBreadcrumbs, agent, routeAgentRef, canonicalAgentRef, activeView, urlRunId]);
+  }, [setBreadcrumbs, agent, routeAgentRef, canonicalAgentRef, activeView, urlRunId, t]);
 
   useEffect(() => {
     closePanel();
@@ -940,7 +942,12 @@ export function AgentDetail() {
           onValueChange={handleAgentTabChange}
         >
           <PageTabBar
-            items={AGENT_DETAIL_TABS.filter((item) => item.value !== "channels" || chatConnectorsEnabled)}
+            items={AGENT_DETAIL_TABS
+              .filter((item) => item.value !== "channels" || chatConnectorsEnabled)
+              .map((item) => ({
+                ...item,
+                label: t(`agentNavigation.items.${item.value}`, { defaultValue: item.label }),
+              }))}
             value={activeView}
             onValueChange={handleAgentTabChange}
           />
@@ -950,7 +957,7 @@ export function AgentDetail() {
       {actionError && <p className="text-sm text-destructive">{actionError}</p>}
       {isPendingApproval && (
         <div className="flex flex-wrap items-center gap-3 rounded-md border border-amber-300/60 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-400/40 dark:bg-amber-950/30 dark:text-amber-200">
-          <span>This agent is pending board approval and cannot be invoked yet.</span>
+          <span>{t("agentDetail.messages.pendingApproval")}</span>
           <Button
             variant="outline"
             size="sm"
@@ -958,7 +965,7 @@ export function AgentDetail() {
             disabled={agentAction.isPending}
           >
             <CheckCircle2 className="h-3.5 w-3.5 sm:mr-1" />
-            <span>Approve agent</span>
+            <span>{t("agentDetail.messages.approve")}</span>
           </Button>
         </div>
       )}
@@ -1315,6 +1322,7 @@ function AgentOverview({
   agentId: string;
   agentRouteId: string;
 }) {
+  const { t } = useTranslation();
   const issuesById = useMemo(() => {
     const map = new Map<string, (typeof assignedIssues)[number]>();
     for (const issue of assignedIssues) map.set(issue.id, issue);
@@ -1328,19 +1336,19 @@ function AgentOverview({
 
       {/* Charts */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        <ChartCard title="Run Activity" subtitle="Last 14 days">
+        <ChartCard title={t("agentDetail.overview.runActivity")} subtitle={t("agentDetail.overview.last14Days")}>
           <RunActivityChart runs={runs} />
         </ChartCard>
         {/* PAP-411: "Tasks by Priority" chart hidden behind SHOW_TASK_PRIORITY_UI. */}
         {SHOW_TASK_PRIORITY_UI && (
-          <ChartCard title="Tasks by Priority" subtitle="Last 14 days">
+          <ChartCard title={t("agentDetail.overview.tasksByPriority")} subtitle={t("agentDetail.overview.last14Days")}>
             <PriorityChart issues={assignedIssues} />
           </ChartCard>
         )}
-        <ChartCard title="Tasks by Status" subtitle="Last 14 days">
+        <ChartCard title={t("agentDetail.overview.tasksByStatus")} subtitle={t("agentDetail.overview.last14Days")}>
           <IssueStatusChart issues={assignedIssues} />
         </ChartCard>
-        <ChartCard title="Success Rate" subtitle="Last 14 days">
+        <ChartCard title={t("agentDetail.overview.successRate")} subtitle={t("agentDetail.overview.last14Days")}>
           <SuccessRateChart runs={runs} />
         </ChartCard>
       </div>
@@ -1348,16 +1356,16 @@ function AgentOverview({
       {/* Recent Issues */}
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <h3 className="text-sm font-medium">Recent Tasks</h3>
+          <h3 className="text-sm font-medium">{t("agentDetail.overview.recentTasks")}</h3>
           <Link
             to={`/issues?participantAgentId=${agentId}`}
             className="text-xs text-muted-foreground hover:text-foreground transition-colors"
           >
-            See All &rarr;
+            {t("agentDetail.overview.seeAll")}
           </Link>
         </div>
         {assignedIssues.length === 0 ? (
-          <p className="text-sm text-muted-foreground">No recent tasks.</p>
+          <p className="text-sm text-muted-foreground">{t("agentDetail.overview.noRecentTasks")}</p>
         ) : (
           <div className="border border-border rounded-lg">
             {assignedIssues.slice(0, 10).map((issue) => (
@@ -2634,6 +2642,7 @@ function PromptEditorSkeleton() {
 /* ---- Runs Tab ---- */
 
 function RunListItem({ run, isSelected, agentId }: { run: HeartbeatRun; isSelected: boolean; agentId: string }) {
+  const { t } = useTranslation();
   const statusInfo = runStatusIcons[run.status] ?? { icon: Clock, color: "text-neutral-400" };
   const StatusIcon = statusInfo.icon;
   const metrics = runMetrics(run);
@@ -2662,7 +2671,7 @@ function RunListItem({ run, isSelected, agentId }: { run: HeartbeatRun; isSelect
             : run.invocationSource === "on_demand" ? "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/50 dark:text-cyan-300"
             : "bg-muted text-muted-foreground"
         )}>
-          {sourceLabels[run.invocationSource] ?? run.invocationSource}
+          {t(`agentDetail.source.${run.invocationSource}`, { defaultValue: sourceLabels[run.invocationSource] ?? run.invocationSource })}
         </Badge>
         {sourceResolvedFold ? <SourceResolvedFoldBadge showIcon={false} className="shrink-0 text-(length:--text-nano) py-0" /> : null}
         <span className="ml-auto text-(length:--text-micro) text-muted-foreground shrink-0">

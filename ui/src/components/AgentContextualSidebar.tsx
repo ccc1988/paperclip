@@ -28,6 +28,7 @@ import {
   agentDetailHref,
   type AgentLocalDetailView,
 } from "@/pages/agent-detail-navigation";
+import { useTranslation } from "@/i18n";
 
 const localIcons = {
   overview: Sparkles,
@@ -58,6 +59,7 @@ export function AgentContextualSidebar({
   agentName?: string;
   labels?: Partial<Record<AgentLocalDetailView, string>>;
 }) {
+  const { t } = useTranslation();
   const { selectedCompanyId } = useCompany();
   const shouldResolveAgent = !agentId || !agentName;
   const { data: resolvedAgent } = useQuery({
@@ -87,7 +89,7 @@ export function AgentContextualSidebar({
           <div key={section.label} className="contents">
             {section.label === "Audit" && pluginTabs.length > 0 ? (
               <div data-slot="contextual-sidebar-section" className={contextualSidebarStyles.section}>
-                <p className={contextualSidebarStyles.sectionLabel}>Apps</p>
+                <p className={contextualSidebarStyles.sectionLabel}>{t("agentNavigation.sections.apps")}</p>
                 <div className={contextualSidebarStyles.group}>
                   {pluginTabs.map(slot => <SidebarNavItem key={`${slot.pluginKey}:${slot.id}`} to={`/agents/${encodeURIComponent(agentRef)}/${encodeURIComponent(`plugin:${slot.pluginKey}:${slot.id}`)}`} label={slot.displayName} icon={Wrench} />)}
                 </div>
@@ -95,14 +97,14 @@ export function AgentContextualSidebar({
             ) : null}
             <div data-slot="contextual-sidebar-section" className={contextualSidebarStyles.section}>
               <p data-slot="contextual-sidebar-section-label" className={contextualSidebarStyles.sectionLabel}>
-                {section.label}
+                {t(`agentNavigation.sections.${section.label.toLowerCase()}`, { defaultValue: section.label })}
               </p>
               <div data-slot="contextual-sidebar-group" className={contextualSidebarStyles.group}>
                 {section.items.map((item) => (
                   <SidebarNavItem
                     key={item.value}
                     to={agentDetailHref(agentRef, item.value)}
-                    label={labels?.[item.value] ?? item.label}
+                    label={labels?.[item.value] ?? t(`agentNavigation.items.${item.value}`, { defaultValue: item.label })}
                     icon={localIcons[item.value]}
                   />
                 ))}

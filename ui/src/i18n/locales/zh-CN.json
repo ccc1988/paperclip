@@ -13,6 +13,11 @@
     "creating": "正在创建...",
     "connecting": "正在连接",
     "launching": "正在启动...",
+    "remove": "移除",
+    "saving": "正在保存…",
+    "couldNotSave": "保存失败",
+    "savingSoon": "即将保存…",
+    "saved": "已保存",
     "signingOut": "正在退出...",
     "signOut": "退出登录",
     "endBrowserSession": "结束当前浏览器会话。"
@@ -38,6 +43,104 @@
     "moreWorkspacePages": "更多工作区页面",
     "recents": "最近使用"
   },
+  "settingsSidebar": {
+    "title": "设置",
+    "backToApp": "返回应用",
+    "navigationLabel": "设置",
+    "general": "常规",
+    "profile": "个人资料",
+    "members": "成员",
+    "invites": "邀请",
+    "secrets": "密钥",
+    "environments": "环境",
+    "connections": "连接",
+    "access": "访问控制",
+    "heartbeats": "心跳",
+    "export": "导出",
+    "import": "导入",
+    "experimental": "实验功能",
+    "plugins": "插件",
+    "adapters": "适配器"
+  },
+  "agentNavigation": {
+    "sections": {
+      "agent": "Agent",
+      "audit": "审计",
+      "apps": "应用"
+    },
+    "items": {
+      "overview": "概览",
+      "instructions": "身份设定",
+      "skills": "技能",
+      "runtime": "运行时",
+      "secrets": "密钥和变量",
+      "tools": "工具",
+      "channels": "频道",
+      "permissions": "权限和信任",
+      "api-keys": "API 密钥",
+      "revisions": "Agent 历史",
+      "advanced": "高级",
+      "activity": "活动",
+      "runs": "运行",
+      "costs": "成本",
+      "budgets": "预算"
+    }
+  },
+  "agentDetail": {
+    "source": {
+      "timer": "定时器",
+      "assignment": "任务分配",
+      "on_demand": "按需",
+      "automation": "自动化"
+    },
+    "overview": {
+      "activity": "活动",
+      "eventsThisWeek": "本周事件",
+      "runs": "运行",
+      "failedLastTwoDays": "过去 2 天失败 {{count}} 次",
+      "costs": "成本",
+      "monthToDate": "本月至今",
+      "budgetUsed": "预算使用",
+      "noMonthlyBudget": "未设置月度预算",
+      "ofThisMonth": "本月共 {{amount}}",
+      "profile": "资料",
+      "couldNotLoadCreator": "无法加载创建者",
+      "createdBy": "由 {{name}} 创建 · {{date}}",
+      "created": "创建于 {{date}}",
+      "directReports": "直接下属：",
+      "skillsEnabled": "已启用 {{count}} 项",
+      "exploreSkills": "探索技能",
+      "recentTasks": "最近任务",
+      "seeAllTasks": "查看全部任务",
+      "startSuggestedTask": "从建议任务开始",
+      "suggestedTasks": "建议任务",
+      "runActivity": "运行活动",
+      "tasksByPriority": "按优先级统计",
+      "tasksByStatus": "按状态统计",
+      "successRate": "成功率",
+      "last14Days": "过去 14 天",
+      "noRecentTasks": "暂无最近任务。",
+      "seeAll": "查看全部 →",
+      "taskSuggestionResearch": "研究一个主题并总结关键发现",
+      "taskSuggestionPlan": "为项目创建分步计划",
+      "taskSuggestionReview": "审阅文档并提出改进建议"
+    },
+    "run": {
+      "live": "正在运行",
+      "latest": "最近一次运行"
+    },
+    "messages": {
+      "pendingApproval": "此 Agent 正在等待董事会审批，暂时无法调用。",
+      "approve": "批准 Agent",
+      "cancel": "取消",
+      "save": "保存",
+      "discardUnsaved": "放弃未保存的 Agent 配置更改？",
+      "agentUnavailable": "Agent 不可用",
+      "loadingView": "正在加载 Agent 页面…",
+      "agentViewUnavailable": "Agent 页面不可用",
+      "pluginViewUnavailable": "此插件页面不可用"
+    }
+  },
   "onboarding": {
     "steps": {
       "organization": "命名组织",
@@ -57,6 +160,38 @@
     "agentName": "Agent 名称",
     "agentPlaceholder": "例如：首席助理",
     "getStarted": "开始使用"
+  },
+  "agentSkills": {
+    "application": {
+      "keptInWorkspace": "保留在工作区",
+      "appliedOnNextRun": "下次运行时生效",
+      "trackedOnly": "仅跟踪"
+    },
+    "unsupported": {
+      "customAcp": "Paperclip 暂时无法管理自定义 ACP 命令的技能。",
+      "openClaw": "Paperclip 无法在此管理 OpenClaw 技能，请前往 OpenClaw 实例管理此 Agent 的技能。",
+      "adapter": "Paperclip 暂时无法管理此适配器的技能，请直接在适配器中管理。",
+      "runnerLegacySkill": "Paperclip Runner 使用原生语义协调，无法附加旧版 Paperclip 运行技能。"
+    },
+    "enabledCount": "已启用 {{enabled}} / {{total}}",
+    "materializationNote": "已启用的技能会在 Agent 下次运行时写入稳定的 Paperclip 管理提示词包。",
+    "controls": "Agent 技能控制",
+    "search": "搜索技能",
+    "browseStore": "浏览技能商店",
+    "enabledTitle": "此 Agent 已启用",
+    "availableTitle": "技能库可用",
+    "detectedTitle": "自动加载和检测到的技能（只读）",
+    "adapter": "适配器：{{adapter}}",
+    "empty": {
+      "enabledSearch": "没有匹配搜索条件的已启用技能。",
+      "enabled": "此 Agent 尚未启用技能。",
+      "availableSearch": "没有匹配搜索条件的可用技能。",
+      "importLibrary": "请先将技能导入组织技能库，再在此启用。",
+      "allEnabled": "技能库中的所有技能都已在此 Agent 上启用。",
+      "detectedSearch": "没有匹配搜索条件的检测到的技能。",
+      "libraryTitle": "组织技能库中没有技能",
+      "libraryDescription": "先将技能安装到组织，再为此 Agent 启用。"
+    }
   },
   "app": {
     "noCompanies": {

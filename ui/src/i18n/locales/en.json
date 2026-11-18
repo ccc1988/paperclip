@@ -13,6 +13,11 @@
     "creating": "Creating...",
     "connecting": "Connecting",
     "launching": "Launching...",
+    "remove": "Remove",
+    "saving": "Saving…",
+    "couldNotSave": "Couldn’t save",
+    "savingSoon": "Saving soon…",
+    "saved": "Saved",
     "signingOut": "Signing out...",
     "signOut": "Sign out",
     "endBrowserSession": "End this browser session."
@@ -38,6 +43,104 @@
     "moreWorkspacePages": "More workspace pages",
     "recents": "Recents"
   },
+  "settingsSidebar": {
+    "title": "Settings",
+    "backToApp": "Back to app",
+    "navigationLabel": "Settings",
+    "general": "General",
+    "profile": "Profile",
+    "members": "Members",
+    "invites": "Invites",
+    "secrets": "Secrets",
+    "environments": "Environments",
+    "connections": "Connections",
+    "access": "Access",
+    "heartbeats": "Heartbeats",
+    "export": "Export",
+    "import": "Import",
+    "experimental": "Experimental",
+    "plugins": "Plugins",
+    "adapters": "Adapters"
+  },
+  "agentNavigation": {
+    "sections": {
+      "agent": "Agent",
+      "audit": "Audit",
+      "apps": "Apps"
+    },
+    "items": {
+      "overview": "Overview",
+      "instructions": "Identity",
+      "skills": "Skills",
+      "runtime": "Harness / Runtime",
+      "secrets": "Secrets & variables",
+      "tools": "Tools",
+      "channels": "Channels",
+      "permissions": "Permissions / Trust",
+      "api-keys": "API Keys",
+      "revisions": "Agent history",
+      "advanced": "Advanced",
+      "activity": "Activity",
+      "runs": "Runs",
+      "costs": "Costs",
+      "budgets": "Budgets"
+    }
+  },
+  "agentDetail": {
+    "source": {
+      "timer": "Timer",
+      "assignment": "Assignment",
+      "on_demand": "On-demand",
+      "automation": "Automation"
+    },
+    "overview": {
+      "activity": "Activity",
+      "eventsThisWeek": "Events this week",
+      "runs": "Runs",
+      "failedLastTwoDays": "{{count}} failed in the last 2 days",
+      "costs": "Costs",
+      "monthToDate": "Month to date",
+      "budgetUsed": "Budget used",
+      "noMonthlyBudget": "No monthly budget set",
+      "ofThisMonth": "of {{amount}} this month",
+      "profile": "Profile",
+      "couldNotLoadCreator": "Could not load creator",
+      "createdBy": "Created by {{name}} · {{date}}",
+      "created": "Created {{date}}",
+      "directReports": "Direct reports:",
+      "skillsEnabled": "{{count}} enabled",
+      "exploreSkills": "Explore skills",
+      "recentTasks": "Recent tasks",
+      "seeAllTasks": "See all tasks",
+      "startSuggestedTask": "Start with a suggested task",
+      "suggestedTasks": "Suggested tasks",
+      "runActivity": "Run Activity",
+      "tasksByPriority": "Tasks by Priority",
+      "tasksByStatus": "Tasks by Status",
+      "successRate": "Success Rate",
+      "last14Days": "Last 14 days",
+      "noRecentTasks": "No recent tasks.",
+      "seeAll": "See All →",
+      "taskSuggestionResearch": "Research a topic and summarize the key findings",
+      "taskSuggestionPlan": "Create a step-by-step plan for a project",
+      "taskSuggestionReview": "Review a document and suggest improvements"
+    },
+    "run": {
+      "live": "Live Run",
+      "latest": "Latest Run"
+    },
+    "messages": {
+      "pendingApproval": "This agent is pending board approval and cannot be invoked yet.",
+      "approve": "Approve agent",
+      "cancel": "Cancel",
+      "save": "Save",
+      "discardUnsaved": "Discard unsaved agent configuration changes?",
+      "agentUnavailable": "Agent unavailable",
+      "loadingView": "Loading agent view…",
+      "agentViewUnavailable": "Agent view unavailable",
+      "pluginViewUnavailable": "This plugin view is unavailable"
+    }
+  },
   "onboarding": {
     "steps": {
       "organization": "Name your organization",
@@ -57,6 +160,38 @@
     "agentName": "Agent name",
     "agentPlaceholder": "e.g. Chief of staff",
     "getStarted": "Get started"
+  },
+  "agentSkills": {
+    "application": {
+      "keptInWorkspace": "Kept in workspace",
+      "appliedOnNextRun": "Applied on next run",
+      "trackedOnly": "Tracked only"
+    },
+    "unsupported": {
+      "customAcp": "Paperclip cannot manage skills for custom ACP commands yet.",
+      "openClaw": "Paperclip cannot manage OpenClaw skills here. Visit your OpenClaw instance to manage this agent's skills.",
+      "adapter": "Paperclip cannot manage skills for this adapter yet. Manage them in the adapter directly.",
+      "runnerLegacySkill": "Paperclip Runner uses native semantic coordination and cannot attach the legacy Paperclip operational skill."
+    },
+    "enabledCount": "{{enabled}} of {{total}} enabled",
+    "materializationNote": "Enabled skills are materialized into the stable Paperclip-managed prompt bundle on the agent's next run.",
+    "controls": "Agent skills controls",
+    "search": "Search skills",
+    "browseStore": "Browse skills store",
+    "enabledTitle": "Enabled on this agent",
+    "availableTitle": "Available from the library",
+    "detectedTitle": "Automatic and detected skills (read-only)",
+    "adapter": "Adapter: {{adapter}}",
+    "empty": {
+      "enabledSearch": "No enabled skills match your search.",
+      "enabled": "No skills enabled on this agent yet.",
+      "availableSearch": "No available skills match your search.",
+      "importLibrary": "Import skills into the organization library to enable them here.",
+      "allEnabled": "Every library skill is enabled on this agent.",
+      "detectedSearch": "No detected skills match your search.",
+      "libraryTitle": "No skills in the organization library",
+      "libraryDescription": "Install skills to the organization, then enable them on this agent."
+    }
   },
   "app": {
     "noCompanies": {

@@ -179,6 +179,7 @@ import {
 } from "./agent-detail-navigation";
 import { LogViewer } from "../components/run-log/LogViewer";
 import { asRecord, asNonEmptyString } from "../components/run-log/RunDetails";
+import { useTranslation } from "@/i18n";
 
 export { LogViewer } from "../components/run-log/LogViewer";
 export {
@@ -340,6 +341,7 @@ function agentViewDescription(view: AgentDetailView, name: string): string | nul
 }
 
 export function AgentDetail() {
+  const { t } = useTranslation();
   const { companyPrefix, agentId, tab: urlTab, runId: urlRunId } = useParams<{
     companyPrefix?: string;
     agentId: string;
@@ -658,7 +660,7 @@ export function AgentDetail() {
 
   useEffect(() => {
     const crumbs: { label: string; href?: string }[] = [
-      { label: "Agents", href: "/agents" },
+      { label: t("nav.agents"), href: "/agents" },
     ];
     const agentName = agent?.name ?? routeAgentRef ?? "Agent";
     if (activeView === "overview" && !urlRunId) {
@@ -666,14 +668,15 @@ export function AgentDetail() {
     } else {
       crumbs.push({ label: agentName, href: agentDetailHref(canonicalAgentRef) });
       if (urlRunId) {
-        crumbs.push({ label: "Runs", href: agentDetailHref(canonicalAgentRef, "runs") });
-        crumbs.push({ label: `Run ${urlRunId.slice(0, 8)}` });
+        crumbs.push({ label: t("agentNavigation.items.runs"), href: agentDetailHref(canonicalAgentRef, "runs") });
+        crumbs.push({ label: `${t("agentDetail.run.latest")} ${urlRunId.slice(0, 8)}` });
       } else {
-        crumbs.push({ label: agentDetailViewLabel(activeView === "run-detail" ? "overview" : activeView) });
+        const view = activeView === "run-detail" ? "overview" : activeView;
+        crumbs.push({ label: t(`agentNavigation.items.${view}`, { defaultValue: agentDetailViewLabel(view) }) });
       }
     }
     setBreadcrumbs(crumbs);
-  }, [setBreadcrumbs, agent, routeAgentRef, canonicalAgentRef, activeView, urlRunId]);
+  }, [setBreadcrumbs, agent, routeAgentRef, canonicalAgentRef, activeView, urlRunId, t]);
 
   useEffect(() => {
     closePanel();
@@ -1029,7 +1032,7 @@ export function AgentDetail() {
       {actionError && <p className="text-sm text-destructive">{actionError}</p>}
       {isPendingApproval && (
         <div className="flex flex-wrap items-center gap-3 rounded-md border border-amber-300/60 bg-amber-50 px-3 py-2 text-sm text-amber-900 dark:border-amber-400/40 dark:bg-amber-950/30 dark:text-amber-200">
-          <span>This agent is pending board approval and cannot be invoked yet.</span>
+          <span>{t("agentDetail.messages.pendingApproval")}</span>
           <Button
             variant="outline"
             size="sm"
@@ -1037,14 +1040,14 @@ export function AgentDetail() {
             disabled={agentAction.isPending}
           >
             <CheckCircle2 className="h-3.5 w-3.5 sm:mr-1" />
-            <span>Approve agent</span>
+            <span>{t("agentDetail.messages.approve")}</span>
           </Button>
         </div>
       )}
 
       {activeView !== "run-detail" && activeView !== "channels" && !UNTITLED_AGENT_VIEWS.has(activeView) ? (
         <div className="mb-4 space-y-1">
-          <h2 className="text-lg font-semibold text-foreground">{agentDetailViewLabel(activeView)}</h2>
+          <h2 className="text-lg font-semibold text-foreground">{t(`agentNavigation.items.${activeView}`, { defaultValue: agentDetailViewLabel(activeView) })}</h2>
           {agentViewDescription(activeView, agent.name) ? (
             <p className="text-sm text-muted-foreground">{agentViewDescription(activeView, agent.name)}</p>
           ) : null}
@@ -1405,12 +1408,13 @@ export function AgentOverview({
   skillNames: string[];
   agentRouteId: string;
 }) {
+  const { t } = useTranslation();
   const agentRef = agentRouteRef(agent);
   const { openNewIssue } = useDialogActions();
   const taskSuggestions = [
-    "Research a topic and summarize the key findings",
-    "Create a step-by-step plan for a project",
-    "Review a document and suggest improvements",
+    t("agentDetail.overview.taskSuggestionResearch"),
+    t("agentDetail.overview.taskSuggestionPlan"),
+    t("agentDetail.overview.taskSuggestionReview"),
   ];
   const hasHumanCreator = Boolean(humanAgentCreatorUserId(agent.createdByUserId));
   const userDirectory = useQuery({
@@ -1439,72 +1443,72 @@ export function AgentOverview({
         <AgentMetricTile
           icon={ActivityIcon}
           value={activity.isLoading ? "–" : formatWindowCount(activityThisWeek)}
-          label="Activity"
-          description="Events this week"
+          label={t("agentDetail.overview.activity")}
+          description={t("agentDetail.overview.eventsThisWeek")}
           to={agentDetailHref(agentRef, "activity")}
         />
         <AgentMetricTile
           icon={PlayCircle}
           value={formatWindowCount(runsThisWeek)}
-          label="Runs"
-          description={`${formatWindowCount(recentFailures)} failed in the last 2 days`}
+          label={t("agentDetail.overview.runs")}
+          description={t("agentDetail.overview.failedLastTwoDays", { count: formatWindowCount(recentFailures) })}
           to={agentDetailHref(agentRef, "runs")}
         />
         <AgentMetricTile
           icon={ReceiptText}
           value={formatCents(spent)}
-          label="Costs"
-          description="Month to date"
+          label={t("agentDetail.overview.costs")}
+          description={t("agentDetail.overview.monthToDate")}
           to={agentDetailHref(agentRef, "costs")}
         />
         <AgentMetricTile
           icon={Gauge}
           value={budgetPercent === null ? "–" : `${budgetPercent}%`}
-          label="Budget used"
-          description={budgetPercent === null ? "No monthly budget set" : `of ${formatCents(budget)} this month`}
+          label={t("agentDetail.overview.budgetUsed")}
+          description={budgetPercent === null ? t("agentDetail.overview.noMonthlyBudget") : t("agentDetail.overview.ofThisMonth", { amount: formatCents(budget) })}
           to={agentDetailHref(agentRef, "budgets")}
         />
-        <AgentPanel title="Profile" className="min-h-(--agent-detail-tile-min-h) sm:col-span-2" aria-label="Profile"
+        <AgentPanel title={t("agentDetail.overview.profile")} className="min-h-(--agent-detail-tile-min-h) sm:col-span-2" aria-label={t("agentDetail.overview.profile")}
           meta={<span className={creatorFailed ? "text-destructive" : undefined}>
-            {creatorFailed ? "Could not load creator" : creatorLabel ? `Created by ${creatorLabel} · ${formatDate(agent.createdAt)}` : `Created ${formatDate(agent.createdAt)}`}
+            {creatorFailed ? t("agentDetail.overview.couldNotLoadCreator") : creatorLabel ? t("agentDetail.overview.createdBy", { name: creatorLabel, date: formatDate(agent.createdAt) }) : t("agentDetail.overview.created", { date: formatDate(agent.createdAt) })}
           </span>}>
           <div className="flex flex-col pb-3">
             <AgentReportingManager key={agent.id} agent={agent} />
             {directReports.length > 0 && <div className="flex flex-col gap-1.5 px-(--agent-detail-module-inset) py-1.5 text-sm">
-              <span className="text-muted-foreground">Direct reports:</span>
+              <span className="text-muted-foreground">{t("agentDetail.overview.directReports")}</span>
               <AgentDirectReports reports={directReports} />
             </div>}
 
           </div>
         </AgentPanel>
         <AgentPanel
-          title="Skills"
-          meta={<span>{skillNames.length} enabled</span>}
+          title={t("agentNavigation.items.skills")}
+          meta={<span>{t("agentDetail.overview.skillsEnabled", { count: skillNames.length })}</span>}
           className="min-h-(--agent-detail-tile-min-h) sm:col-span-2"
           aria-label="Skills"
         >
           <div className="flex flex-wrap gap-1.5 px-(--agent-detail-module-inset) pt-1 pb-(--agent-detail-module-inset)">
             {skillNames.map((name) => <AgentChip key={name} className="h-7 px-2">{name}</AgentChip>)}
             <Link to={agentDetailHref(agentRef, "skills")} className="inline-flex h-7 items-center gap-1.5 rounded-md border border-dashed border-border px-2 py-1 text-sm text-muted-foreground no-underline transition-colors hover:bg-accent hover:text-foreground">
-              Explore skills <ArrowUpRight className="size-3.5" aria-hidden />
+              {t("agentDetail.overview.exploreSkills")} <ArrowUpRight className="size-3.5" aria-hidden />
             </Link>
           </div>
         </AgentPanel>
       </div>
 
-      <section className="flex flex-col gap-3" aria-label="Recent tasks">
+      <section className="flex flex-col gap-3" aria-label={t("agentDetail.overview.recentTasks")}>
         <AgentSectionHeading
-          title="Recent tasks"
+          title={t("agentDetail.overview.recentTasks")}
           action={
             <Link to={`/issues?participantAgentId=${agent.id}`} className="text-xs text-muted-foreground no-underline transition-colors hover:text-foreground">
-              See all tasks
+              {t("agentDetail.overview.seeAllTasks")}
             </Link>
           }
         />
         {assignedIssues.length === 0 ? (
           <div className="flex flex-col gap-3">
-            <p className="text-sm text-muted-foreground">Start with a suggested task</p>
-            <ul className="overflow-hidden rounded-lg border border-border bg-(--agent-detail-tile) divide-y divide-dashed divide-border" aria-label="Suggested tasks">
+            <p className="text-sm text-muted-foreground">{t("agentDetail.overview.startSuggestedTask")}</p>
+            <ul className="overflow-hidden rounded-lg border border-border bg-(--agent-detail-tile) divide-y divide-dashed divide-border" aria-label={t("agentDetail.overview.suggestedTasks")}>
               {taskSuggestions.map((title) => (
                 <li key={title}>
                   <button
@@ -2808,6 +2812,7 @@ function PromptEditorSkeleton() {
 /* ---- Runs Tab ---- */
 
 function RunListItem({ run, isSelected, agentId }: { run: HeartbeatRun; isSelected: boolean; agentId: string }) {
+  const { t } = useTranslation();
   const statusInfo = runStatusIcons[run.status] ?? { icon: Clock, color: "text-neutral-400" };
   const StatusIcon = statusInfo.icon;
   const metrics = runMetrics(run);
@@ -2836,7 +2841,7 @@ function RunListItem({ run, isSelected, agentId }: { run: HeartbeatRun; isSelect
             : run.invocationSource === "on_demand" ? "bg-cyan-100 text-cyan-700 dark:bg-cyan-900/50 dark:text-cyan-300"
             : "bg-muted text-muted-foreground"
         )}>
-          {sourceLabels[run.invocationSource] ?? run.invocationSource}
+          {t(`agentDetail.source.${run.invocationSource}`, { defaultValue: sourceLabels[run.invocationSource] ?? run.invocationSource })}
         </Badge>
         {sourceResolvedFold ? <SourceResolvedFoldBadge showIcon={false} className="shrink-0 text-(length:--text-nano) py-0" /> : null}
         <span className="ml-auto text-(length:--text-micro) text-muted-foreground shrink-0">
