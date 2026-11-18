@@ -40,8 +40,10 @@ import {
   redactPathText,
 } from "./RunDetails";
 import { ANALYTICS_MASK_CLASS } from "@/lib/analytics/privacy";
+import { useTranslation } from "@/i18n";
 
 export function LogViewer({ run, adapterType }: { run: HeartbeatRun; adapterType: string }) {
+  const { t } = useTranslation();
   const { visible } = usePageVisibility();
   const connection = useConnectivityStore();
   const [events, setEvents] = useState<HeartbeatRunEvent[]>([]);
@@ -249,7 +251,7 @@ export function LogViewer({ run, adapterType }: { run: HeartbeatRun; adapterType
       } catch (error) {
         failed = true; failedRead = { requested, catchup };
         connection.reportError(error);
-        if (!cancelled && !isTransientError(error)) setEventsError("Could not load events. Try again.");
+        if (!cancelled && !isTransientError(error)) setEventsError(t("agentDetail.run.eventsLoadFailed"));
       }
       if (cancelled) return;
       reading = false; setLoadingMoreEvents(false);
@@ -448,11 +450,11 @@ export function LogViewer({ run, adapterType }: { run: HeartbeatRun; adapterType
   }, [run.id]);
 
   if (loading && logLoading && !eventsError && !logError) {
-    return <p className="text-xs text-muted-foreground">Loading run logs...</p>;
+    return <p className="text-xs text-muted-foreground">{t("agentDetail.run.loadingRunLogs")}</p>;
   }
 
   if (events.length === 0 && logLines.length === 0 && !logError && !eventsError) {
-    return <p className="text-xs text-muted-foreground">{loading || logLoading ? "Loading run logs..." : "No log events."}</p>;
+    return <p className="text-xs text-muted-foreground">{loading || logLoading ? t("agentDetail.run.loadingRunLogs") : t("agentDetail.run.noLogEvents")}</p>;
   }
 
   const levelColors: Record<string, string> = {
@@ -532,7 +534,7 @@ export function LogViewer({ run, adapterType }: { run: HeartbeatRun; adapterType
           mode={transcriptMode}
           streaming={isLive}
           limit={isLive ? LIVE_TRANSCRIPT_RENDER_LIMIT : undefined}
-          emptyMessage={run.logRef ? "Waiting for transcript..." : "No persisted transcript for this run."}
+          emptyMessage={run.logRef ? t("agentDetail.run.waitingForTranscript") : t("agentDetail.run.noPersistedTranscript")}
         />
         {hasMoreLog && (
           <div className="mt-3 flex flex-wrap items-center gap-2 border-t border-border/60 pt-3">
@@ -543,7 +545,7 @@ export function LogViewer({ run, adapterType }: { run: HeartbeatRun; adapterType
               onClick={persistedLog.view.retry}
               disabled={loadingMoreLog}
             >
-              {loadingMoreLog ? "Loading..." : "Load more log"}
+              {loadingMoreLog ? t("agentDetail.run.loading") : t("agentDetail.run.loadMoreLog")}
             </Button>
             <span className="text-xs text-muted-foreground">
               Showing the first {Math.round(logOffset / 1024).toLocaleString("en-US")} KB
@@ -553,22 +555,22 @@ export function LogViewer({ run, adapterType }: { run: HeartbeatRun; adapterType
             </span>
           </div>
         )}
-        {logError != null && <QueryErrorState className="mt-3" error={logError} action="load the run log" onRetry={persistedLog.view.retry} retrying={loadingMoreLog} />}
+        {logError != null && <QueryErrorState className="mt-3" error={logError} action={t("agentDetail.run.loadRunLogAction")} onRetry={persistedLog.view.retry} retrying={loadingMoreLog} />}
         <div ref={logEndRef} />
       </div>
 
       {(run.status === "failed" || run.status === "timed_out") && (
         <div className={cn("rounded-lg border border-red-300 dark:border-red-500/30 bg-red-50 dark:bg-red-950/20 p-3 space-y-2", ANALYTICS_MASK_CLASS)}>
-          <div className="text-xs font-medium text-red-700 dark:text-red-300">Failure details</div>
+          <div className="text-xs font-medium text-red-700 dark:text-red-300">{t("agentDetail.run.failureDetails")}</div>
           {run.error && (
             <div className="text-xs text-red-600 dark:text-red-200">
-              <span className="text-red-700 dark:text-red-300">Error: </span>
+              <span className="text-red-700 dark:text-red-300">{t("agentDetail.run.error")}: </span>
               {redactPathText(run.error, censorUsernameInLogs)}
             </div>
           )}
           {run.stderrExcerpt && run.stderrExcerpt.trim() && (
             <div>
-              <div className="text-xs text-red-700 dark:text-red-300 mb-1">stderr excerpt</div>
+              <div className="text-xs text-red-700 dark:text-red-300 mb-1">{t("agentDetail.run.stderrExcerpt")}</div>
               <pre className={cn("bg-red-50 dark:bg-neutral-950 rounded-md p-2 text-xs overflow-x-auto whitespace-pre-wrap text-red-800 dark:text-red-100", ANALYTICS_MASK_CLASS)}>
                 {redactPathText(run.stderrExcerpt, censorUsernameInLogs)}
               </pre>
@@ -576,7 +578,7 @@ export function LogViewer({ run, adapterType }: { run: HeartbeatRun; adapterType
           )}
           {run.resultJson && (
             <div>
-              <div className="text-xs text-red-700 dark:text-red-300 mb-1">adapter result JSON</div>
+              <div className="text-xs text-red-700 dark:text-red-300 mb-1">{t("agentDetail.run.adapterResultJson")}</div>
               <pre className={cn("bg-red-50 dark:bg-neutral-950 rounded-md p-2 text-xs overflow-x-auto whitespace-pre-wrap text-red-800 dark:text-red-100", ANALYTICS_MASK_CLASS)}>
                 {JSON.stringify(redactPathValue(run.resultJson, censorUsernameInLogs), null, 2)}
               </pre>
@@ -584,7 +586,7 @@ export function LogViewer({ run, adapterType }: { run: HeartbeatRun; adapterType
           )}
           {run.stdoutExcerpt && run.stdoutExcerpt.trim() && !run.resultJson && (
             <div>
-              <div className="text-xs text-red-700 dark:text-red-300 mb-1">stdout excerpt</div>
+              <div className="text-xs text-red-700 dark:text-red-300 mb-1">{t("agentDetail.run.stdoutExcerpt")}</div>
               <pre className={cn("bg-red-50 dark:bg-neutral-950 rounded-md p-2 text-xs overflow-x-auto whitespace-pre-wrap text-red-800 dark:text-red-100", ANALYTICS_MASK_CLASS)}>
                 {redactPathText(run.stdoutExcerpt, censorUsernameInLogs)}
               </pre>
@@ -595,11 +597,11 @@ export function LogViewer({ run, adapterType }: { run: HeartbeatRun; adapterType
 
       {(events.length > 0 || eventsError) && (
         <div>
-          <div className="mb-2 text-xs font-medium text-muted-foreground">Events ({events.length})</div>
+          <div className="mb-2 text-xs font-medium text-muted-foreground">{t("agentDetail.run.events", { count: events.length })}</div>
           {eventsError && <p className="text-sm text-destructive">{eventsError}</p>}
           {(hasMoreEvents || eventsError) && (
             <Button variant="outline" size="sm" disabled={loadingMoreEvents} onClick={() => loadMoreEventsRef.current?.()}>
-              {loadingMoreEvents ? "Loading..." : eventsError ? "Retry events" : "Load more events"}
+              {loadingMoreEvents ? t("agentDetail.run.loading") : eventsError ? t("agentDetail.run.retryEvents") : t("agentDetail.run.loadMoreEvents")}
             </Button>
           )}
           <div className={cn("bg-neutral-100 dark:bg-neutral-950 rounded-lg p-3 font-mono text-xs space-y-0.5", ANALYTICS_MASK_CLASS)}>

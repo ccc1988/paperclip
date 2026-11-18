@@ -179,7 +179,7 @@ import {
 } from "./agent-detail-navigation";
 import { LogViewer } from "../components/run-log/LogViewer";
 import { asRecord, asNonEmptyString } from "../components/run-log/RunDetails";
-import { useTranslation } from "@/i18n";
+import { getLocale, useTranslation } from "@/i18n";
 
 export { LogViewer } from "../components/run-log/LogViewer";
 export {
@@ -1255,6 +1255,7 @@ function LatestRunCard({
   agentId: string;
   issuesById: Map<string, LatestRunIssue>;
 }) {
+  const { t } = useTranslation();
   const sorted = useMemo(
     () =>
       [...runs].sort(
@@ -1336,7 +1337,7 @@ function LatestRunCard({
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500" />
               </span>
             )}
-            <span>{isLive ? "Live Run" : "Latest Run"}</span>
+            <span>{isLive ? t("agentDetail.run.live") : t("agentDetail.run.latest")}</span>
             <span className="font-mono text-xs font-normal text-muted-foreground">
               &middot; {run.id.slice(0, 8)}
             </span>
@@ -1353,7 +1354,7 @@ function LatestRunCard({
       >
         <div className="flex items-center gap-2">
           <StatusIcon className={cn("h-3.5 w-3.5", statusInfo.color, run.status === "running" && "animate-spin")} />
-          <StatusBadge status={run.status} />
+          <StatusBadge status={run.status} label={getLocale() === "zh-CN" ? t(`agentDetail.run.status.${run.status}`, { defaultValue: run.status.replace(/[_-]/g, " ") }) : undefined} />
           {task ? (
             <>
               <StatusGlyph status={task.status} size="sm" />
@@ -2882,6 +2883,7 @@ export function RunsTab({
   adapterConfig: Record<string, unknown>;
 }) {
   const { isMobile } = useSidebar();
+  const { t } = useTranslation();
 
   // Sort by created descending
   const sorted = [...runs].sort(
@@ -2893,13 +2895,13 @@ export function RunsTab({
   const selection = useSelectedHeartbeatRun(sorted, effectiveRunId, companyId, agentId);
   const selectedRun = selection.run;
   if (selectedRunId && !selectedRun) {
-    if (selection.loading) return <p className="text-sm text-muted-foreground">Loading run…</p>;
+    if (selection.loading) return <p className="text-sm text-muted-foreground">{t("agentDetail.run.loading")}</p>;
     return <div role="alert">
-      <p className="text-sm text-destructive">{selection.error instanceof Error ? selection.error.message : "This run is unavailable for this agent."}</p>
-      {selection.error && <Button variant="outline" onClick={() => { void selection.retry(); }}>Try again</Button>}
+      <p className="text-sm text-destructive">{selection.error instanceof Error ? selection.error.message : t("agentDetail.run.unavailable")}</p>
+      {selection.error && <Button variant="outline" onClick={() => { void selection.retry(); }}>{t("agentDetail.run.tryAgain")}</Button>}
     </div>;
   }
-  if (runs.length === 0 && !selectedRun) return <p className="text-sm text-muted-foreground">No runs yet.</p>;
+  if (runs.length === 0 && !selectedRun) return <p className="text-sm text-muted-foreground">{t("agentDetail.run.none")}</p>;
 
   // Mobile: show either run list OR run detail with back button
   if (isMobile) {
@@ -2911,7 +2913,7 @@ export function RunsTab({
             className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors no-underline"
           >
             <ArrowLeft className="h-3.5 w-3.5" />
-            Back to runs
+            {t("agentDetail.run.backToRuns")}
           </Link>
           <RunDetail key={selectedRun.id} run={selectedRun} agentRouteId={agentRouteId} adapterType={adapterType} adapterConfig={adapterConfig} />
         </div>
@@ -2954,6 +2956,7 @@ export function RunsTab({
 /* ---- Run Detail (expanded) ---- */
 
 export function AgentFileRunNotice({ resultJson }: { resultJson: HeartbeatRun["resultJson"] }) {
+  const { t } = useTranslation();
   const save = asRecord(resultJson?.instructionSave);
   const storageWarning = asNonEmptyString(save?.storageWarning);
   const error = asNonEmptyString(save?.errorMessage);
@@ -2962,19 +2965,20 @@ export function AgentFileRunNotice({ resultJson }: { resultJson: HeartbeatRun["r
   // I/O failure must stay visible even when storage was full at run start.
   const showSyncFailure = syncFailure && (!storageWarning || save?.errorCode !== "AGENT_FILES_LIMIT_EXCEEDED");
   return <>
-    {storageWarning && <InlineBanner tone="warning" title="Agent storage warning" compact>{storageWarning}</InlineBanner>}
-    {showSyncFailure && <InlineBanner tone="warning" title="Agent file sync failed for this run" compact>{error}</InlineBanner>}
+    {storageWarning && <InlineBanner tone="warning" title={t("agentDetail.run.storageWarning")} compact>{storageWarning}</InlineBanner>}
+    {showSyncFailure && <InlineBanner tone="warning" title={t("agentDetail.run.fileSyncFailed")} compact>{error}</InlineBanner>}
   </>;
 }
 
 export function RunAccountingMetrics({ run }: { run: HeartbeatRun }) {
+  const { t } = useTranslation();
   const metrics = runMetrics(run);
   if (!metrics.usageUnavailable && ![metrics.input, metrics.output, metrics.cached, metrics.cost].some(value => (value ?? 0) > 0)) return null;
   const values = [
-    ["Input", metrics.input === null ? "Unavailable" : formatTokens(metrics.input)],
-    ["Output", metrics.output === null ? "Unavailable" : formatTokens(metrics.output)],
-    ["Cached", metrics.cached === null ? "Unavailable" : formatTokens(metrics.cached)],
-    ["Cost", metrics.cost === null ? "Unavailable" : metrics.cost > 0 ? `$${metrics.cost.toFixed(4)}` : "-"],
+    [t("agentDetail.run.input"), metrics.input === null ? t("agentDetail.run.unavailableMetric") : formatTokens(metrics.input)],
+    [t("agentDetail.run.output"), metrics.output === null ? t("agentDetail.run.unavailableMetric") : formatTokens(metrics.output)],
+    [t("agentDetail.run.cached"), metrics.cached === null ? t("agentDetail.run.unavailableMetric") : formatTokens(metrics.cached)],
+    [t("agentDetail.run.cost"), metrics.cost === null ? t("agentDetail.run.unavailableMetric") : metrics.cost > 0 ? `$${metrics.cost.toFixed(4)}` : "-"],
   ];
   return (
     <div className="border-t sm:border-t-0 sm:border-l border-border p-4 grid grid-cols-2 gap-x-4 sm:gap-x-8 gap-y-3 content-center tabular-nums">
@@ -2989,6 +2993,7 @@ export function RunAccountingMetrics({ run }: { run: HeartbeatRun }) {
 }
 
 function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }: { run: HeartbeatRun; agentRouteId: string; adapterType: string; adapterConfig: Record<string, unknown> }) {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { data: hydratedRun } = useQuery({
@@ -3082,7 +3087,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
         payload: resumePayload,
       }, run.companyId);
       if (!("id" in result)) {
-        throw new Error(result.message ?? "Resume request was skipped.");
+        throw new Error(result.message ?? t("agentDetail.run.resumeSkipped"));
       }
       return result;
     },
@@ -3128,7 +3133,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
         debug: { providerTrace: "raw" },
       }, run.companyId);
       if (!("id" in result)) {
-        throw new Error(result.message ?? "Trace re-run was skipped.");
+        throw new Error(result.message ?? t("agentDetail.run.traceRerunSkipped"));
       }
       return result;
     },
@@ -3203,14 +3208,14 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
           break-glass handlers as the task detail page. */}
       <RunWorkspaceRecoverySurface run={run} />
       <AiConnectionPoolRunDetails context={run.contextSnapshot} />
-      {grokWork && <p className="text-sm text-muted-foreground">Runs in Grok Bot. Usage not reported. Stopping this session revokes Paperclip authority; remote execution may continue. Open the Grok Bot desktop app to inspect it. This view contains Paperclip-reported activity.</p>}
+      {grokWork && <p className="text-sm text-muted-foreground">{t("agentDetail.run.grokNotice")}</p>}
       {/* Run summary card */}
       <div className="border border-border rounded-lg overflow-hidden">
         <div className="flex flex-col sm:flex-row">
           {/* Left column: status + timing */}
           <div className="flex-1 p-4 space-y-3">
             <div className="flex items-center gap-2 flex-wrap">
-              <StatusBadge status={run.status} />
+              <StatusBadge status={run.status} label={getLocale() === "zh-CN" ? t(`agentDetail.run.status.${run.status}`, { defaultValue: run.status.replace(/[_-]/g, " ") }) : undefined} />
               <ProviderTraceStatusBadge
                 trace={providerTraceMetadata}
                 requested={runRequestedProviderTrace(run.contextSnapshot)}
@@ -3224,7 +3229,19 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
                   onClick={() => cancelRun.mutate()}
                   disabled={cancelRun.isPending}
                 >
-                  {runCancellationLabel({ grokWork, isFailed: run.status === "failed", isPending: cancelRun.isPending })}
+                  {runCancellationLabel({
+                    grokWork,
+                    isFailed: run.status === "failed",
+                    isPending: cancelRun.isPending,
+                    labels: {
+                      stoppingPaperclipWork: t("agentDetail.run.stoppingPaperclipWork"),
+                      stopPaperclipWork: t("agentDetail.run.stopPaperclipWork"),
+                      stopping: t("agentDetail.run.stopping"),
+                      stop: t("agentDetail.run.stop"),
+                      cancelling: t("agentDetail.run.cancelling"),
+                      cancel: t("agentDetail.run.cancel"),
+                    },
+                  })}
                 </Button>
               )}
               {canResumeLostRun && (
@@ -3236,7 +3253,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
                   disabled={resumeRun.isPending}
                 >
                   <RotateCcw className="h-3.5 w-3.5 mr-1" />
-                  {resumeRun.isPending ? "Resuming…" : "Resume"}
+                  {resumeRun.isPending ? t("agentDetail.run.resuming") : t("agentDetail.run.resume")}
                 </Button>
               )}
               {canRetryRun && !canResumeLostRun && (
@@ -3248,7 +3265,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
                   disabled={retryRun.isPending}
                 >
                   <RotateCcw className="h-3.5 w-3.5 mr-1" />
-                  {retryRun.isPending ? "Retrying…" : "Retry"}
+                  {retryRun.isPending ? t("agentDetail.run.retrying") : t("agentDetail.run.retry")}
                 </Button>
               )}
               <Button
@@ -3258,7 +3275,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
                 onClick={() => setInspectorOpen(true)}
               >
                 <Eye className="h-3.5 w-3.5 mr-1" />
-                Inspect run
+                {t("agentDetail.run.inspect")}
               </Button>
               <HoneycombRunLink
                 runId={run.id}
@@ -3273,7 +3290,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
                   disabled={rerunWithTrace.isPending}
                 >
                   <RotateCcw className="h-3.5 w-3.5 mr-1" />
-                  {rerunWithTrace.isPending ? "Starting…" : "Re-run with provider trace"}
+                  {rerunWithTrace.isPending ? t("agentDetail.run.starting") : t("agentDetail.run.rerunWithProviderTrace")}
                 </Button>
               ) : null}
             </div>
@@ -3303,7 +3320,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
                 data-testid="run-detail-on-behalf-of"
                 className="text-xs text-muted-foreground"
               >
-                On behalf of{" "}
+                {t("agentDetail.run.onBehalfOf")} {" "}
                 <span className={cn("text-foreground", ANALYTICS_MASK_CLASS)}>
                   {responsibleUserName ?? responsibleUserLabel(null)}
                 </span>
@@ -3311,13 +3328,13 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
             )}
             {Boolean(run.identityHistory?.length) && (
               <details className="text-xs text-muted-foreground" data-testid="run-identity-history">
-                <summary className="cursor-pointer">GitHub identity history</summary>
+                <summary className="cursor-pointer">{t("agentDetail.run.githubIdentityHistory")}</summary>
                 <ol className={cn("mt-2 space-y-2", ANALYTICS_MASK_CLASS)}>
                   {run.identityHistory!.map((identity) => {
                     const person = userDirectory?.users.find((entry) => entry.principalId === identity.responsibleUserId);
                     return (
                       <li key={identity.id}>
-                        <span className="text-foreground">{person?.user?.name ?? person?.user?.email ?? identity.responsibleUserId ?? "No responsible person"}</span>
+                        <span className="text-foreground">{person?.user?.name ?? person?.user?.email ?? identity.responsibleUserId ?? t("agentDetail.run.noResponsiblePerson")}</span>
                         {" · "}{identity.cause}{" · "}{identity.status}
                         {identity.github ? (
                           <span className="block">
@@ -3325,7 +3342,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
                             {identity.github.source ? `${identity.github.source} · ` : ""}
                             {identity.github.status}{identity.github.reason ? `: ${identity.github.reason}` : ""}
                           </span>
-                        ) : <span className="block">No GitHub operation recorded</span>}
+                        ) : <span className="block">{t("agentDetail.run.noGitHubOperation")}</span>}
                       </li>
                     );
                   })}
@@ -3334,17 +3351,17 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
             )}
             {cancelRun.error && (
               <div className="text-xs text-destructive" role="alert">
-                {cancelRun.error instanceof Error ? cancelRun.error.message : "Failed to stop run"}
+                {cancelRun.error instanceof Error ? cancelRun.error.message : t("agentDetail.run.failedToStop")}
               </div>
             )}
             {resumeRun.isError && ( // query-error-ok: mutation result, not a query
               <div className="text-xs text-destructive">
-                {resumeRun.error instanceof Error ? resumeRun.error.message : "Failed to resume run"}
+                {resumeRun.error instanceof Error ? resumeRun.error.message : t("agentDetail.run.failedToResume")}
               </div>
             )}
             {retryRun.isError && ( // query-error-ok: mutation result, not a query
               <div className="text-xs text-destructive">
-                {retryRun.error instanceof Error ? retryRun.error.message : "Failed to retry run"}
+                {retryRun.error instanceof Error ? retryRun.error.message : t("agentDetail.run.failedToRetry")}
               </div>
             )}
             {startTime && (
@@ -3360,7 +3377,11 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
                 </div>
                 {displayDurationSec !== null && (
                   <div className="text-xs text-muted-foreground">
-                    Duration: {displayDurationSec >= 60 ? `${Math.floor(displayDurationSec / 60)}m ${displayDurationSec % 60}s` : `${displayDurationSec}s`}
+                    {t("agentDetail.run.duration", {
+                      duration: displayDurationSec >= 60
+                        ? `${t("agentDetail.run.minutes", { count: Math.floor(displayDurationSec / 60) })} ${t("agentDetail.run.seconds", { count: displayDurationSec % 60 })}`
+                        : t("agentDetail.run.seconds", { count: displayDurationSec }),
+                    })}
                   </div>
                 )}
               </div>
@@ -3383,18 +3404,18 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
                   onClick={() => runClaudeLogin.mutate()}
                   disabled={runClaudeLogin.isPending}
                 >
-                  {runClaudeLogin.isPending ? "Running claude login..." : "Login to Claude Code"}
+                  {runClaudeLogin.isPending ? t("agentDetail.run.loginRunning") : t("agentDetail.run.loginToClaude")}
                 </Button>
                 {runClaudeLogin.isError && ( // query-error-ok: mutation result, not a query
                   <p className="text-xs text-destructive">
                     {runClaudeLogin.error instanceof Error
                       ? runClaudeLogin.error.message
-                      : "Failed to run Claude login"}
+                      : t("agentDetail.run.failedClaudeLogin")}
                   </p>
                 )}
                 {claudeLoginResult?.loginUrl && (
                   <p className="text-xs">
-                    Login URL:
+                    {t("agentDetail.run.loginUrl")}
                     <a
                       href={claudeLoginResult.loginUrl}
                       className="text-blue-600 underline underline-offset-2 ml-1 break-all dark:text-blue-400"
@@ -3429,8 +3450,8 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
             )}
             {hasNonZeroExit && (
               <div className="text-xs text-red-600 dark:text-red-400">
-                Exit code {run.exitCode}
-                {run.signal && <span className="text-muted-foreground ml-1">(signal: {run.signal})</span>}
+                {t("agentDetail.run.exitCode")} {run.exitCode}
+                {run.signal && <span className="text-muted-foreground ml-1">({t("agentDetail.run.signal")}: {run.signal})</span>}
               </div>
             )}
             <RunRetryDetails run={run} agentRouteId={agentRouteId} />
@@ -3447,20 +3468,20 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
               onClick={() => setSessionOpen((v) => !v)}
             >
               <ChevronRight className={cn("h-3 w-3 transition-transform", sessionOpen && "rotate-90")} />
-              Session
-              {sessionChanged && <span className="text-yellow-400 ml-1">(changed)</span>}
+              {t("agentDetail.run.session")}
+              {sessionChanged && <span className="text-yellow-400 ml-1">{t("agentDetail.run.sessionChanged")}</span>}
             </button>
             {sessionOpen && (
               <div className="px-4 pb-3 space-y-1 text-xs">
                 {run.sessionIdBefore && (
                   <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground w-12">{sessionChanged ? "Before" : "ID"}</span>
+                    <span className="text-muted-foreground w-12">{sessionChanged ? t("agentDetail.run.sessionBefore") : t("agentDetail.run.sessionId")}</span>
                     <CopyText text={run.sessionIdBefore} className="font-mono" />
                   </div>
                 )}
                 {sessionChanged && run.sessionIdAfter && (
                   <div className="flex items-center gap-2">
-                    <span className="text-muted-foreground w-12">After</span>
+                    <span className="text-muted-foreground w-12">{t("agentDetail.run.sessionAfter")}</span>
                     <CopyText text={run.sessionIdAfter} className="font-mono" />
                   </div>
                 )}
@@ -3473,21 +3494,21 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
                       onClick={() => {
                         const issueCount = touchedIssueIds.length;
                         const confirmed = window.confirm(
-                          `Clear session for ${issueCount} issue${issueCount === 1 ? "" : "s"} touched by this run?`,
+                          t("agentDetail.run.clearSessionConfirm", { count: issueCount, plural: issueCount === 1 ? "" : "s" }),
                         );
                         if (!confirmed) return;
                         clearSessionsForTouchedIssues.mutate();
                       }}
                     >
                       {clearSessionsForTouchedIssues.isPending
-                        ? "clearing session..."
-                        : "clear session for these tasks"}
+                        ? t("agentDetail.run.clearingSession")
+                        : t("agentDetail.run.clearSessionForTasks")}
                     </button>
                     {clearSessionsForTouchedIssues.isError && ( // query-error-ok: mutation result, not a query
                       <p className="text-(length:--text-micro) text-destructive mt-1">
                         {clearSessionsForTouchedIssues.error instanceof Error
                           ? clearSessionsForTouchedIssues.error.message
-                          : "Failed to clear sessions"}
+                          : t("agentDetail.run.failedToClearSessions")}
                       </p>
                     )}
                   </div>
@@ -3501,7 +3522,7 @@ function RunDetail({ run: initialRun, agentRouteId, adapterType, adapterConfig }
       {/* Issues touched by this run */}
       {touchedIssues && touchedIssues.length > 0 && (
         <div className="space-y-2">
-          <span className="text-xs font-medium text-muted-foreground">Tasks Touched ({touchedIssues.length})</span>
+          <span className="text-xs font-medium text-muted-foreground">{t("agentDetail.run.tasksTouched", { count: touchedIssues.length })}</span>
           <div className="border border-border rounded-lg divide-y divide-border">
             {touchedIssues.map((issue) => (
               <Link

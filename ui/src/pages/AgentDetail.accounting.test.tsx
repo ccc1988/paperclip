@@ -3,9 +3,10 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AgentActionButtons } from "../components/AgentActionButtons";
 import type { Agent, HeartbeatRun } from "@paperclipai/shared";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { RunAccountingMetrics } from "./AgentDetail";
 import { hasUnavailableProviderAccounting } from "../lib/utils";
+import { setLocale } from "../i18n";
 
 vi.mock("@/lib/router", () => ({ useNavigate: () => vi.fn() }));
 vi.mock("../context/DialogContext", () => ({ useDialogActions: () => ({ openNewIssue: vi.fn() }) }));
@@ -14,7 +15,20 @@ vi.mock("../context/ToastContext", () => ({ useToastActions: () => ({ pushToast:
 const unavailable = { providerAccounting: { usage: null, cost: null, externallyBilled: true } };
 const run = (usageJson: HeartbeatRun["usageJson"], resultJson: HeartbeatRun["resultJson"] = null) => ({ usageJson, resultJson } as HeartbeatRun);
 
+afterEach(async () => {
+  await setLocale("en");
+});
+
 describe("run accounting provenance", () => {
+  it("renders translated metric labels for the Chinese locale", async () => {
+    await setLocale("zh-CN");
+    const markup = renderToStaticMarkup(<RunAccountingMetrics run={run({ inputTokens: 120, outputTokens: 20, cachedInputTokens: 40, costUsd: 0.12 })} />);
+    expect(markup).toContain("输入");
+    expect(markup).toContain("输出");
+    expect(markup).toContain("缓存");
+    expect(markup).toContain("成本");
+  });
+
   it("renders persisted unavailable accounting without zero usage or zero dollars", () => {
     const markup = renderToStaticMarkup(<RunAccountingMetrics run={run({ inputTokens: 0, outputTokens: 0, costUsd: 0 }, unavailable)} />);
     expect(markup.match(/Unavailable/g)).toHaveLength(4);
