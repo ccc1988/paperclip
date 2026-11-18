@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/i18n";
 import {
   OnboardingCardField,
   OnboardingLoginCodeRow,
@@ -8,7 +9,6 @@ import {
 } from "@/components/AdapterLoginChrome";
 import {
   AI_PROVIDERS,
-  aiMethodLabel,
   type AiAuthMethod,
   type AiProvider,
 } from "./model";
@@ -50,6 +50,7 @@ function AuthAttempt({
   onDone,
 }: AiConnectionAuthProps) {
   const [value, setValue] = useState("");
+  const { t } = useTranslation();
   const info = AI_PROVIDERS[provider];
   const busy = state.phase === "starting" || state.phase === "submitting";
   const unsupported =
@@ -61,23 +62,30 @@ function AuthAttempt({
     setValue("");
     onSubmit(submitted);
   };
+  const methodLabel = method === "subscription"
+    ? provider === "openai" ? t("onboarding.connection.chatgptSubscription")
+      : provider === "anthropic" ? t("onboarding.connection.claudeSubscription")
+        : provider === "google" ? t("onboarding.connection.googleAntigravity")
+          : provider === "xai" ? t("onboarding.connection.grokSubscription")
+            : t("onboarding.connection.subscriptionUnavailable")
+    : provider === "github" ? t("onboarding.connection.personalToken") : t("onboarding.connection.apiKeyMethod");
   return (
     <section
-      aria-label={`Connect ${info.name}`}
+      aria-label={t("onboarding.connection.connectProvider", { provider: info.name })}
       className="flex flex-col gap-4"
     >
       <div className="flex flex-col gap-1">
-        <h3 className="text-sm font-semibold">Connect {info.name}</h3>
+        <h3 className="text-sm font-semibold">{t("onboarding.connection.connectProvider", { provider: info.name })}</h3>
         <p className="text-xs text-muted-foreground">
-          {aiMethodLabel(provider, method)}
+          {methodLabel}
         </p>
       </div>
       {state.phase === "connected" ? (
         <>
           <p role="status" className="text-sm">
-            Connected. This account is saved in Connections and can be reused.
+            {t("onboarding.connection.accountConnected")}
           </p>
-          <Button onClick={onDone}>Use connection</Button>
+          <Button onClick={onDone}>{t("onboarding.connection.useConnection")}</Button>
         </>
       ) : (
         <>
@@ -85,7 +93,7 @@ function AuthAttempt({
             <p role="status" className="text-sm text-muted-foreground">
               {state.phase === "unsupported"
                 ? state.message
-                : "This provider does not offer a subscription connection."}
+                : t("onboarding.connection.noSubscriptionConnection")}
             </p>
           ) : (
             <>
@@ -96,7 +104,7 @@ function AuthAttempt({
               )}
               {state.phase === "cancelled" && (
                 <p role="status" className="text-sm text-muted-foreground">
-                  Sign-in cancelled. No connection was created.
+                  {t("onboarding.connection.signInCancelled")}
                 </p>
               )}
               {method === "api_key" ? (
@@ -105,7 +113,7 @@ function AuthAttempt({
                   value={value}
                   onChange={setValue}
                   onSubmit={submit}
-                  placeholder="Enter API key here"
+                  placeholder={t("onboarding.connection.enterApiKey")}
                   disabled={busy}
                   autoFocus
                 />
@@ -143,7 +151,7 @@ function AuthAttempt({
                 </ProviderSubscriptionCard>
               ) : (
                 <p className="text-sm text-muted-foreground">
-                  Sign in with your {info.subscriptionName}.
+                  {t("onboarding.connection.signInWithSubscription", { subscription: methodLabel })}
                 </p>
               )}
             </>
@@ -156,30 +164,30 @@ function AuthAttempt({
                 onCancel();
               }}
             >
-              Cancel
+              {t("common.cancel")}
             </Button>
             {!unsupported &&
               (method === "api_key" ? (
                 <Button disabled={busy || !value.trim()} onClick={submit}>
-                  {busy ? "Connecting…" : "Connect"}
+                  {busy ? t("onboarding.connection.connecting") : t("onboarding.connection.connect")}
                 </Button>
               ) : state.phase === "waiting" ? (
                 provider === "anthropic" ? (
                   <Button disabled={!value.trim()} onClick={submit}>
-                    Submit code
+                    {t("onboarding.connection.submitCode")}
                   </Button>
                 ) : (
                   <span role="status" className="text-sm text-muted-foreground">
-                    Waiting for sign-in…
+                    {t("onboarding.connection.waitingSignIn")}
                   </span>
                 )
               ) : (
                 <Button disabled={busy} onClick={onStart}>
                   {busy
-                    ? "Preparing sign-in…"
+                    ? t("onboarding.connection.preparingSignIn")
                     : state.phase === "idle"
-                      ? "Sign in"
-                      : "Try again"}
+                      ? t("onboarding.connection.signIn")
+                      : t("onboarding.connection.tryAgain")}
                 </Button>
               ))}
           </div>
