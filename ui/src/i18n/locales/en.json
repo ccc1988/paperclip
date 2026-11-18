@@ -632,6 +632,50 @@
       "properties": "Properties"
     }
   },
+  "projectProperties": {
+    "labels": {
+      "name": "Name",
+      "description": "Description",
+      "visibility": "Visibility",
+      "decisionOwner": "Decision owner",
+      "env": "Env",
+      "updated": "Updated",
+      "targetDate": "Target Date",
+      "created": "Created",
+      "dangerZone": "Danger Zone"
+    },
+    "placeholders": {
+      "projectName": "Project name",
+      "description": "Add a description..."
+    },
+    "values": {
+      "noDescription": "No description",
+      "private": "Private",
+      "openToCompany": "Open to company",
+      "companyDefault": "Company default"
+    },
+    "visibility": {
+      "privateAria": "Private project",
+      "privateDescription": "Only access members can discover this project. Tasks shared directly remain readable on their own.",
+      "openDescription": "Everyone in the company can discover this project. Individually private tasks keep their own access rules."
+    },
+    "dialog": {
+      "openTitle": "Open this project to the company?",
+      "openDescription": "Everyone in the company will be able to discover this project. Its private tasks stay private. Members who only have access through this project will lose access to those tasks. Share tasks directly first if you want them to keep access.",
+      "keepPrivate": "Keep private",
+      "openToCompany": "Open to company"
+    },
+    "archive": {
+      "archiveDescription": "Archive this project to hide it from the sidebar and project selectors.",
+      "unarchiveDescription": "Unarchive this project to restore it in the sidebar and project selectors.",
+      "archiving": "Archiving...",
+      "unarchiving": "Unarchiving...",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "archiveProject": "Archive project",
+      "unarchiveProject": "Unarchive project"
+    }
+  },
   "connectionsPage": {
     "title": "Connections",
     "selectOrganization": "No organization selected. Select an organization from the switcher above.",

@@ -632,6 +632,50 @@
       "properties": "属性"
     }
   },
+  "projectProperties": {
+    "labels": {
+      "name": "名称",
+      "description": "描述",
+      "visibility": "可见性",
+      "decisionOwner": "决策负责人",
+      "env": "环境",
+      "updated": "更新时间",
+      "targetDate": "目标日期",
+      "created": "创建时间",
+      "dangerZone": "危险区域"
+    },
+    "placeholders": {
+      "projectName": "项目名称",
+      "description": "添加描述……"
+    },
+    "values": {
+      "noDescription": "暂无描述",
+      "private": "私有",
+      "openToCompany": "对组织公开",
+      "companyDefault": "组织默认"
+    },
+    "visibility": {
+      "privateAria": "私有项目",
+      "privateDescription": "只有有权访问的成员才能发现此项目。直接分享的任务仍可单独查看。",
+      "openDescription": "组织中的所有人都可以发现此项目。单独设为私有的任务仍按各自权限规则执行。"
+    },
+    "dialog": {
+      "openTitle": "要向组织公开此项目吗？",
+      "openDescription": "组织中的所有人都可以发现此项目，但其中的私有任务仍保持私有。仅通过此项目获得访问权限的成员将失去这些任务的访问权；如需保留访问权，请先直接分享任务。",
+      "keepPrivate": "保持私有",
+      "openToCompany": "向组织公开"
+    },
+    "archive": {
+      "archiveDescription": "归档项目后，它会从侧栏和项目选择器中隐藏。",
+      "unarchiveDescription": "取消归档后，项目会重新出现在侧栏和项目选择器中。",
+      "archiving": "正在归档……",
+      "unarchiving": "正在取消归档……",
+      "confirm": "确认",
+      "cancel": "取消",
+      "archiveProject": "归档项目",
+      "unarchiveProject": "取消归档项目"
+    }
+  },
   "connectionsPage": {
     "title": "连接",
     "selectOrganization": "未选择组织，请从上方切换器选择组织。",
