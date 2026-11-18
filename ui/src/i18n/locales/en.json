@@ -793,6 +793,23 @@
       "sharedConcurrency": "Shared workspace concurrency"
     }
   },
+  "appsConnect": {
+    "checkingSavedComposio": "Checking saved Composio accounts…",
+    "loadComposioAccounts": "load your Composio accounts",
+    "cancel": "Cancel",
+    "loadingSavedSignin": "Loading saved sign-in…",
+    "signinUnavailable": "This sign-in is unavailable.",
+    "accountConnected": "This account is connected.",
+    "viewConnection": "View connection",
+    "loadingConnection": "Loading connection…",
+    "connectionLoadFailed": "Could not load this connection. Refresh to try again.",
+    "connectionUnavailable": "This connection is unavailable. Return to Connectors to choose an account.",
+    "loadingConnector": "Loading connector…",
+    "loadConnector": "load the connector",
+    "poolPluginUnavailable": "This connection pool plugin is unavailable. Enable it in Plugins.",
+    "connectorUnavailable": "This connector is unavailable. Ask an instance admin to enable its plugin.",
+    "backToConnectors": "Back to Connectors"
+  },
   "connectionIntent": {
     "status": {
       "accessGranted": "{{service}} access granted",

@@ -793,6 +793,23 @@
       "sharedConcurrency": "共享工作区并发方式"
     }
   },
+  "appsConnect": {
+    "checkingSavedComposio": "正在检查已保存的 Composio 账户……",
+    "loadComposioAccounts": "加载您的 Composio 账户",
+    "cancel": "取消",
+    "loadingSavedSignin": "正在加载已保存的登录……",
+    "signinUnavailable": "此登录不可用。",
+    "accountConnected": "此账户已连接。",
+    "viewConnection": "查看连接",
+    "loadingConnection": "正在加载连接……",
+    "connectionLoadFailed": "无法加载此连接，请刷新后重试。",
+    "connectionUnavailable": "此连接不可用，请返回连接器选择账户。",
+    "loadingConnector": "正在加载连接器……",
+    "loadConnector": "加载连接器",
+    "poolPluginUnavailable": "此连接池插件不可用，请在插件设置中启用。",
+    "connectorUnavailable": "此连接器不可用，请联系实例管理员启用对应插件。",
+    "backToConnectors": "返回连接器"
+  },
   "connectionIntent": {
     "status": {
       "accessGranted": "已授予 {{service}} 访问权限",
