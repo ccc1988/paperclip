@@ -131,7 +131,16 @@
     },
     "run": {
       "live": "正在运行",
-      "latest": "最近一次运行"
+      "latest": "最近一次运行",
+      "loading": "正在加载运行……",
+      "unavailable": "此智能体无法使用该运行。",
+      "tryAgain": "重试",
+      "none": "暂无运行。",
+      "backToRuns": "返回运行列表",
+      "resume": "恢复",
+      "resuming": "正在恢复……",
+      "retry": "重试",
+      "retrying": "正在重试……"
     },
     "messages": {
       "pendingApproval": "此 Agent 正在等待董事会审批，暂时无法调用。",

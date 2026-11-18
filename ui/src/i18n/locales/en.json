@@ -131,7 +131,16 @@
     },
     "run": {
       "live": "Live Run",
-      "latest": "Latest Run"
+      "latest": "Latest Run",
+      "loading": "Loading run…",
+      "unavailable": "This run is unavailable for this agent.",
+      "tryAgain": "Try again",
+      "none": "No runs yet.",
+      "backToRuns": "Back to runs",
+      "resume": "Resume",
+      "resuming": "Resuming…",
+      "retry": "Retry",
+      "retrying": "Retrying…"
     },
     "messages": {
       "pendingApproval": "This agent is pending board approval and cannot be invoked yet.",
