@@ -1360,6 +1360,25 @@
     "saving": "Saving…",
     "save": "Save workspace"
   },
+  "jsonSchema": {
+    "advancedOptions": "Advanced options",
+    "moreOptions": "More options",
+    "selectOption": "Select an option",
+    "none": "None",
+    "hideSecret": "Hide secret",
+    "showSecret": "Show secret",
+    "secretDescription": "Pick an existing organization secret, or paste a raw value (Paperclip will store it as a secret on save).",
+    "selectExistingSecret": "Select an existing secret",
+    "noActiveSecrets": "No active secrets yet. Create one or paste a raw value below.",
+    "hideRawValue": "Hide raw value input",
+    "pasteRawValue": "Or paste a raw value",
+    "addItem": "Add item",
+    "add": "Add",
+    "item": "Item {{index}}",
+    "removeItem": "Remove item",
+    "noItems": "No items added yet.",
+    "jsonObjectHelp": "Enter a JSON object using the action's argument names."
+  },
   "machineSignIn": {
     "paperclipKeyRecommended": "Paperclip key (recommended)",
     "paperclipKeyHint": "Paperclip creates a key and keeps its private half. You register the public key with the provider; nothing secret is copied.",

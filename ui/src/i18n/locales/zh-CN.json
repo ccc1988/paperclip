@@ -1360,6 +1360,25 @@
     "saving": "正在保存……",
     "save": "保存工作区"
   },
+  "jsonSchema": {
+    "advancedOptions": "高级选项",
+    "moreOptions": "更多选项",
+    "selectOption": "选择选项",
+    "none": "无",
+    "hideSecret": "隐藏密钥",
+    "showSecret": "显示密钥",
+    "secretDescription": "选择已有的组织密钥，或粘贴原始值（保存时 Paperclip 会将其保存为密钥）。",
+    "selectExistingSecret": "选择已有密钥",
+    "noActiveSecrets": "暂无可用密钥。请创建一个，或在下方粘贴原始值。",
+    "hideRawValue": "隐藏原始值输入框",
+    "pasteRawValue": "或粘贴原始值",
+    "addItem": "添加项目",
+    "add": "添加",
+    "item": "项目 {{index}}",
+    "removeItem": "移除项目",
+    "noItems": "尚未添加项目。",
+    "jsonObjectHelp": "请输入使用操作参数名称的 JSON 对象。"
+  },
   "machineSignIn": {
     "paperclipKeyRecommended": "Paperclip 密钥（推荐）",
     "paperclipKeyHint": "Paperclip 会创建密钥并保管私钥部分。你只需将公钥注册到提供方，不会复制任何秘密信息。",
