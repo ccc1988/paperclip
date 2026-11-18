@@ -178,7 +178,35 @@
   },
   "connectionsPage": {
     "title": "连接",
-    "selectOrganization": "未选择组织，请从上方切换器选择组织。"
+    "selectOrganization": "未选择组织，请从上方切换器选择组织。",
+    "decision": {
+      "title": "决策模型",
+      "usage": "查看用量",
+      "description": "选择 Paperclip 用于可选决策功能的共享连接。API 用量会计入此连接。",
+      "addChoice": "添加共享的 OpenAI 或 OpenRouter API 连接以开始使用。",
+      "unavailable": "您无法使用已保存的连接。请停用决策功能或选择其他连接。",
+      "addConnection": "添加连接",
+      "manageConnection": "管理连接",
+      "reconnectConnection": "重新连接",
+      "enable": "启用决策",
+      "allowBackground": "允许公司赞助的后台决策",
+      "backgroundDescription": "后台功能可以在没有负责人参与时使用此连接并产生费用。这些请求会显示为 Paperclip 服务。",
+      "working": "决策模型运行正常",
+      "billing": "账单问题",
+      "team": "分配团队",
+      "disruption": "中断评分",
+      "usageRecorded": "用量已记录，测试答案不会保存。",
+      "running": "正在运行测试…",
+      "runTest": "运行测试",
+      "saveBefore": "测试前请先保存更改。",
+      "sample": "运行一个小样本测试，会产生 API 费用。",
+      "saving": "正在保存…",
+      "save": "保存决策模型",
+      "loading": "正在加载决策模型",
+      "loadError": "加载决策设置",
+      "dialogTitle": "添加决策连接",
+      "dialogDescription": "使用共享 API 连接处理组织决策。"
+    }
   },
   "taskViews": {
     "groups": {

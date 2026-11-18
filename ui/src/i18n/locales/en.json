@@ -178,7 +178,35 @@
   },
   "connectionsPage": {
     "title": "Connections",
-    "selectOrganization": "No organization selected. Select an organization from the switcher above."
+    "selectOrganization": "No organization selected. Select an organization from the switcher above.",
+    "decision": {
+      "title": "Decision model",
+      "usage": "View usage",
+      "description": "Choose the shared connection Paperclip uses for optional decision features. API usage is charged to this connection.",
+      "addChoice": "Add a shared OpenAI or OpenRouter API connection to get started.",
+      "unavailable": "The saved connection is unavailable to you. Disable decisions or choose another connection.",
+      "addConnection": "Add connection",
+      "manageConnection": "Manage connection",
+      "reconnectConnection": "Reconnect connection",
+      "enable": "Enable decisions",
+      "allowBackground": "Allow company-sponsored background decisions",
+      "backgroundDescription": "Background features can charge this connection without a responsible person. These requests appear as Paperclip services.",
+      "working": "Decision model is working",
+      "billing": "Billing problem",
+      "team": "Assigned team",
+      "disruption": "Disruption score",
+      "usageRecorded": "Usage was recorded. Test answers are not saved.",
+      "running": "Running test…",
+      "runTest": "Run test",
+      "saveBefore": "Save changes before testing.",
+      "sample": "Runs a small sample with an API charge.",
+      "saving": "Saving…",
+      "save": "Save decision model",
+      "loading": "Loading decision model",
+      "loadError": "load decision settings",
+      "dialogTitle": "Add a decision connection",
+      "dialogDescription": "Use a shared API connection for company decisions."
+    }
   },
   "taskViews": {
     "groups": {
