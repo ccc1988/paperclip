@@ -952,8 +952,44 @@
       "signInWith": "使用 {{app}} 登录",
       "useApiKey": "使用 API 密钥",
       "chooseMethod": "请选择连接方式后继续。",
+      "reviewRequirements": "查看要求",
+      "asanaDescription": "使用 Asana 登录，选择工作区并将其连接到 Paperclip。",
+      "vercelConnectorTitle": "在 Vercel 中创建或关联连接器",
+      "vercelConnectorDescription": "Paperclip 不会复制 Vercel 的设置表单。请先在那里完成连接器设置，再在下方粘贴其 UID。",
+      "connectorUid": "连接器 UID 或 ID",
+      "connectorValidationDescription": "Paperclip 会验证连接器，只保存其引用和经过脱敏的验证元数据。",
+      "whereToFind": "在哪里找到？",
+      "validateContinue": "验证并继续",
+      "validateConnect": "验证并连接",
+      "continueToGitHub": "继续前往 GitHub",
+      "continueToSignIn": "继续登录",
       "checking": "正在检查……",
       "connect": "连接"
+    },
+    "copy": {
+      "copied": "已复制",
+      "failed": "复制失败",
+      "copy": "复制"
+    },
+    "oauthClient": {
+      "yourOAuthApp": "你的 OAuth 应用",
+      "needsOwnApp": "{{app}} 需要使用自己的 OAuth 应用",
+      "useOwnApp": "使用自己的 OAuth 应用",
+      "requiredDescription": "{{app}} 不允许 Paperclip 自动注册，因此此连接器需要你创建 OAuth 应用。请先在 {{app}} 中添加下方回调地址，再将客户端详情粘贴回这里。",
+      "optionalDescription": "请在 {{app}} 中注册 Paperclip 回调地址，然后输入你自己的客户端详情。",
+      "openAppSettings": "打开 {{app}} 应用设置",
+      "callbackUrl": "Paperclip 回调地址",
+      "copyCallbackUrl": "复制回调地址",
+      "callbackDescription": "继续前，请将此完整地址添加到 {{app}}。它必须与授权请求完全匹配。",
+      "clientId": "客户端 ID",
+      "clientSecret": "客户端密钥",
+      "required": "必填",
+      "optional": "可选",
+      "optionalPublic": "公开客户端可选"
+    },
+    "config": {
+      "selectOption": "请选择一个选项",
+      "required": "{{field}}为必填项。"
     },
     "googleSheets": {
       "shareWithEmail": "使用此邮箱共享每个表格",

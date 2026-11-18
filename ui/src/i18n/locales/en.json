@@ -952,8 +952,44 @@
       "signInWith": "Sign in with {{app}}",
       "useApiKey": "Use an API key",
       "chooseMethod": "Choose a connection method to continue.",
+      "reviewRequirements": "Review requirements",
+      "asanaDescription": "Sign in with Asana to choose your workspace and connect it to Paperclip.",
+      "vercelConnectorTitle": "Create or attach the connector in Vercel",
+      "vercelConnectorDescription": "Paperclip does not copy Vercel’s setup forms. Finish connector setup there, then paste its UID below.",
+      "connectorUid": "Connector UID or ID",
+      "connectorValidationDescription": "Paperclip validates the connector and stores only its reference and redacted verification metadata.",
+      "whereToFind": "Where do I find this?",
+      "validateContinue": "Validate and continue",
+      "validateConnect": "Validate and connect",
+      "continueToGitHub": "Continue to GitHub",
+      "continueToSignIn": "Continue to sign in",
       "checking": "Checking…",
       "connect": "Connect"
+    },
+    "copy": {
+      "copied": "Copied",
+      "failed": "Copy failed",
+      "copy": "Copy"
+    },
+    "oauthClient": {
+      "yourOAuthApp": "Your OAuth app",
+      "needsOwnApp": "{{app}} needs its own OAuth app",
+      "useOwnApp": "Use your own OAuth app",
+      "requiredDescription": "{{app}} does not let Paperclip register itself automatically, so this connector needs an OAuth app you create. Add the callback URL below in {{app}}, then paste the client details back here.",
+      "optionalDescription": "Register Paperclip’s callback URI in {{app}}, then enter the customer-owned client details.",
+      "openAppSettings": "Open {{app}} app settings",
+      "callbackUrl": "Paperclip callback URL",
+      "copyCallbackUrl": "Copy callback URL",
+      "callbackDescription": "Add this exact URL to {{app}} before continuing. It must match the authorization request.",
+      "clientId": "Client ID",
+      "clientSecret": "Client secret",
+      "required": "Required",
+      "optional": "Optional",
+      "optionalPublic": "Optional for public clients"
+    },
+    "config": {
+      "selectOption": "Select an option",
+      "required": "{{field}} is required."
     },
     "googleSheets": {
       "shareWithEmail": "Share each sheet with this email",
