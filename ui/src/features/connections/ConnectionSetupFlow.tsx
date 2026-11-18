@@ -4355,22 +4355,22 @@ export function connectionDefaultSummarySentence(input: {
   preserveAgentAccess?: boolean;
 }): string {
   const identity = input.authKind === "none"
-    ? "No sign-in needed"
+    ? t("connectionSetup.summary.noSignInNeeded")
     : input.grantKind === "user"
-      ? "Connects as you"
+      ? t("connectionSetup.summary.connectsAsYou")
       : input.grantKind === "agent"
-        ? "Connects as a dedicated agent account"
-        : "Connects for everyone in your organization";
+        ? t("connectionSetup.summary.connectsAsDedicatedAgent")
+        : t("connectionSetup.summary.connectsForOrganization");
   const reach = input.preserveAgentAccess
-    ? "agent access stays as it is"
+    ? t("connectionSetup.summary.agentAccessUnchanged")
     : input.lockedAgentId
-      ? "available to the agent that asked for it"
+      ? t("connectionSetup.summary.availableToRequestingAgent")
       : input.installChoice === "all"
-        ? "available to all agents"
+        ? t("connectionSetup.summary.availableToAllAgents")
         : input.installCount === 0
-          ? "no agents selected yet"
-          : `available to ${input.installCount} selected ${input.installCount === 1 ? "agent" : "agents"}`;
-  return `${identity}, ${reach}.`;
+          ? t("connectionSetup.summary.noAgentsSelected")
+          : t(input.installCount === 1 ? "connectionSetup.summary.availableToSelectedOne" : "connectionSetup.summary.availableToSelectedMany", { count: input.installCount });
+  return t("connectionSetup.summary.identityReach", { identity, reach });
 }
 
 /**
@@ -4421,7 +4421,7 @@ export function ConnectionAccessDefaults({
           className="h-auto p-0 text-xs font-semibold underline underline-offset-2"
           disabled={disabled}
         >
-          Change
+          {t("connectionSetup.change")}
         </Button></CollapsibleTrigger>
       </div>
       {(notice ?? []).map((reason) => (
@@ -4460,21 +4460,21 @@ export function accessSummaryLines(input: {
   enabledCount: number;
 }): Array<{ label: string; value: string }> {
   const identity = input.authKind === "none"
-    ? "No identity required"
+    ? t("connectionSetup.summary.noIdentityRequired")
     : input.grantKind === "user"
-      ? "Your identity"
+      ? t("connectionSetup.summary.yourIdentity")
       : input.grantKind === "agent"
-        ? "Dedicated agent identity"
-      : "Organization identity";
+        ? t("connectionSetup.summary.dedicatedAgentIdentity")
+      : t("connectionSetup.summary.organizationIdentity");
   const availableTo = input.installChoice === "all"
-    ? "Any agent"
-    : `${input.installCount} selected ${input.installCount === 1 ? "agent" : "agents"}`;
+    ? t("connectionSetup.summary.anyAgent")
+    : t(input.installCount === 1 ? "connectionSetup.summary.selectedOne" : "connectionSetup.summary.selectedMany", { count: input.installCount });
   return [
-    { label: "Identity", value: identity },
-    { label: "Available to", value: availableTo },
+    { label: t("connectionSetup.summary.identityLabel"), value: identity },
+    { label: t("connectionSetup.summary.availableToLabel"), value: availableTo },
     {
-      label: "Actions",
-      value: `${input.enabledCount} ${input.enabledCount === 1 ? "action" : "actions"} on`,
+      label: t("connectionSetup.summary.actionsLabel"),
+      value: t(input.enabledCount === 1 ? "connectionSetup.summary.actionsOne" : "connectionSetup.summary.actionsMany", { count: input.enabledCount }),
     },
   ];
 }
@@ -4519,7 +4519,7 @@ export function ConnectionSetupCompletionScreen({
       </div>
       <div className="mt-6 flex items-center justify-center gap-2">
         <AppLogo name={appName} logoUrl={logoUrl} darkLogoUrl={darkLogoUrl} size={28} />
-        <h2 className="text-2xl font-bold tracking-tight">{appName} is ready.</h2>
+        <h2 className="text-2xl font-bold tracking-tight">{t("connectionSetup.completion.ready", { app: appName })}</h2>
       </div>
       {statedDefault ? <p className="mt-3 text-sm text-muted-foreground">{statedDefault}</p> : null}
       <dl className="mx-auto mt-6 max-w-xs space-y-1 text-left">
@@ -4532,7 +4532,7 @@ export function ConnectionSetupCompletionScreen({
       </dl>
       <div className="mt-8">
         <Button size="lg" className="px-10" onClick={onDone}>
-          View connection
+          {t("connectionSetup.completion.viewConnection")}
         </Button>
       </div>
     </div>

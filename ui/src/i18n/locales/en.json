@@ -1001,6 +1001,36 @@
       "taskOnlyRequestingAgent": "This task grants access only to the agent that asked for it.",
       "includeRequestingAgentNotice": "Include the requesting agent when choosing specific agents."
     },
+    "change": "Change",
+    "summary": {
+      "noSignInNeeded": "No sign-in needed",
+      "connectsAsYou": "Connects as you",
+      "connectsAsDedicatedAgent": "Connects as a dedicated agent account",
+      "connectsForOrganization": "Connects for everyone in your organization",
+      "agentAccessUnchanged": "agent access stays as it is",
+      "availableToRequestingAgent": "available to the agent that asked for it",
+      "availableToAllAgents": "available to all agents",
+      "noAgentsSelected": "no agents selected yet",
+      "availableToSelectedOne": "available to {{count}} selected agent",
+      "availableToSelectedMany": "available to {{count}} selected agents",
+      "identityReach": "{{identity}}, {{reach}}.",
+      "noIdentityRequired": "No identity required",
+      "yourIdentity": "Your identity",
+      "dedicatedAgentIdentity": "Dedicated agent identity",
+      "organizationIdentity": "Organization identity",
+      "anyAgent": "Any agent",
+      "selectedOne": "{{count}} selected agent",
+      "selectedMany": "{{count}} selected agents",
+      "identityLabel": "Identity",
+      "availableToLabel": "Available to",
+      "actionsLabel": "Actions",
+      "actionsOne": "{{count}} action on",
+      "actionsMany": "{{count}} actions on"
+    },
+    "completion": {
+      "ready": "{{app}} is ready.",
+      "viewConnection": "View connection"
+    },
     "googleSheets": {
       "shareWithEmail": "Share each sheet with this email",
       "copySharingEmail": "Copy sharing email",

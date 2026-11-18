@@ -1001,6 +1001,36 @@
       "taskOnlyRequestingAgent": "此任务只会向发起请求的 Agent 授予访问权限。",
       "includeRequestingAgentNotice": "选择指定 Agent 时，请包含发起请求的 Agent。"
     },
+    "change": "修改",
+    "summary": {
+      "noSignInNeeded": "无需登录",
+      "connectsAsYou": "将以你的身份连接",
+      "connectsAsDedicatedAgent": "将以 Agent 专用账户连接",
+      "connectsForOrganization": "将为组织中的所有人员连接",
+      "agentAccessUnchanged": "Agent 访问权限保持不变",
+      "availableToRequestingAgent": "仅发起请求的 Agent 可使用",
+      "availableToAllAgents": "所有 Agent 均可使用",
+      "noAgentsSelected": "尚未选择 Agent",
+      "availableToSelectedOne": "{{count}} 个已选 Agent 可使用",
+      "availableToSelectedMany": "{{count}} 个已选 Agent 可使用",
+      "identityReach": "{{identity}}，{{reach}}。",
+      "noIdentityRequired": "无需选择身份",
+      "yourIdentity": "你的身份",
+      "dedicatedAgentIdentity": "Agent 专用身份",
+      "organizationIdentity": "组织身份",
+      "anyAgent": "任何 Agent",
+      "selectedOne": "{{count}} 个已选 Agent",
+      "selectedMany": "{{count}} 个已选 Agent",
+      "identityLabel": "身份",
+      "availableToLabel": "可用范围",
+      "actionsLabel": "操作",
+      "actionsOne": "已开启 {{count}} 项操作",
+      "actionsMany": "已开启 {{count}} 项操作"
+    },
+    "completion": {
+      "ready": "{{app}} 已准备就绪。",
+      "viewConnection": "查看连接"
+    },
     "googleSheets": {
       "shareWithEmail": "使用此邮箱共享每个表格",
       "copySharingEmail": "复制共享邮箱",
