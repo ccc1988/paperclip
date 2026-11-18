@@ -991,6 +991,16 @@
       "selectOption": "请选择一个选项",
       "required": "{{field}}为必填项。"
     },
+    "errors": {
+      "includeRequestingAgent": "请包含发起请求的 Agent，或选择所有 Agent 后继续此任务。",
+      "authorizationExpired": "授权已过期或被撤销，请重新连接后继续。",
+      "couldNotConnectTitle": "无法连接",
+      "existingConnectionCheckFailed": "Paperclip 无法检查是否存在可复用的连接，请重试。",
+      "organizationShareUnavailable": "只有连接管理员可以将此凭据共享给组织。",
+      "allAgentAccessUnavailable": "只有能够配置此连接的人员才能让所有 Agent 使用它。",
+      "taskOnlyRequestingAgent": "此任务只会向发起请求的 Agent 授予访问权限。",
+      "includeRequestingAgentNotice": "选择指定 Agent 时，请包含发起请求的 Agent。"
+    },
     "googleSheets": {
       "shareWithEmail": "使用此邮箱共享每个表格",
       "copySharingEmail": "复制共享邮箱",

@@ -991,6 +991,16 @@
       "selectOption": "Select an option",
       "required": "{{field}} is required."
     },
+    "errors": {
+      "includeRequestingAgent": "Include the requesting agent or choose all agents to continue this task.",
+      "authorizationExpired": "Your authorization expired or was revoked. Reconnect to continue.",
+      "couldNotConnectTitle": "Couldn’t connect",
+      "existingConnectionCheckFailed": "Paperclip couldn’t check for an existing connection. Try again.",
+      "organizationShareUnavailable": "Only a connection manager can share this credential with the organization.",
+      "allAgentAccessUnavailable": "Only someone who can configure this connection can give every agent access.",
+      "taskOnlyRequestingAgent": "This task grants access only to the agent that asked for it.",
+      "includeRequestingAgentNotice": "Include the requesting agent when choosing specific agents."
+    },
     "googleSheets": {
       "shareWithEmail": "Share each sheet with this email",
       "copySharingEmail": "Copy sharing email",

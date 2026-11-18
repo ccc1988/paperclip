@@ -1393,7 +1393,7 @@ function StandardConnectionSetupFlow({
       // Leave the durable selection untouched instead of saving form defaults.
       if (connectionIntentId && !aiConnection && !resumeConnectionId && !reconnectConnection && !resumableOAuthConnection) {
         if (requiredAgentId && installChoice !== "all" && !installAgentIds.has(requiredAgentId)) {
-          throw new Error("Include the requesting agent or choose all agents to continue this task.");
+          throw new Error(t("connectionSetup.errors.includeRequestingAgent"));
         }
         await connectionIntentsApi.setPhase(connectionIntentId, "authorizing", {
           connectionId: connection.id,
@@ -1425,7 +1425,7 @@ function StandardConnectionSetupFlow({
       onPhaseChange?.("needs_retry");
       setOAuthError(
         details?.code === "invalid_grant"
-          ? "Your authorization expired or was revoked. Reconnect to continue."
+          ? t("connectionSetup.errors.authorizationExpired")
           : describeError(error).body,
       );
     },
@@ -1482,7 +1482,7 @@ function StandardConnectionSetupFlow({
     mutationFn: async (entryOverride?: AppDefinition) => {
       if (requiredAgentId && !resumeConnectionId && !reconnectConnectionId
         && installChoice !== "all" && !installAgentIds.has(requiredAgentId)) {
-        throw new Error("Include the requesting agent or choose all agents to continue this task.");
+        throw new Error(t("connectionSetup.errors.includeRequestingAgent"));
       }
       const connectEntry = entryOverride ?? entry;
       let result: ConnectToolAppResult;
@@ -1618,7 +1618,7 @@ function StandardConnectionSetupFlow({
         onPhaseChange?.("needs_retry");
         setOAuthError(
           details?.code === "invalid_grant"
-            ? "Your authorization expired or was revoked. Reconnect to continue."
+            ? t("connectionSetup.errors.authorizationExpired")
             : describeError(error).body,
         );
         return;
@@ -1640,7 +1640,7 @@ function StandardConnectionSetupFlow({
         return;
       }
       pushToast({
-        title: "Couldn’t connect",
+        title: t("connectionSetup.errors.couldNotConnectTitle"),
         body: describeError(error).body,
         tone: "error",
       });
@@ -1815,7 +1815,7 @@ function StandardConnectionSetupFlow({
     if (automaticOAuth && directOAuthRetryingRef.current) return;
     if (automaticOAuth && (applicationsView.kind === "error" || connectionsView.kind === "error")) {
       setOAuthPhase("error");
-      setOAuthError("Paperclip couldn’t check for an existing connection. Try again.");
+      setOAuthError(t("connectionSetup.errors.existingConnectionCheckFailed"));
       setStep("key");
       return;
     }
@@ -1952,7 +1952,7 @@ function StandardConnectionSetupFlow({
         (catalogEntryId) => Boolean(enabledMap[catalogEntryId]),
       );
       if (requiredAgentId && installChoice !== "all" && !installAgentIds.has(requiredAgentId)) {
-        throw new Error("Include the requesting agent or choose all agents to continue this task.");
+        throw new Error(t("connectionSetup.errors.includeRequestingAgent"));
       }
       // The Access step asks one question about agent reach, so profile access
       // and installs are committed to the same target set instead of drifting
@@ -2240,14 +2240,14 @@ function StandardConnectionSetupFlow({
       notice={[
         galleryQuery.data?.capabilities?.canCreateOrganizationGrant === false
           ? galleryQuery.data.capabilities.organizationGrantReason
-            ?? "Only a connection manager can share this credential with the organization."
+            ?? t("connectionSetup.errors.organizationShareUnavailable")
           : null,
         galleryQuery.data?.capabilities?.canSetCompanyInstall === false
           ? galleryQuery.data.capabilities.companyInstallReason
-            ?? "Only someone who can configure this connection can give every agent access."
+            ?? t("connectionSetup.errors.allAgentAccessUnavailable")
           : null,
-        requestedAgentId ? "This task grants access only to the agent that asked for it." : null,
-        requiredAgentId ? "Include the requesting agent when choosing specific agents." : null,
+        requestedAgentId ? t("connectionSetup.errors.taskOnlyRequestingAgent") : null,
+        requiredAgentId ? t("connectionSetup.errors.includeRequestingAgentNotice") : null,
       ].filter((reason): reason is string => Boolean(reason))}
       authKind={accessStepAuthKind}
       grantKinds={fixedGrantKind ? [fixedGrantKind] : accessStepMethod?.grantKinds}
@@ -2428,7 +2428,7 @@ function StandardConnectionSetupFlow({
             oauthPopupRef.current?.close();
             oauthPopupRef.current = null;
             setOAuthPhase("error");
-            setOAuthError("Paperclip couldn’t check for an existing connection. Try again.");
+            setOAuthError(t("connectionSetup.errors.existingConnectionCheckFailed"));
           } finally {
             if (pendingOAuthLookupRef.current === lookup) {
               if (!isCurrentLookup()) {
