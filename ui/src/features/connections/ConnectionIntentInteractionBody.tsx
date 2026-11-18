@@ -39,6 +39,7 @@ import { DecisionCardFooter } from "@/components/DecisionCardFooter";
 import { NeedsYouPanel, NeedsYouPanelNote, NeedsYouPanelRow } from "@/components/coordinator/NeedsYouCardKit";
 import { ANALYTICS_MASK_CLASS } from "@/lib/analytics/privacy";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 export interface ConnectionIntentInteractionBodyProps {
   footerSlot?: ReactNode;
@@ -63,6 +64,7 @@ export function ConnectionIntentInteractionBody({
   addresseeName,
   renderSetup,
 }: ConnectionIntentInteractionBodyProps) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const [adoptionConnectionId, setAdoptionConnectionId] = useState<string | null>(null);
   const focusTargetRef = useRef<HTMLDivElement>(null);
@@ -275,35 +277,35 @@ export function ConnectionIntentInteractionBody({
     interaction.status === "accepted"
       ? {
           icon: CheckCircle2,
-          title: accessRequest ? `${serviceName} access granted` : interaction.payload.upstreamService ? "External provider connected" : `${serviceName} connected`,
-          body: accessRequest ? null : interaction.payload.upstreamService ? `${interaction.payload.requestingAgentName} can now verify and authorize ${interaction.payload.upstreamService.name} through this provider. The app is not yet verified.` : isAi ? "This agent can now use the connection." : `${interaction.payload.requestingAgentName} can use this connection on the continuation run.`,
+          title: accessRequest ? t("connectionIntent.status.accessGranted", { service: serviceName }) : interaction.payload.upstreamService ? t("connectionIntent.status.externalProviderConnected") : t("connectionIntent.status.connected", { service: serviceName }),
+          body: accessRequest ? null : interaction.payload.upstreamService ? t("connectionIntent.status.externalProviderBody", { agent: interaction.payload.requestingAgentName, provider: interaction.payload.upstreamService.name }) : isAi ? t("connectionIntent.status.agentCanUse") : t("connectionIntent.status.agentCanUseContinuation", { agent: interaction.payload.requestingAgentName }),
         }
       : interaction.status === "cancelled"
         ? {
             icon: XCircle,
-            title: "Connection request withdrawn",
-            body: "This request is no longer active.",
+            title: t("connectionIntent.status.requestWithdrawn"),
+            body: t("connectionIntent.status.requestNoLongerActive"),
           }
       : interaction.status === "rejected"
         ? {
             icon: XCircle,
-            title: accessRequest ? "Access declined" : "Connection declined",
-            body: accessRequest ? null : isAi ? "The task still needs a working AI connection before it can run." : `${interaction.payload.requestingAgentName} was notified and can continue without it.`,
+            title: accessRequest ? t("connectionIntent.status.accessDeclined") : t("connectionIntent.status.connectionDeclined"),
+            body: accessRequest ? null : isAi ? t("connectionIntent.status.taskNeedsConnection") : t("connectionIntent.status.agentNotifiedContinue", { agent: interaction.payload.requestingAgentName }),
           }
         : interaction.status === "expired"
           ? {
               icon: Clock,
               title:
                 resultOutcome === "superseded"
-                  ? "Request superseded"
-                  : "Connection request expired",
+                  ? t("connectionIntent.status.requestSuperseded")
+                  : t("connectionIntent.status.requestExpired"),
               body:
                 resultOutcome === "superseded"
-                  ? "This request was replaced. Use the latest connection card instead."
+                  ? t("connectionIntent.status.requestReplaced")
                   : // The server stores the reason an expiry happened and what to
                     // do next; without it the card only says the request is gone.
                     interaction.result?.reason?.trim()
-                    || "This request is no longer active.",
+                    || t("connectionIntent.status.requestNoLongerActive"),
             }
           : null;
   const StatusIcon = status?.icon;
@@ -346,11 +348,10 @@ export function ConnectionIntentInteractionBody({
           <Clock className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
           <div>
             <p className="font-medium text-foreground">
-              Waiting for {addresseeLabel}
+              {t("connectionIntent.waitingFor", { addressee: addresseeLabel })}
             </p>
             {!accessRequest ? <p className="mt-1 text-sm text-muted-foreground">
-              Only the addressed person can choose an identity or authorize this
-              connection.
+              {t("connectionIntent.onlyAddressee")}
             </p> : null}
           </div>
         </div>
@@ -371,23 +372,23 @@ export function ConnectionIntentInteractionBody({
           {artifactRow}
           <NeedsYouPanelRow icon={serviceLogo} title={`${interaction.payload.serviceName} · ${accessRequest.connectionName}`}
             meta={`${accessRequest.tools.length} ${accessRequest.tools.length === 1 ? "tool" : "tools"} for ${interaction.payload.requestingAgentName}`} />
-          <ul aria-label="Tool permissions" className="flex max-h-48 flex-col gap-1 overflow-y-auto text-xs">
+          <ul aria-label={t("connectionIntent.toolPermissions")} className="flex max-h-48 flex-col gap-1 overflow-y-auto text-xs">
             {accessRequest.tools.map(tool => <li key={tool.catalogEntryId} className="flex items-start justify-between gap-3">
               <span className="min-w-0 break-all font-mono text-foreground">{tool.toolName}</span>
-              <span className="shrink-0 text-muted-foreground">{tool.permission === "allowed" ? "Allowed" : "Ask first"}</span>
+              <span className="shrink-0 text-muted-foreground">{tool.permission === "allowed" ? t("connectionIntent.allowed") : t("connectionIntent.askFirst")}</span>
             </li>)}
           </ul>
           <NeedsYouPanelNote>
-            Access applies to {interaction.payload.requestingAgentName} only{askFirst > 0 ? ` · ${askFirst} still ${askFirst === 1 ? "asks" : "ask"} you first` : ""}.
+            {t("connectionIntent.accessApplies", { agent: interaction.payload.requestingAgentName })}{askFirst > 0 ? ` · ${t(askFirst === 1 ? "connectionIntent.askFirstCountSingular" : "connectionIntent.askFirstCountPlural", { count: askFirst })}` : ""}。
           </NeedsYouPanelNote>
         </NeedsYouPanel>
         {setupView.kind === "error" ? <QueryErrorState error={setupView.error} onRetry={setupView.retry} /> : null}
         {completeMutation.error || declineMutation.error ? <p role="alert" className="text-sm text-destructive">{describeError(completeMutation.error ?? declineMutation.error).body}</p> : null}
-        {setupQuery.data?.canGrantAccess === false ? <p role="status" className="text-sm text-muted-foreground">Connection manager required.</p> : null}
+        {setupQuery.data?.canGrantAccess === false ? <p role="status" className="text-sm text-muted-foreground">{t("connectionIntent.connectionManagerRequired")}</p> : null}
         <DecisionCardFooter leading={footerSlot}>
-          <Button size="sm" variant="ghost" disabled={busy} onClick={() => declineMutation.mutate()}>Deny</Button>
+          <Button size="sm" variant="ghost" disabled={busy} onClick={() => declineMutation.mutate()}>{t("connectionIntent.deny")}</Button>
           <Button size="sm" disabled={busy || !setupQuery.data?.canGrantAccess} onClick={() => completeMutation.mutate(accessRequest.connectionId)}>
-            {completeMutation.isPending ? "Granting access…" : "Grant access"}
+            {completeMutation.isPending ? t("connectionIntent.grantingAccess") : t("connectionIntent.grantAccess")}
           </Button>
         </DecisionCardFooter>
       </div>
@@ -401,24 +402,24 @@ export function ConnectionIntentInteractionBody({
         <div className="flex items-center gap-3">
           <AgentAvatar agent={agentQuery.data ?? { id: interaction.payload.requestingAgentId, name: interaction.payload.requestingAgentName }} size={32} label={interaction.payload.requestingAgentName} />
           <div className="min-w-0 flex-1">
-            <p className={cn("text-sm font-medium text-foreground", ANALYTICS_MASK_CLASS)}>Grant {interaction.payload.requestingAgentName} access to “{accessRequest.connectionName}”?</p>
+            <p className={cn("text-sm font-medium text-foreground", ANALYTICS_MASK_CLASS)}>{t("connectionIntent.grantAgentAccess", { agent: interaction.payload.requestingAgentName, connection: accessRequest.connectionName })}</p>
           </div>
           <AppLogo name={interaction.payload.serviceName} logoUrl={interaction.payload.serviceLogoUrl} darkLogoUrl={interaction.payload.serviceDarkLogoUrl} size={32} />
         </div>
-        <ul aria-label="Tool permissions" className="max-h-48 space-y-2 overflow-y-auto text-xs">
+        <ul aria-label={t("connectionIntent.toolPermissions")} className="max-h-48 space-y-2 overflow-y-auto text-xs">
           {accessRequest.tools.map(tool => <li key={tool.catalogEntryId} className="flex items-start justify-between gap-3">
             <span className="min-w-0 break-all font-mono text-foreground">{tool.toolName}</span>
-            <span className="shrink-0 text-muted-foreground">{tool.permission === "allowed" ? "Allowed" : "Ask first"}</span>
+            <span className="shrink-0 text-muted-foreground">{tool.permission === "allowed" ? t("connectionIntent.allowed") : t("connectionIntent.askFirst")}</span>
           </li>)}
         </ul>
         {setupView.kind === "error" ? <QueryErrorState size="inline" error={setupQuery.error} action="load this access request" onRetry={setupView.retry} retrying={setupView.isFetching} /> : null}
         {completeMutation.error || declineMutation.error ? <p role="alert" className="text-sm text-destructive">{describeError(completeMutation.error ?? declineMutation.error).body}</p> : null}
-        {setupQuery.data?.canGrantAccess === false ? <p role="status" className="text-sm text-muted-foreground">Connection manager required.</p> : null}
+        {setupQuery.data?.canGrantAccess === false ? <p role="status" className="text-sm text-muted-foreground">{t("connectionIntent.connectionManagerRequired")}</p> : null}
         <DecisionCardFooter leading={footerSlot}>
           <div className={footerSlot ? "flex flex-wrap items-center justify-end gap-2" : "flex items-center justify-between gap-2"}>
-          <Button size="sm" variant="ghost" disabled={busy} onClick={() => declineMutation.mutate()}>Not now</Button>
+          <Button size="sm" variant="ghost" disabled={busy} onClick={() => declineMutation.mutate()}>{t("connectionIntent.notNow")}</Button>
           <Button size="sm" disabled={busy || !setupQuery.data?.canGrantAccess} onClick={() => completeMutation.mutate(accessRequest.connectionId)}>
-            {completeMutation.isPending ? "Granting access…" : "Grant access"}
+            {completeMutation.isPending ? t("connectionIntent.grantingAccess") : t("connectionIntent.grantAccess")}
           </Button>
           </div>
         </DecisionCardFooter>

@@ -793,6 +793,39 @@
       "sharedConcurrency": "共享工作区并发方式"
     }
   },
+  "connectionIntent": {
+    "status": {
+      "accessGranted": "已授予 {{service}} 访问权限",
+      "externalProviderConnected": "外部提供方已连接",
+      "connected": "{{service}} 已连接",
+      "externalProviderBody": "{{agent}} 现在可以通过此提供方验证并授权 {{provider}}。该应用尚未完成验证。",
+      "agentCanUse": "此 Agent 现在可以使用该连接。",
+      "agentCanUseContinuation": "{{agent}} 可以在后续运行中使用此连接。",
+      "requestWithdrawn": "连接请求已撤回",
+      "requestNoLongerActive": "此请求已不再有效。",
+      "accessDeclined": "访问已拒绝",
+      "connectionDeclined": "连接已拒绝",
+      "taskNeedsConnection": "任务仍需要可用的 AI 连接才能运行。",
+      "agentNotifiedContinue": "已通知 {{agent}}，任务可以不使用此连接继续。",
+      "requestSuperseded": "请求已被替代",
+      "requestExpired": "连接请求已过期",
+      "requestReplaced": "此请求已被替换，请使用最新的连接卡片。"
+    },
+    "waitingFor": "正在等待 {{addressee}}",
+    "onlyAddressee": "只有指定人员可以选择身份或授权此连接。",
+    "toolPermissions": "工具权限",
+    "allowed": "已允许",
+    "askFirst": "需先询问",
+    "accessApplies": "访问权限仅适用于 {{agent}}",
+    "askFirstCountSingular": "仍有 {{count}} 项操作需要先询问您",
+    "askFirstCountPlural": "仍有 {{count}} 项操作需要先询问您",
+    "connectionManagerRequired": "需要连接管理员权限。",
+    "deny": "拒绝",
+    "notNow": "暂不处理",
+    "grantAccess": "授予访问权限",
+    "grantingAccess": "正在授予访问权限……",
+    "grantAgentAccess": "要授予 {{agent}} 访问“{{connection}}”的权限吗？"
+  },
   "connectionsPage": {
     "title": "连接",
     "selectOrganization": "未选择组织，请从上方切换器选择组织。",

@@ -793,6 +793,39 @@
       "sharedConcurrency": "Shared workspace concurrency"
     }
   },
+  "connectionIntent": {
+    "status": {
+      "accessGranted": "{{service}} access granted",
+      "externalProviderConnected": "External provider connected",
+      "connected": "{{service}} connected",
+      "externalProviderBody": "{{agent}} can now verify and authorize {{provider}} through this provider. The app is not yet verified.",
+      "agentCanUse": "This agent can now use the connection.",
+      "agentCanUseContinuation": "{{agent}} can use this connection on the continuation run.",
+      "requestWithdrawn": "Connection request withdrawn",
+      "requestNoLongerActive": "This request is no longer active.",
+      "accessDeclined": "Access declined",
+      "connectionDeclined": "Connection declined",
+      "taskNeedsConnection": "The task still needs a working AI connection before it can run.",
+      "agentNotifiedContinue": "{{agent}} was notified and can continue without it.",
+      "requestSuperseded": "Request superseded",
+      "requestExpired": "Connection request expired",
+      "requestReplaced": "This request was replaced. Use the latest connection card instead."
+    },
+    "waitingFor": "Waiting for {{addressee}}",
+    "onlyAddressee": "Only the addressed person can choose an identity or authorize this connection.",
+    "toolPermissions": "Tool permissions",
+    "allowed": "Allowed",
+    "askFirst": "Ask first",
+    "accessApplies": "Access applies to {{agent}} only",
+    "askFirstCountSingular": "{{count}} still asks you first",
+    "askFirstCountPlural": "{{count}} still ask you first",
+    "connectionManagerRequired": "Connection manager required.",
+    "deny": "Deny",
+    "notNow": "Not now",
+    "grantAccess": "Grant access",
+    "grantingAccess": "Granting access…",
+    "grantAgentAccess": "Grant {{agent}} access to “{{connection}}”?"
+  },
   "connectionsPage": {
     "title": "Connections",
     "selectOrganization": "No organization selected. Select an organization from the switcher above.",

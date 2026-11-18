@@ -16,6 +16,7 @@ import {
   retryConnectionIntentInteraction,
 } from "@/fixtures/issueThreadInteractionFixtures";
 import { ConnectionIntentInteractionBody } from "./ConnectionIntentInteractionBody";
+import { setLocale } from "@/i18n";
 
 const emailConnectMock = vi.hoisted(() => vi.fn());
 const emailSetupMock = vi.hoisted(() => vi.fn());
@@ -293,6 +294,22 @@ describe("ConnectionIntentInteractionBody states and audience", () => {
     } as ConnectionIntentInteraction);
     expect(document.body.textContent).toContain(reason);
     expect(document.body.textContent).not.toContain("This request is no longer active.");
+  });
+
+  it("localizes terminal connection states and waiting copy", async () => {
+    await act(async () => { await setLocale("zh-CN"); });
+    try {
+      renderBody(terminal("rejected", "declined"));
+      expect(document.body.textContent).toContain("连接已拒绝");
+
+      host?.remove();
+      root = null;
+      host = null;
+      renderBody(pendingConnectionIntentInteraction, "other-user");
+      expect(document.body.textContent).toContain("正在等待 Carol");
+    } finally {
+      await act(async () => { await setLocale("en"); });
+    }
   });
 
   it("shows non-addressees only the waiting state and never loads setup", () => {
