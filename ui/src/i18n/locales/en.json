@@ -1257,6 +1257,8 @@
     "continue": "Continue",
     "finishSetup": "Finish setup",
     "connect": "Connect AgentMail",
+    "connectForAgent": "Connect AgentMail to create an email address for this agent.",
+    "continueAuthentication": "Continue authentication",
     "loadingSetup": "Loading email setup…",
     "loadProgress": "load email setup progress",
     "notFound": "This email setup could not be found. Return to Connectors and start a new connection.",

@@ -1257,6 +1257,8 @@
     "continue": "继续",
     "finishSetup": "完成设置",
     "connect": "连接 AgentMail",
+    "connectForAgent": "连接 AgentMail，为此 Agent 创建邮箱地址。",
+    "continueAuthentication": "继续认证",
     "loadingSetup": "正在加载邮箱设置……",
     "loadProgress": "加载邮箱设置进度",
     "notFound": "找不到此邮箱设置。请返回连接器并重新开始连接。",
