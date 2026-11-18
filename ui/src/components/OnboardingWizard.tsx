@@ -1531,31 +1531,31 @@ function OnboardingWizardInner({
    */
   const connectSourceLabel = CONNECT_SOURCE_NAMES[adapterType] ?? adapterType;
   const connectCta: { label: string; icon: FooterPrimaryIcon; disabled: boolean } =
-    setupError ? { label: "Retry", icon: "arrow", disabled: false }
-      : retryLogin ? { label: "Retry sign-in", icon: "arrow", disabled: false } : connectProgress
-      ? { label: adapterEnvLoading ? "Testing…" : connectProgress, icon: "spinner", disabled: true }
+    setupError ? { label: t("onboarding.connection.retry"), icon: "arrow", disabled: false }
+      : retryLogin ? { label: t("onboarding.connection.retrySignIn"), icon: "arrow", disabled: false } : connectProgress
+      ? { label: adapterEnvLoading ? t("onboarding.connection.testing") : connectProgress, icon: "spinner", disabled: true }
       : (connectPhase === "ready" || connectPhase === "waiting") && submitLoginCode
-      ? { label: "Submit code", icon: "arrow", disabled: false }
+      ? { label: t("onboarding.connection.submitCode"), icon: "arrow", disabled: false }
       : connectPhase === "waiting"
-      ? { label: adapterType === "codex_local" ? "Waiting for auth…" : "Waiting for code…", icon: "spinner", disabled: true }
+      ? { label: adapterType === "codex_local" ? t("onboarding.connection.waitingAuth") : t("onboarding.connection.waitingCode"), icon: "spinner", disabled: true }
       : connectPhase === "connecting"
-        ? { label: "Connecting", icon: "spinner", disabled: true }
+        ? { label: t("onboarding.connection.connecting"), icon: "spinner", disabled: true }
         : connectPhase === "ready"
           ? connectStepNeedsLogin
             ? {
-                label: `Sign in to ${connectSourceLabel}`,
+                label: t("onboarding.connection.signInTo", { provider: connectSourceLabel }),
                 icon: "none",
                 disabled: !connectAuthUrl,
               }
             : {
-                label: "Connect",
+                label: t("onboarding.connection.connect"),
                 icon: "arrow",
                 disabled:
                   !connectStepReady || connectStepLoggingIn || (credentialMode === "api" && !apiKey.trim() && !selectedApiKey && !restoredApiCredential && !managedBindingForStep()),
               }
           : // Nothing is chosen on arrival, and the row is what chooses. Until
             // it has been answered the button has nothing to do.
-            { label: "Next", icon: "arrow", disabled: true };
+            { label: t("onboarding.connection.next"), icon: "arrow", disabled: true };
 
   function unwindConnectStep() {
     localLogin.cancel();
@@ -2842,6 +2842,12 @@ function OnboardingWizardInner({
               {showsAgentArcStepper && (
                 <Stepper
                   step={agentArcStepFor(step)!}
+                  total={AGENT_ARC_WIZARD_STEPS.length}
+                  labels={[
+                    t("onboarding.steps.agent"),
+                    t("onboarding.steps.model"),
+                    t("onboarding.steps.review"),
+                  ]}
                   canJumpToStep={(target) =>
                     canJumpToOnboardingStep({
                       targetStep: AGENT_ARC_WIZARD_STEPS[target - 1]!,

@@ -3,6 +3,7 @@ import { StrictMode } from "react";
 import { flushSync } from "react-dom";
 import { createRoot } from "react-dom/client";
 import { afterEach, beforeEach, expect, it, vi } from "vitest";
+import { i18n } from "@/i18n";
 import { useLocalAiLogin } from "./useLocalAiLogin";
 import { LocalProviderLoginInstructions } from "../AdapterLoginChrome";
 
@@ -160,6 +161,23 @@ it("hides a failed device prompt and lets the user restart sign-in", async () =>
   flushSync(() => Array.from(host.querySelectorAll("button")).find(b => b.textContent === "Start sign-in again")!.click());
   await vi.waitFor(() => expect(host.textContent).toContain("NEW-CODE"));
   expect(host.querySelector('[role="alert"]')).toBeNull();
+});
+
+it("localizes a completed-before-account-connected error in Chinese", async () => {
+  await i18n.changeLanguage("zh-CN");
+  try {
+    api.checkLocalLogin.mockResolvedValue({
+      status: "sign_in_required",
+      authorizationUrl: "https://auth.openai.com/codex/device",
+      code: "OLD-CODE",
+      error: "Sign-in ended before the account was connected. Start sign-in again.",
+    });
+    flushSync(() => root.render(<Harness />));
+    await vi.waitFor(() => expect(host.querySelector('[role="alert"]')?.textContent).toContain("登录在账户连接完成前结束"));
+    expect(host.textContent).not.toContain("Sign-in ended");
+  } finally {
+    await i18n.changeLanguage("en");
+  }
 });
 
 it.each(["start", "check"])("cancels a local subscription with a pending %s and ignores its late result", async stage => {

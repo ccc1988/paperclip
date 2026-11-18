@@ -2,9 +2,28 @@ import { useEffect, useRef, useState } from "react";
 import type { AiConnectionLoginIntent, LocalAiLoginAttempt, LocalAiLoginStatus } from "@paperclipai/shared";
 import { aiConnectionsApi } from "@/api/ai-connections";
 import { describeError } from "@/api/errors";
+import { useTranslation } from "@/i18n";
+
+type Translate = (key: string) => string;
+
+function localizeLoginError(message: string | null | undefined, t: Translate): string | null {
+  if (!message) return null;
+  const normalized = message.trim();
+  if (/^Sign-in ended(?: before the account was connected)?\.\s*Start sign-in again\.?$/i.test(normalized)) {
+    return t("onboarding.connection.signInEnded");
+  }
+  if (/^This sign-in attempt expired\.\s*Start sign-in again\.?$/i.test(normalized)) {
+    return t("onboarding.connection.signInAttemptExpired");
+  }
+  if (/^Could not submit the authorization code\.\s*Start sign-in again\.?$/i.test(normalized)) {
+    return t("onboarding.connection.submitAuthorizationCodeFailed");
+  }
+  return message;
+}
 
 /** Every authentication host uses the same local credential check and login lifecycle. */
 export function useLocalAiLogin(companyId: string | null, intent: AiConnectionLoginIntent, enabled: boolean) {
+  const { t } = useTranslation();
   const isolated = true;
   const active = Boolean(companyId && enabled);
   const [attempt, setAttempt] = useState<LocalAiLoginAttempt | null>(null);
@@ -64,12 +83,12 @@ export function useLocalAiLogin(companyId: string | null, intent: AiConnectionLo
         setAuthorizationUrl(next.authorizationUrl ?? null);
         setCode(next.code ?? null);
         setAccountLabel(next.accountLabel ?? null);
-        setError(next.error ?? (next.status === "expired" ? "This sign-in attempt expired. Start sign-in again." : null));
+        setError(localizeLoginError(next.error, t) ?? (next.status === "expired" ? t("onboarding.connection.signInAttemptExpired") : null));
         // Stop polling a verified account. Focus rechecks after the provider
         // browser visit; sign-in never requires repeated Connect clicks.
         if (next.status === "sign_in_required") timer = setTimeout(() => void check(), 5000);
       } catch (cause) {
-        if (!cancelled && (!isolated || current.current?.request === request)) setError(describeError(cause).body);
+        if (!cancelled && (!isolated || current.current?.request === request)) setError(localizeLoginError(describeError(cause).body, t));
       } finally { checking = false; }
     }
     const onFocus = () => { if (!document.hidden) void check(); };
@@ -104,17 +123,17 @@ export function useLocalAiLogin(companyId: string | null, intent: AiConnectionLo
     },
     retry: () => { restartRequested.current = true; cancelCurrent(); setGeneration((value) => value + 1); },
     submitCode: async (browserCode: string) => {
-      if (!companyId || !attempt) throw new Error("Start sign-in before submitting a code.");
+      if (!companyId || !attempt) throw new Error(t("onboarding.connection.startSignInFirst"));
       try {
         await aiConnectionsApi.submitLocalLoginCode(companyId, attempt.sessionId, browserCode);
       } catch (cause) {
-        setError("Could not submit the authorization code. Start sign-in again.");
+        setError(t("onboarding.connection.submitAuthorizationCodeFailed"));
         throw cause;
       }
     },
     connect: (input = intent) => {
-      if (!companyId) throw new Error("Choose a company before connecting.");
-      if (isolated && !attempt) throw new Error("Prepare local sign-in before connecting.");
+      if (!companyId) throw new Error(t("onboarding.connection.chooseOrganizationFirst"));
+      if (isolated && !attempt) throw new Error(t("onboarding.connection.prepareSignInFirst"));
       return aiConnectionsApi.connectLocal(companyId, { ...input, ...(attempt ? { localSessionId: attempt.sessionId } : {}) });
     },
   };
