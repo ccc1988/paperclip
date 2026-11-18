@@ -1090,6 +1090,65 @@
     "copied": "Copied",
     "copy": "Copy"
   },
+  "genericMcp": {
+    "auth": {
+      "auto": {
+        "title": "Let Paperclip check",
+        "description": "Paperclip asks the server what it needs and walks you through it."
+      },
+      "bearer": {
+        "title": "Key or token",
+        "description": "Paperclip sends your key as an Authorization header."
+      },
+      "oauth": {
+        "title": "Browser sign-in",
+        "description": "You’ll sign in at the provider."
+      },
+      "custom_headers": {
+        "title": "Custom headers",
+        "description": "For servers that name their own headers."
+      },
+      "none": {
+        "title": "No sign-in needed",
+        "description": "The server is open to anyone with the address."
+      }
+    },
+    "summary": {
+      "none": "No sign-in. The server is open to anyone with the address.",
+      "bearer": "Signs in with a key or token.",
+      "customHeaders": "Signs in with custom headers.",
+      "customHeaderOne": "Signs in with {{count}} custom header.",
+      "customHeaderMany": "Signs in with {{count}} custom headers.",
+      "oauthWithClient": "You’ll sign in at the provider, using your own client ID.",
+      "oauth": "You’ll sign in at the provider.",
+      "auto": "Paperclip asks the server how to sign in."
+    },
+    "keyOrToken": "Key or token",
+    "pasteKeyOrToken": "Paste the key or token",
+    "keyHint": "Grant this key access to what your agents need. Paperclip can’t increase its permissions.",
+    "headerName": "Header name",
+    "headerValue": "Value",
+    "valueForHeader": "Value for {{name}}",
+    "removeNamedHeader": "Remove {{name}}",
+    "removeHeader": "Remove header",
+    "addHeader": "Add header",
+    "headerSecretHint": "Values are stored as secrets and can’t be read back.",
+    "useOwnClientId": "Use your own client ID",
+    "clientFieldsHint": "Paperclip sets sign-in up on its own whenever the server allows it. Fill these in only when the server’s docs tell you to register Paperclip yourself first.",
+    "clientId": "Client ID",
+    "clientSecret": "Client secret",
+    "optional": "Optional",
+    "guidedSetup": "Paperclip has a guided setup for {{app}}.",
+    "useApp": "Use {{app}}",
+    "howServerSignsIn": "How does this server sign in?",
+    "done": "Done",
+    "change": "Change",
+    "machineSignIn": "Machine sign-in",
+    "machineSignInDescription": "Your organization’s automation signs in as its own registered client. No person signs in.",
+    "back": "Back",
+    "checking": "Checking…",
+    "checkLink": "Check link"
+  },
   "connectionIntent": {
     "status": {
       "accessGranted": "{{service}} access granted",

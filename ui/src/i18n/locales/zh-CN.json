@@ -1090,6 +1090,65 @@
     "copied": "已复制",
     "copy": "复制"
   },
+  "genericMcp": {
+    "auth": {
+      "auto": {
+        "title": "让 Paperclip 检查",
+        "description": "Paperclip 会询问服务器所需信息，并引导你完成设置。"
+      },
+      "bearer": {
+        "title": "密钥或令牌",
+        "description": "Paperclip 会将密钥作为 Authorization 请求头发送。"
+      },
+      "oauth": {
+        "title": "浏览器登录",
+        "description": "你将在提供方页面完成登录。"
+      },
+      "custom_headers": {
+        "title": "自定义请求头",
+        "description": "适用于使用自定义请求头名称的服务器。"
+      },
+      "none": {
+        "title": "无需登录",
+        "description": "任何拥有此地址的人都可以访问服务器。"
+      }
+    },
+    "summary": {
+      "none": "无需登录，任何拥有此地址的人都可以访问服务器。",
+      "bearer": "使用密钥或令牌登录。",
+      "customHeaders": "使用自定义请求头登录。",
+      "customHeaderOne": "使用 {{count}} 个自定义请求头登录。",
+      "customHeaderMany": "使用 {{count}} 个自定义请求头登录。",
+      "oauthWithClient": "你将在提供方页面登录，并使用自己的客户端 ID。",
+      "oauth": "你将在提供方页面完成登录。",
+      "auto": "Paperclip 会询问服务器登录方式。"
+    },
+    "keyOrToken": "密钥或令牌",
+    "pasteKeyOrToken": "粘贴密钥或令牌",
+    "keyHint": "请只授予此密钥完成 Agent 工作所需的权限，Paperclip 无法扩大它的权限。",
+    "headerName": "请求头名称",
+    "headerValue": "值",
+    "valueForHeader": "{{name}} 的值",
+    "removeNamedHeader": "移除 {{name}}",
+    "removeHeader": "移除请求头",
+    "addHeader": "添加请求头",
+    "headerSecretHint": "这些值会作为密钥保存，之后无法读取。",
+    "useOwnClientId": "使用自己的客户端 ID",
+    "clientFieldsHint": "只要服务器允许，Paperclip 会自动完成登录设置。只有提供方文档要求你先注册 Paperclip 时，才需要填写这些字段。",
+    "clientId": "客户端 ID",
+    "clientSecret": "客户端密钥",
+    "optional": "可选",
+    "guidedSetup": "Paperclip 为 {{app}} 提供引导式设置。",
+    "useApp": "使用 {{app}}",
+    "howServerSignsIn": "此服务器如何登录？",
+    "done": "完成",
+    "change": "修改",
+    "machineSignIn": "机器登录",
+    "machineSignInDescription": "组织的自动化会以自己的注册客户端登录，不需要任何人员登录。",
+    "back": "返回",
+    "checking": "正在检查……",
+    "checkLink": "检查链接"
+  },
   "connectionIntent": {
     "status": {
       "accessGranted": "已授予 {{service}} 访问权限",

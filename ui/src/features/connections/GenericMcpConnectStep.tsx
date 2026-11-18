@@ -11,6 +11,7 @@ import { redactUrlSecrets } from "@/lib/redact-url-secrets";
 import { cn } from "@/lib/utils";
 import { AppLogo } from "@/pages/apps/AppLogo";
 import { MachineSignInSetup } from "./MachineSignInSetup";
+import { t } from "@/i18n";
 import {
   canSubmitGenericConnect,
   customHeaderError,
@@ -25,33 +26,20 @@ import {
  * which protocol satisfies the choice; none of that belongs on this screen.
  * Ordered by how often an operator needs each one.
  */
-const AUTH_OPTIONS: Array<{ mode: GenericMcpAuthMode; title: string; description: string }> = [
-  {
-    mode: "auto",
-    title: "Let Paperclip check",
-    description: "Paperclip asks the server what it needs and walks you through it.",
-  },
-  {
-    mode: "bearer",
-    title: "Key or token",
-    description: "Paperclip sends your key as an Authorization header.",
-  },
-  {
-    mode: "oauth",
-    title: "Browser sign-in",
-    description: "You’ll sign in at the provider.",
-  },
-  {
-    mode: "custom_headers",
-    title: "Custom headers",
-    description: "For servers that name their own headers.",
-  },
-  {
-    mode: "none",
-    title: "No sign-in needed",
-    description: "The server is open to anyone with the address.",
-  },
+const AUTH_OPTIONS: Array<{ mode: GenericMcpAuthMode }> = [
+  { mode: "auto" },
+  { mode: "bearer" },
+  { mode: "oauth" },
+  { mode: "custom_headers" },
+  { mode: "none" },
 ];
+
+function authOptionCopy(mode: GenericMcpAuthMode) {
+  return {
+    title: t(`genericMcp.auth.${mode}.title`),
+    description: t(`genericMcp.auth.${mode}.description`),
+  };
+}
 
 /** The resolved sign-in choice, stated in one line beside its Change control. */
 export function genericMcpAuthSummary(input: {
@@ -61,21 +49,21 @@ export function genericMcpAuthSummary(input: {
 }): string {
   switch (input.authMode) {
     case "none":
-      return "No sign-in. The server is open to anyone with the address.";
+      return t("genericMcp.summary.none");
     case "bearer":
-      return "Signs in with a key or token.";
+      return t("genericMcp.summary.bearer");
     case "custom_headers": {
       const count = input.headers.filter((row) => row.name.trim() && row.value.trim()).length;
       return count === 0
-        ? "Signs in with custom headers."
-        : `Signs in with ${count} custom ${count === 1 ? "header" : "headers"}.`;
+        ? t("genericMcp.summary.customHeaders")
+        : t(count === 1 ? "genericMcp.summary.customHeaderOne" : "genericMcp.summary.customHeaderMany", { count });
     }
     case "oauth":
       return input.oauthClientId.trim()
-        ? "You’ll sign in at the provider, using your own client ID."
-        : "You’ll sign in at the provider.";
+        ? t("genericMcp.summary.oauthWithClient")
+        : t("genericMcp.summary.oauth");
     default:
-      return "Paperclip asks the server how to sign in.";
+      return t("genericMcp.summary.auto");
   }
 }
 
@@ -207,14 +195,14 @@ export function GenericMcpConnectStep({
         id="generic-mcp-key"
         type="password"
         autoComplete="off"
-        aria-label={label ? undefined : "Key or token"}
+        aria-label={label ? undefined : t("genericMcp.keyOrToken")}
         value={keyValue}
         onChange={(event) => onKeyChange(event.target.value)}
-        placeholder="Paste the key or token"
+        placeholder={t("genericMcp.pasteKeyOrToken")}
         className={label ? "mt-2 h-11 font-mono" : "h-11 font-mono"}
       />
       <p className="mt-2 text-xs text-muted-foreground">
-        Grant this key access to what your agents need. Paperclip can’t increase its permissions.
+        {t("genericMcp.keyHint")}
       </p>
     </div>
   );
@@ -229,8 +217,8 @@ export function GenericMcpConnectStep({
               <Input
                 value={row.name}
                 onChange={(event) => updateHeader(row.id, { name: event.target.value })}
-                placeholder="Header name"
-                aria-label="Header name"
+                placeholder={t("genericMcp.headerName")}
+                aria-label={t("genericMcp.headerName")}
                 autoComplete="off"
                 spellCheck={false}
                 className="h-10 font-mono"
@@ -240,8 +228,8 @@ export function GenericMcpConnectStep({
                 autoComplete="off"
                 value={row.value}
                 onChange={(event) => updateHeader(row.id, { value: event.target.value })}
-                placeholder="Value"
-                aria-label={row.name.trim() ? `Value for ${row.name.trim()}` : "Header value"}
+                placeholder={t("genericMcp.headerValue")}
+                aria-label={row.name.trim() ? t("genericMcp.valueForHeader", { name: row.name.trim() }) : t("genericMcp.headerValue")}
                 className="h-10 font-mono"
               />
               <Button
@@ -249,7 +237,7 @@ export function GenericMcpConnectStep({
                 variant="ghost"
                 size="icon"
                 className="shrink-0 text-muted-foreground"
-                aria-label={row.name.trim() ? `Remove ${row.name.trim()}` : "Remove header"}
+                aria-label={row.name.trim() ? t("genericMcp.removeNamedHeader", { name: row.name.trim() }) : t("genericMcp.removeHeader")}
                 onClick={() => onHeadersChange(headers.filter((candidate) => candidate.id !== row.id))}
                 disabled={headers.length === 1}
               >
@@ -266,9 +254,9 @@ export function GenericMcpConnectStep({
               onClick={() => onHeadersChange([...headers, newCustomHeaderRow()])}
             >
               <Plus className="h-4 w-4" aria-hidden="true" />
-              Add header
+              {t("genericMcp.addHeader")}
             </Button>
-            <p className="text-xs text-muted-foreground">Values are stored as secrets and can’t be read back.</p>
+            <p className="text-xs text-muted-foreground">{t("genericMcp.headerSecretHint")}</p>
           </div>
           {headerError ? <p role="alert" className="text-xs text-destructive">{headerError}</p> : null}
         </div>
@@ -283,20 +271,19 @@ export function GenericMcpConnectStep({
             className="h-auto p-0 text-xs text-muted-foreground underline underline-offset-2 hover:text-foreground"
             onClick={() => setClientFieldsOpen(true)}
           >
-            Use your own client ID
+            {t("genericMcp.useOwnClientId")}
           </Button>
         );
       }
       return (
         <div className="space-y-4">
           <p className="text-xs text-muted-foreground">
-            Paperclip sets sign-in up on its own whenever the server allows it. Fill these in only when the
-            server’s docs tell you to register Paperclip yourself first.
+            {t("genericMcp.clientFieldsHint")}
           </p>
           <div className="grid gap-4 sm:grid-cols-2">
             <div>
               <label className="text-sm font-medium text-foreground" htmlFor="generic-mcp-client-id">
-                Client ID
+                {t("genericMcp.clientId")}
               </label>
               <Input
                 id="generic-mcp-client-id"
@@ -304,13 +291,13 @@ export function GenericMcpConnectStep({
                 onChange={(event) => onOAuthClientIdChange(event.target.value)}
                 autoComplete="off"
                 spellCheck={false}
-                placeholder="Optional"
+                placeholder={t("genericMcp.optional")}
                 className="mt-2 h-10 font-mono"
               />
             </div>
             <div>
               <label className="text-sm font-medium text-foreground" htmlFor="generic-mcp-client-secret">
-                Client secret
+                {t("genericMcp.clientSecret")}
               </label>
               <Input
                 id="generic-mcp-client-secret"
@@ -318,7 +305,7 @@ export function GenericMcpConnectStep({
                 autoComplete="off"
                 value={oauthClientSecret}
                 onChange={(event) => onOAuthClientSecretChange(event.target.value)}
-                placeholder="Optional"
+                placeholder={t("genericMcp.optional")}
                 className="mt-2 h-10 font-mono"
               />
             </div>
@@ -338,10 +325,10 @@ export function GenericMcpConnectStep({
           <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-border bg-muted/40 px-3 py-2">
             <div className="flex min-w-0 items-center gap-2 text-sm">
               <AppLogo name={matchedEntry.name} logoUrl={matchedEntry.branding.logoUrl} darkLogoUrl={matchedEntry.branding.darkLogoUrl} size={24} />
-              <span className="truncate">Paperclip has a guided setup for {matchedEntry.name}.</span>
+              <span className="truncate">{t("genericMcp.guidedSetup", { app: matchedEntry.name })}</span>
             </div>
             <Button type="button" size="sm" variant="outline" onClick={onUseMatchedEntry}>
-              Use {matchedEntry.name}
+              {t("genericMcp.useApp", { app: matchedEntry.name })}
             </Button>
           </div>
         ) : null}
@@ -362,7 +349,7 @@ export function GenericMcpConnectStep({
       >
         <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
           <p className="text-sm text-muted-foreground">
-            {expanded ? "How does this server sign in?" : genericMcpAuthSummary({ authMode, headers, oauthClientId })}
+            {expanded ? t("genericMcp.howServerSignsIn") : genericMcpAuthSummary({ authMode, headers, oauthClientId })}
           </p>
           <CollapsibleTrigger asChild>
             <Button
@@ -372,14 +359,14 @@ export function GenericMcpConnectStep({
               disabled={submitting || choiceNeedsInput || machine}
               data-testid="generic-mcp-sign-in-toggle"
             >
-              {expanded ? "Done" : "Change"}
+              {expanded ? t("genericMcp.done") : t("genericMcp.change")}
             </Button>
           </CollapsibleTrigger>
         </div>
         <CollapsibleContent>
           <div
             role="radiogroup"
-            aria-label="How this server signs in"
+            aria-label={t("genericMcp.howServerSignsIn")}
             className="mt-3 grid gap-2 pb-1"
             onKeyDown={moveSelection}
           >
@@ -390,8 +377,8 @@ export function GenericMcpConnectStep({
                 <div key={option.mode}>
                   <RadioCard
                     selected={selected}
-                    title={option.title}
-                    description={option.description}
+                    title={authOptionCopy(option.mode).title}
+                    description={authOptionCopy(option.mode).description}
                     tabIndex={selected ? 0 : -1}
                     disabled={submitting}
                     className="bg-background"
@@ -408,8 +395,8 @@ export function GenericMcpConnectStep({
               <div>
                 <RadioCard
                   selected={machine}
-                  title="Machine sign-in"
-                  description="Your organization’s automation signs in as its own registered client. No person signs in."
+                  title={t("genericMcp.machineSignIn")}
+                  description={t("genericMcp.machineSignInDescription")}
                   tabIndex={machine ? 0 : -1}
                   disabled={submitting}
                   className="bg-background"
@@ -441,11 +428,11 @@ export function GenericMcpConnectStep({
 
           <div className="mt-8 flex items-center justify-between">
             <Button variant="ghost" onClick={onBack} disabled={submitting}>
-              Back
+              {t("genericMcp.back")}
             </Button>
             <Button onClick={onConnect} disabled={submitting || !canSubmit || Boolean(headerError)}>
               {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {submitting ? "Checking…" : "Check link"}
+              {submitting ? t("genericMcp.checking") : t("genericMcp.checkLink")}
             </Button>
           </div>
         </>
