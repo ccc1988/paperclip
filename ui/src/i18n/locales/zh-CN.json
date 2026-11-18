@@ -817,7 +817,74 @@
     "setupNeedsAttention": "设置需要处理",
     "reviewSetup": "检查连接设置",
     "connectNew": "新建连接",
-    "cancel": "取消"
+    "cancel": "取消",
+    "back": "返回",
+    "steps": {
+      "pickApp": "选择应用",
+      "connect": "连接",
+      "addMcpUrl": "添加 MCP 地址",
+      "signIn": "登录",
+      "reconnectAccount": "重新连接账户",
+      "connectAccount": "连接账户",
+      "chooseConnection": "选择连接",
+      "shareSheet": "共享表格",
+      "addKey": "添加密钥"
+    },
+    "gallery": {
+      "chooseReviewedApp": "选择经过审核、通过 Vercel 连接的应用。",
+      "pickApp": "选择 Agent 要使用的应用。",
+      "stepOf": "第 {{current}} 步，共 {{total}} 步"
+    },
+    "breadcrumbs": {
+      "connectors": "连接器",
+      "vercelConnect": "Vercel 连接",
+      "connectOwnTool": "连接自己的工具",
+      "connectApp": "连接应用"
+    },
+    "oauth": {
+      "openWindowFailed": "Paperclip 无法打开登录窗口，请在新标签页中打开登录以继续。",
+      "windowClosedRetry": "登录窗口已关闭。如果授权尚未完成，请重试。",
+      "preserveSignInFailed": "刷新账户时无法保留这次登录，请重试。",
+      "notConfirmedRetry": "授权尚未确认，请重试。",
+      "cancelledRetry": "授权已取消，可以重试。",
+      "incompleteRetry": "授权未完成，请准备好后重试。",
+      "windowClosedFinish": "登录窗口已关闭，请重试以完成连接。",
+      "incompleteFinish": "授权未完成，请在登录窗口中完成设置，或重试。",
+      "confirmFailedRetry": "无法确认连接，请重试。",
+      "finishConnecting": "完成 {{server}} 连接",
+      "connectToPaperclip": "将 {{server}} 连接到 Paperclip",
+      "savedContinueDescription": "连接已保存。请在 {{server}} 中继续并批准访问；其身份和 Agent 访问权限将保持不变。",
+      "openProviderDescription": "Paperclip 将打开 {{server}}，供你选择工作区并批准访问。",
+      "preparingTitle": "正在准备安全登录",
+      "preparingBody": "Paperclip 正在创建安全的 {{server}} 连接。",
+      "openingTitle": "正在打开 {{server}}",
+      "continueAtHost": "请在 {{host}} 继续，选择工作区并批准访问。只有在确认地址可信时才批准访问。",
+      "continueInProvider": "请在 {{server}} 中继续，选择工作区并批准访问。",
+      "couldNotConnect": "{{server}} 无法连接",
+      "startFailedRetry": "Paperclip 无法启动安全登录，请重试。",
+      "subtitle": "安全 MCP 登录",
+      "installOnGitHub": "在 GitHub 上安装 Paperclip",
+      "manageGitHubRepositories": "在 GitHub 上管理仓库",
+      "finishWith": "在 {{server}} 中完成",
+      "continueTo": "继续前往 {{server}}",
+      "openingProgress": "正在打开 {{server}}……",
+      "preparingProgress": "正在准备……",
+      "openSignInNewTab": "在新标签页中打开登录"
+    },
+    "enrollment": {
+      "openInNewTab": "在新标签页中打开授权",
+      "missingLinkRetry": "Paperclip Cloud 未返回注册链接，请重试。",
+      "connectWithPaperclip": "连接到 Paperclip",
+      "connectInstanceDescription": "必须先将此实例连接到 Paperclip，才能连接 {{app}}（只需完成一次）。",
+      "useOwnOAuthApp": "使用自己的 {{app}} OAuth 应用",
+      "checkFailedRetry": "Paperclip 无法检查 Cloud 注册状态，请重试。",
+      "finishInWindow": "请在已打开的窗口中完成授权。",
+      "continue": "继续"
+    },
+    "managedUnavailable": {
+      "title": "{{app}} 登录不可用",
+      "body": "此实例已连接到 Paperclip，但当前无法使用 {{app}} 登录。请稍后重试，或联系实例管理员。"
+    }
   },
   "appsConnect": {
     "checkingSavedComposio": "正在检查已保存的 Composio 账户……",

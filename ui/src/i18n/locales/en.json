@@ -817,7 +817,74 @@
     "setupNeedsAttention": "Setup needs attention",
     "reviewSetup": "Review connection setup",
     "connectNew": "Connect new",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "back": "Back",
+    "steps": {
+      "pickApp": "Pick app",
+      "connect": "Connect",
+      "addMcpUrl": "Add MCP URL",
+      "signIn": "Sign in",
+      "reconnectAccount": "Reconnect account",
+      "connectAccount": "Connect account",
+      "chooseConnection": "Choose connection",
+      "shareSheet": "Share sheet",
+      "addKey": "Add your key"
+    },
+    "gallery": {
+      "chooseReviewedApp": "Choose a reviewed app to connect through Vercel.",
+      "pickApp": "Pick the app you want your agents to use.",
+      "stepOf": "Step {{current}} of {{total}}"
+    },
+    "breadcrumbs": {
+      "connectors": "Connectors",
+      "vercelConnect": "Vercel Connect",
+      "connectOwnTool": "Connect your own tool",
+      "connectApp": "Connect an app"
+    },
+    "oauth": {
+      "openWindowFailed": "Paperclip couldn’t open the sign-in window. Open sign-in in a new tab to continue.",
+      "windowClosedRetry": "The sign-in window closed. If authorization did not finish, try again.",
+      "preserveSignInFailed": "Paperclip couldn’t preserve this sign-in while refreshing your account.",
+      "notConfirmedRetry": "Authorization has not been confirmed yet. Try again.",
+      "cancelledRetry": "Authorization was cancelled. You can try again.",
+      "incompleteRetry": "Authorization did not complete. Try again when you’re ready.",
+      "windowClosedFinish": "The sign-in window closed. Try again to finish connecting.",
+      "incompleteFinish": "Authorization did not complete. Finish setup in the sign-in window or try again.",
+      "confirmFailedRetry": "Could not confirm the connection. Try again.",
+      "finishConnecting": "Finish connecting {{server}}",
+      "connectToPaperclip": "Connect {{server}} to Paperclip",
+      "savedContinueDescription": "Your connection is saved. Continue in {{server}} to approve access; its identity and agent access will stay the same.",
+      "openProviderDescription": "Paperclip will open {{server}} so you can choose a workspace and approve access.",
+      "preparingTitle": "Preparing secure sign-in",
+      "preparingBody": "Paperclip is creating a secure {{server}} connection.",
+      "openingTitle": "Opening {{server}}",
+      "continueAtHost": "Continue at {{host}} to choose a workspace and approve access. Only approve access if you recognize that address.",
+      "continueInProvider": "Continue in {{server}} to choose a workspace and approve access.",
+      "couldNotConnect": "{{server}} couldn’t connect",
+      "startFailedRetry": "Paperclip couldn’t start secure sign-in. Try again.",
+      "subtitle": "Secure MCP sign-in",
+      "installOnGitHub": "Install Paperclip on GitHub",
+      "manageGitHubRepositories": "Manage repositories on GitHub",
+      "finishWith": "Finish with {{server}}",
+      "continueTo": "Continue to {{server}}",
+      "openingProgress": "Opening {{server}}…",
+      "preparingProgress": "Preparing…",
+      "openSignInNewTab": "Open sign-in in a new tab"
+    },
+    "enrollment": {
+      "openInNewTab": "Open authorization in a new tab",
+      "missingLinkRetry": "Paperclip Cloud did not return an enrollment link. Try again.",
+      "connectWithPaperclip": "Connect with Paperclip",
+      "connectInstanceDescription": "You must connect this instance to Paperclip to connect to {{app}} (you only need to do this once).",
+      "useOwnOAuthApp": "Use your own {{app}} OAuth app",
+      "checkFailedRetry": "Paperclip couldn’t check Cloud registration. Try again.",
+      "finishInWindow": "Finish authorization in the opened window.",
+      "continue": "Continue"
+    },
+    "managedUnavailable": {
+      "title": "{{app}} sign-in is unavailable",
+      "body": "This instance is connected to Paperclip, but {{app}} sign-in is not currently available. Try again shortly or contact your instance administrator."
+    }
   },
   "appsConnect": {
     "checkingSavedComposio": "Checking saved Composio accounts…",
