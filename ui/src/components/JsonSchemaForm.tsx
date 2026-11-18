@@ -1364,7 +1364,7 @@ export function JsonSchemaForm({
       })),
       advancedKeys,
     };
-  }, [properties]);
+  }, [properties, t]);
 
   const hasAdvanced = advancedGroups.length > 0;
 
