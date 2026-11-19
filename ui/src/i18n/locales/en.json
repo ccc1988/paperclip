@@ -90,6 +90,40 @@
     "noConnections": "No AI connections yet.",
     "connectNewAccount": "Connect a new account"
   },
+  "aiProviderSetup": {
+    "providerDescriptions": {
+      "openai": "ChatGPT subscription or API key",
+      "anthropic": "Claude subscription or API key",
+      "google": "Antigravity sign-in or Gemini API key",
+      "xai": "Grok subscription or API key",
+      "openrouter": "Models through one API key",
+      "bedrock": "Bedrock API key and AWS region",
+      "gateway": "Emissary or another compatible endpoint",
+      "local": "A model server in the agent’s environment"
+    },
+    "modelIds": "Model IDs (comma separated)",
+    "modelIdsHint": "Use the provider’s model ID or your gateway’s alias. You can also enter one on the agent.",
+    "managerShareNotice": "Only a connection manager can share this credential with everyone or give every agent access.",
+    "loadingPermissions": "Loading connection permissions…",
+    "loadPermissions": "load connection permissions",
+    "connectProvider": "Connect a model provider",
+    "reconnect": "Reconnect",
+    "connect": "Connect",
+    "loadAgents": "load agents",
+    "advancedProviders": "Advanced providers",
+    "providerUrl": "Provider URL",
+    "apiFormat": "API format",
+    "awsRegion": "AWS region",
+    "authentication": "Authentication",
+    "bedrockApiKey": "Bedrock API key",
+    "bearerToken": "Bearer token",
+    "apiKeyHeader": "API key · x-api-key",
+    "noAuthentication": "No authentication",
+    "apiKey": "API key",
+    "modelSettings": "Model settings",
+    "testAfterConnecting": "Test the connection with your chosen model in the agent’s execution environment after connecting.",
+    "invalidFields": "Check the URL, API format, and authentication fields."
+  },
   "errors": {
     "actionFailed": "Couldn't {{action}}",
     "codes": {

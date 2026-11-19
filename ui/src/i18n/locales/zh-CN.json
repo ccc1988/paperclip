@@ -90,6 +90,40 @@
     "noConnections": "暂无 AI 连接。",
     "connectNewAccount": "连接新账户"
   },
+  "aiProviderSetup": {
+    "providerDescriptions": {
+      "openai": "ChatGPT 订阅或 API 密钥",
+      "anthropic": "Claude 订阅或 API 密钥",
+      "google": "Antigravity 登录或 Gemini API 密钥",
+      "xai": "Grok 订阅或 API 密钥",
+      "openrouter": "通过一个 API 密钥使用多个模型",
+      "bedrock": "Bedrock API 密钥和 AWS 区域",
+      "gateway": "Emissary 或其他兼容端点",
+      "local": "Agent 环境中的模型服务器"
+    },
+    "modelIds": "模型 ID（用逗号分隔）",
+    "modelIdsHint": "使用提供方的模型 ID 或网关别名，也可以在 Agent 中输入模型 ID。",
+    "managerShareNotice": "只有连接管理员可以将此凭据共享给所有人，或授予所有 Agent 使用权限。",
+    "loadingPermissions": "正在加载连接权限……",
+    "loadPermissions": "加载连接权限",
+    "connectProvider": "连接模型提供方",
+    "reconnect": "重新连接",
+    "connect": "连接",
+    "loadAgents": "加载 Agent",
+    "advancedProviders": "高级提供方",
+    "providerUrl": "提供方 URL",
+    "apiFormat": "API 格式",
+    "awsRegion": "AWS 区域",
+    "authentication": "认证方式",
+    "bedrockApiKey": "Bedrock API 密钥",
+    "bearerToken": "Bearer 令牌",
+    "apiKeyHeader": "API 密钥 · x-api-key",
+    "noAuthentication": "无需认证",
+    "apiKey": "API 密钥",
+    "modelSettings": "模型设置",
+    "testAfterConnecting": "连接后，会在 Agent 的执行环境中使用您选择的模型测试连接。",
+    "invalidFields": "请检查 URL、API 格式和认证字段。"
+  },
   "errors": {
     "actionFailed": "无法{{action}}",
     "codes": {
