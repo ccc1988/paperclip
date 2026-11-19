@@ -880,6 +880,11 @@
     }
   },
   "connectionSetup": {
+    "header": {
+      "connectApp": "连接 {{app}}",
+      "connectOwnMcp": "连接自己的 MCP 服务器",
+      "setupProgress": "设置进度"
+    },
     "selectOrganization": "请选择要连接应用的组织。",
     "finishFailedTitle": "无法完成设置",
     "loadFailedTitle": "无法加载连接设置",
@@ -1613,6 +1618,11 @@
     "title": "连接",
     "selectOrganization": "未选择组织，请从上方切换器选择组织。",
     "connectors": "连接器",
+    "browse": "浏览",
+    "waitingForYourOk": "等待您确认",
+    "waitingForYourOkCount": "{{count}} 项等待您确认",
+    "developer": "开发者",
+    "developerDescription": "面向开发者的高级设置。",
     "connections": "连接",
     "toolsDescription": "您已连接的工具及其运行状态。",
     "connectApp": "连接应用",

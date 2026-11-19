@@ -880,6 +880,11 @@
     }
   },
   "connectionSetup": {
+    "header": {
+      "connectApp": "Connect {{app}}",
+      "connectOwnMcp": "Connect your own MCP server",
+      "setupProgress": "Setup progress"
+    },
     "selectOrganization": "Select an organization to connect apps.",
     "finishFailedTitle": "Couldn’t finish setup",
     "loadFailedTitle": "Couldn’t load connection setup",
@@ -1613,6 +1618,11 @@
     "title": "Connections",
     "selectOrganization": "No organization selected. Select an organization from the switcher above.",
     "connectors": "Connectors",
+    "browse": "Browse",
+    "waitingForYourOk": "waiting for your OK",
+    "waitingForYourOkCount": "{{count}} waiting for your OK",
+    "developer": "Developer",
+    "developerDescription": "Advanced setup for developers.",
     "connections": "Connections",
     "toolsDescription": "The tools you’ve connected, and whether they’re working.",
     "connectApp": "Connect an app",

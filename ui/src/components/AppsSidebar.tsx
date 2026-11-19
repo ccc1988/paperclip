@@ -7,6 +7,7 @@ import { useSmokeLabEnabled } from "@/hooks/useSmokeLabEnabled";
 import { useReviewCount } from "@/pages/apps/useReviewCount";
 import { SidebarNavItem } from "./SidebarNavItem";
 import { contextualSidebarStyles } from "./contextual-sidebar-styles";
+import { t } from "@/i18n";
 
 /**
  * Secondary sidebar for the Apps area.
@@ -33,19 +34,19 @@ export function AppsSidebar() {
   return (
     <aside className="w-full h-full min-h-0 border-r border-border bg-background flex flex-col">
       <nav
-        aria-label="Connectors"
+        aria-label={t("nav.connectors")}
         data-slot="contextual-sidebar-nav"
         className={contextualSidebarStyles.nav}
       >
         <div data-slot="contextual-sidebar-group" className={contextualSidebarStyles.group}>
-          <SidebarNavItem to="/apps" label="Browse" icon={Store} end />
+          <SidebarNavItem to="/apps" label={t("connectionsPage.browse")} icon={Store} end />
           <SidebarNavItem
             to="/apps/review"
-            label="Review"
+            label={t("connectionsPage.review")}
             icon={ShieldQuestion}
             badge={reviewCount > 0 ? reviewCount : undefined}
             badgeTone="warning"
-            badgeLabel="waiting for your OK"
+            badgeLabel={t("connectionsPage.waitingForYourOk")}
           />
         </div>
         {developerTabs.length > 0 ? (
@@ -54,13 +55,13 @@ export function AppsSidebar() {
               data-slot="contextual-sidebar-section-label"
               className={contextualSidebarStyles.sectionLabel}
             >
-              Developer
+              {t("connectionsPage.developer")}
             </div>
             <p
               data-slot="contextual-sidebar-section-description"
               className={contextualSidebarStyles.sectionDescription}
             >
-              Advanced setup for developers.
+              {t("connectionsPage.developerDescription")}
             </p>
             <div data-slot="contextual-sidebar-group" className={contextualSidebarStyles.group}>
               {developerTabs.map((tab) => (
@@ -85,8 +86,8 @@ export function AppsMobileNav() {
   const reviewCount = useReviewCount();
   const segmentClass = ({ isActive }: { isActive: boolean }) =>
     `flex min-w-0 flex-1 items-center justify-center gap-2 rounded-md px-3 py-2 text-sm no-underline transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${isActive ? "bg-accent text-foreground" : "text-muted-foreground hover:bg-accent/50 hover:text-foreground"}`;
-  return <nav aria-label="Connectors" className="mb-4 flex rounded-lg border border-border bg-background p-1">
-    <NavLink to="/apps" end className={segmentClass}>Browse</NavLink>
-    <NavLink to="/apps/review" className={segmentClass}>Review{reviewCount > 0 && <span className="rounded-full bg-muted px-1.5 text-xs" aria-label={`${reviewCount} waiting for your OK`}>{reviewCount}</span>}</NavLink>
+  return <nav aria-label={t("nav.connectors")} className="mb-4 flex rounded-lg border border-border bg-background p-1">
+    <NavLink to="/apps" end className={segmentClass}>{t("connectionsPage.browse")}</NavLink>
+    <NavLink to="/apps/review" className={segmentClass}>{t("connectionsPage.review")}{reviewCount > 0 && <span className="rounded-full bg-muted px-1.5 text-xs" aria-label={t("connectionsPage.waitingForYourOkCount", { count: reviewCount })}>{reviewCount}</span>}</NavLink>
   </nav>;
 }
