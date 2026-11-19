@@ -1860,6 +1860,11 @@
       "loadError": "加载决策设置",
       "dialogTitle": "添加决策连接",
       "dialogDescription": "使用共享 API 连接处理组织决策。"
+    },
+    "zapier": {
+      "urlLabel": "Zapier MCP 地址",
+      "urlPlaceholder": "https://mcp.zapier.com/api/v1/connect?token=…",
+      "invalidUrl": "请输入有效的 Zapier 地址后继续。"
     }
   },
   "projectDetail": {

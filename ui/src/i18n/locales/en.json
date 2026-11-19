@@ -1860,6 +1860,11 @@
       "loadError": "load decision settings",
       "dialogTitle": "Add a decision connection",
       "dialogDescription": "Use a shared API connection for company decisions."
+    },
+    "zapier": {
+      "urlLabel": "Zapier MCP URL",
+      "urlPlaceholder": "https://mcp.zapier.com/api/v1/connect?token=…",
+      "invalidUrl": "Paste a valid Zapier URL to continue."
     }
   },
   "projectDetail": {

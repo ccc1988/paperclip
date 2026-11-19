@@ -3135,7 +3135,7 @@ function ZapierConnectStep({
   return (
     <div className="mx-auto max-w-xl">
       <div>
-        <label className="text-sm font-medium text-foreground">Zapier MCP URL</label>
+        <label className="text-sm font-medium text-foreground">{t("connectionSetup.zapier.urlLabel")}</label>
         <Input
           type="password"
           autoComplete="off"
@@ -3145,12 +3145,12 @@ function ZapierConnectStep({
           onKeyDown={(event) => {
             if (event.key === "Enter" && isZapierLink && !submitting) onConnect();
           }}
-          placeholder="https://mcp.zapier.com/api/v1/connect?token=…"
+          placeholder={t("connectionSetup.zapier.urlPlaceholder")}
           className="mt-2 h-11"
           autoFocus
         />
         {link.trim() && !isZapierLink && (
-          <p className="mt-2 text-xs text-destructive">Paste a valid Zapier URL to continue.</p>
+          <p className="mt-2 text-xs text-destructive">{t("connectionSetup.zapier.invalidUrl")}</p>
         )}
       </div>
 
@@ -3158,11 +3158,11 @@ function ZapierConnectStep({
 
       <div className="mt-6 flex items-center justify-between">
         <Button variant="ghost" onClick={onBack} disabled={submitting}>
-          Back
+          {t("connectionSetup.back")}
         </Button>
         <Button onClick={onConnect} disabled={submitting || !isZapierLink}>
           {submitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-          {submitting ? "Checking…" : "Check link"}
+          {submitting ? t("connectionSetup.checking") : t("connectionSetup.checkLink")}
         </Button>
       </div>
     </div>
