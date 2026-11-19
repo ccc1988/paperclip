@@ -26,6 +26,7 @@
     "back": "Back",
     "refresh": "Refresh",
     "done": "Done",
+    "retry": "Retry",
     "stepOf": "Step {{step}} of {{total}}",
     "step": "Step {{step}}"
   },
@@ -89,6 +90,21 @@
     "noMatchingConnections": "No matching connections.",
     "noConnections": "No AI connections yet.",
     "connectNewAccount": "Connect a new account"
+  },
+  "managedConnection": {
+    "personal": "Personal",
+    "companyShared": "Company shared",
+    "loadingAccount": "Loading AI account…",
+    "accountUnavailable": "This account is not available to you.",
+    "providerSettings": "Provider settings",
+    "destination": "Destination",
+    "apiFormat": "API format",
+    "selectedByHarness": "Selected by harness",
+    "authentication": "Authentication",
+    "models": "Models",
+    "enterModelOnAgent": "Enter a model ID on the agent",
+    "loadActiveRuns": "load active runs",
+    "stopRun": "Stop run"
   },
   "aiProviderSetup": {
     "providerDescriptions": {
