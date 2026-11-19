@@ -124,6 +124,7 @@ import {
 } from "./connection-owner";
 import { ANALYTICS_MASK_CLASS } from "@/lib/analytics/privacy";
 import { cn } from "@/lib/utils";
+import { t } from "@/i18n";
 
 type ConnectorRowModel = {
   key: string;
@@ -423,7 +424,7 @@ export function Browse({ renderAccountDetails = (connection) => connection.conne
     useState<ConnectionRemovalTarget | null>(null);
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Connectors" }]);
+    setBreadcrumbs([{ label: t("nav.connectors") }]);
     return () => setBreadcrumbs([]);
   }, [setBreadcrumbs]);
 
@@ -1001,7 +1002,7 @@ export function Browse({ renderAccountDetails = (connection) => connection.conne
   if (!selectedCompanyId) {
     return (
       <div className="p-6 text-sm text-muted-foreground">
-        Select an organization to manage connectors.
+        {t("connectionsPage.selectOrganizationToManage")}
       </div>
     );
   }
@@ -1026,7 +1027,7 @@ export function Browse({ renderAccountDetails = (connection) => connection.conne
       {loadFailure ? (
         <QueryErrorState
           error={loadFailure.error}
-          action="load every connector"
+          action={t("connectionsPage.loadEveryConnector")}
           onRetry={() => {
             loadFailure.retry();
             void galleryQuery.refetch();
@@ -1038,25 +1039,25 @@ export function Browse({ renderAccountDetails = (connection) => connection.conne
         />
       ) : null}
 
-      {refreshAggregator.error ? <p role="alert" className="text-sm text-destructive">Couldn’t refresh the gateway. Last known accounts are shown.</p> : null}
-      {aiDefaultsView.kind === "error" && <QueryErrorState size="inline" error={aiDefaultsView.error} action="load AI account defaults"
+      {refreshAggregator.error ? <p role="alert" className="text-sm text-destructive">{t("connectionsPage.refreshGatewayFailed")}</p> : null}
+      {aiDefaultsView.kind === "error" && <QueryErrorState size="inline" error={aiDefaultsView.error} action={t("connectionsPage.loadAiDefaults")}
         onRetry={aiDefaultsView.retry} retrying={aiDefaultsView.isFetching} />}
       {aiDefaults.error && aiDefaults.failedProvider && <AiDefaultError provider={AI_PROVIDERS[aiDefaults.failedProvider].name}
         pending={aiDefaults.pending(aiDefaults.failedProvider)} onRetry={aiDefaults.retry} />}
 
       {loading ? (
-        <div className="space-y-3" aria-label="Loading connectors">
+        <div className="space-y-3" aria-label={t("connectionsPage.loadingConnectors")}>
           {Array.from({ length: 6 }).map((_, index) => (
             <Skeleton key={index} className="h-24 w-full rounded-xl" />
           ))}
         </div>
       ) : nothingMatches ? (
         <div className="flex flex-col items-start gap-3 rounded-xl border border-dashed border-border bg-card px-4 py-6 text-sm text-muted-foreground">
-          <p className="flex items-center gap-2"><Link2 className="h-4 w-4" />No connectors match “{query.trim()}”.</p>
-          <Button variant="outline" size="sm" onClick={() => changeQuery("")}>Clear search</Button>
+          <p className="flex items-center gap-2"><Link2 className="h-4 w-4" />{t("connectionsPage.noConnectorsMatch", { query: query.trim() })}</p>
+          <Button variant="outline" size="sm" onClick={() => changeQuery("")}>{t("connectionsPage.clearSearch")}</Button>
         </div>
       ) : (
-        <div className={cn("space-y-3", ANALYTICS_MASK_CLASS)} role="list" aria-label="Connector list">
+        <div className={cn("space-y-3", ANALYTICS_MASK_CLASS)} role="list" aria-label={t("connectionsPage.connectorList")}>
           {showAssistantConnection && <AssistantConnectionCard onNavigate={navigate} />}
           {paginatedRows.map((row) => (
             row.networkConnections ? <TailscaleConnectorCard key={row.key} onNavigate={navigate} /> : <ConnectorCard
@@ -1093,12 +1094,12 @@ export function Browse({ renderAccountDetails = (connection) => connection.conne
 
       {accountLoadErrors.length ? <p role="alert" className="text-sm text-destructive">Couldn’t load {Array.from(new Set(accountLoadErrors)).join(" or ")} accounts. Use Refresh in the connection’s menu to try again.</p> : null}
 
-      {!loading && catalogRows.length > 0 ? <nav aria-label="Connector catalog pages" className="flex flex-wrap items-center justify-between gap-3 text-sm">
-        <p className="text-muted-foreground" role="status">{pageStart + 1}–{Math.min(pageStart + CATALOG_PAGE_SIZE, catalogRows.length)} of {catalogRows.length.toLocaleString()} connectors</p>
+      {!loading && catalogRows.length > 0 ? <nav aria-label={t("connectionsPage.connectorCatalogPages")} className="flex flex-wrap items-center justify-between gap-3 text-sm">
+        <p className="text-muted-foreground" role="status">{t("connectionsPage.connectorRange", { start: pageStart + 1, end: Math.min(pageStart + CATALOG_PAGE_SIZE, catalogRows.length), total: catalogRows.length.toLocaleString() })}</p>
         <div className="flex items-center gap-2">
-          <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => { setPage(currentPage - 1); catalogTop.current?.scrollIntoView?.({ block: "start" }); }}>Previous</Button>
-          <span className="text-xs text-muted-foreground">Page {currentPage} of {pageCount}</span>
-          <Button variant="outline" size="sm" disabled={currentPage === pageCount} onClick={() => { setPage(currentPage + 1); catalogTop.current?.scrollIntoView?.({ block: "start" }); }}>Next</Button>
+          <Button variant="outline" size="sm" disabled={currentPage === 1} onClick={() => { setPage(currentPage - 1); catalogTop.current?.scrollIntoView?.({ block: "start" }); }}>{t("connectionsPage.previous")}</Button>
+          <span className="text-xs text-muted-foreground">{t("connectionsPage.pageOf", { page: currentPage, pages: pageCount })}</span>
+          <Button variant="outline" size="sm" disabled={currentPage === pageCount} onClick={() => { setPage(currentPage + 1); catalogTop.current?.scrollIntoView?.({ block: "start" }); }}>{t("connectionsPage.next")}</Button>
         </div>
       </nav> : null}
 
@@ -1153,9 +1154,7 @@ export function Browse({ renderAccountDetails = (connection) => connection.conne
             {describeError(removeConnection.error).body}
           </p> : null}
           <AlertDialogFooter className="sm:justify-between">
-            <AlertDialogCancel disabled={removeConnection.isPending}>
-              Cancel
-            </AlertDialogCancel>
+            <AlertDialogCancel disabled={removeConnection.isPending}>{t("common.cancel")}</AlertDialogCancel>
             <AlertDialogAction
               className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
               disabled={!connectionToRemove || removeConnection.isPending}
