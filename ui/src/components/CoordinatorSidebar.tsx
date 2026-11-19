@@ -135,6 +135,7 @@ function ProjectRecent({ project, pins }: { project: Project; pins: PinControls 
 }
 
 function RecentNavigationList({ children }: { children: ReactNode }) {
+  const { t } = useTranslation();
   const scrollRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const handleScroll = useScrollbarWhileScrolling();
@@ -152,7 +153,7 @@ function RecentNavigationList({ children }: { children: ReactNode }) {
     if (contentRef.current) observer?.observe(contentRef.current);
     return () => { viewport.removeEventListener("scroll", measure); observer?.disconnect(); };
   }, []);
-  return <div ref={scrollRef} className="design-sidebar-recent-list scrollbar-while-scrolling" onScroll={handleScroll} role="region" aria-label="Recents" tabIndex={0}>
+  return <div ref={scrollRef} className="design-sidebar-recent-list scrollbar-while-scrolling" onScroll={handleScroll} role="region" aria-label={t("nav.recents")} tabIndex={0}>
     <div ref={contentRef} className="design-sidebar-recent-content">{children}</div>
   </div>;
 }
@@ -231,9 +232,9 @@ export function CoordinatorSidebar({ children }: { children?: ReactNode }) {
   return <FlyoutAppearanceProvider><TruncatedTextMarqueeProvider><aside className="coordinator-sidebar design-sidebar w-full">
     <div className="design-sidebar-brand">
       <SidebarCompanyMenu showChevron={false} />
-      <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon-sm" className="design-sidebar-search" aria-label="Global search" onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true, cancelable: true }))}><Search aria-hidden /></Button></TooltipTrigger><TooltipContent side="right">Search tasks, agents, projects</TooltipContent></Tooltip>
+      <Tooltip><TooltipTrigger asChild><Button variant="ghost" size="icon-sm" className="design-sidebar-search" aria-label={t("dashboard.globalSearch")} onClick={() => document.dispatchEvent(new KeyboardEvent("keydown", { key: "k", metaKey: true, bubbles: true, cancelable: true }))}><Search aria-hidden /></Button></TooltipTrigger><TooltipContent side="right">{t("dashboard.searchTasksAgentsProjects")}</TooltipContent></Tooltip>
     </div>
-    <nav className="design-sidebar-navigation" aria-label="Workspace navigation">
+    <nav className="design-sidebar-navigation" aria-label={t("dashboard.workspaceNavigation")}>
       <div className="design-sidebar-primary">
         {newTaskButton}
         <div className="design-sidebar-primary my-2">
