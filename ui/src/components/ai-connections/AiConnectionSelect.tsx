@@ -19,6 +19,7 @@ import type { AiConnectionPickerProps } from "./AiConnectionPicker";
 import type { AiConnectionSummary } from "./model";
 import { ANALYTICS_MASK_CLASS } from "@/lib/analytics/privacy";
 import { cn } from "@/lib/utils";
+import { useTranslation } from "@/i18n";
 
 function ConnectionLabel({ connection, label, wrap = false }: { connection: AiConnectionSummary; label?: string; wrap?: boolean }) {
   return (
@@ -45,6 +46,7 @@ export function AiConnectionSelect({
   adapterType,
   model,
 }: AiConnectionPickerProps & { adapterType: string; model?: string }) {
+  const { t } = useTranslation();
   const selectId = useId();
   const personal = personalAiDefault(connections, requirement, currentUserId);
   const selected =
@@ -110,7 +112,7 @@ export function AiConnectionSelect({
   return (
     <div className="space-y-2">
       <label className="text-xs text-muted-foreground" htmlFor={selectId}>
-        Connection
+        {t("onboarding.connection.connectionLabel")}
       </label>
       <Select
         value={
@@ -121,23 +123,23 @@ export function AiConnectionSelect({
         onValueChange={change}
         disabled={readOnly || loading || Boolean(error)}
       >
-        <SelectTrigger id={selectId} aria-label="Connection" title={selected ? aiConnectionDisplayLabel(selected) : undefined} className={cn("w-full", ANALYTICS_MASK_CLASS)}>
+        <SelectTrigger id={selectId} aria-label={t("onboarding.connection.connectionLabel")} title={selected ? aiConnectionDisplayLabel(selected) : undefined} className={cn("w-full", ANALYTICS_MASK_CLASS)}>
           <SelectValue
             placeholder={
-              loading ? "Loading connections…" : "Choose a connection"
+              loading ? t("onboarding.connection.loadingConnections") : t("onboarding.connection.chooseConnection")
             }
           >
             {selected
-              ? <ConnectionLabel connection={selected} label={value?.mode === "responsible_user" ? "Responsible user’s default" : undefined} />
+              ? <ConnectionLabel connection={selected} label={value?.mode === "responsible_user" ? t("onboarding.connection.responsibleDefault") : undefined} />
               : value?.mode === "responsible_user"
-                ? "Responsible user’s default"
-                : value ? "Unavailable connection" : undefined}
+                ? t("onboarding.connection.responsibleDefault")
+                : value ? t("onboarding.connection.unavailableConnection") : undefined}
           </SelectValue>
         </SelectTrigger>
         <SelectContent className={ANALYTICS_MASK_CLASS}>
           {incompatible && selected && (
             <SelectItem value={selected.id} disabled>
-              <ConnectionLabel connection={selected} label={`${aiConnectionDisplayLabel(selected)} · Incompatible`} wrap />
+              <ConnectionLabel connection={selected} label={`${aiConnectionDisplayLabel(selected)} · ${t("onboarding.connection.incompatible")}`} wrap />
             </SelectItem>
           )}
           {compatible.map((c) => (
@@ -146,46 +148,43 @@ export function AiConnectionSelect({
               value={c.id}
               disabled={Boolean(aiConnectionProblem(c))}
             >
-              <ConnectionLabel connection={c} label={`${aiConnectionDisplayLabel(c)}${c.status !== "connected" ? " · Reconnect" : ""}`} wrap />
+              <ConnectionLabel connection={c} label={`${aiConnectionDisplayLabel(c)}${c.status !== "connected" ? ` · ${t("onboarding.connection.reconnect")}` : ""}`} wrap />
             </SelectItem>
           ))}
           {(canUseDefault || value?.mode === "responsible_user") && (
             <SelectItem value="responsible_user" disabled={!canUseDefault}>
               <span className="flex size-5 shrink-0 items-center justify-center"><UserRound className="size-4" /></span>
-              Responsible user’s default
+              {t("onboarding.connection.responsibleDefault")}
             </SelectItem>
           )}
           <SelectItem value="connect">
             <span className="flex size-5 shrink-0 items-center justify-center"><Plus className="size-4" /></span>
-            Connect an account…
+            {t("onboarding.connection.connectAccountOption")}
           </SelectItem>
         </SelectContent>
       </Select>
       {!readOnly && onReconnect && !loading && !error && (
-        <Button type="button" variant="outline" onClick={onReconnect}>Reconnect account</Button>
+        <Button type="button" variant="outline" onClick={onReconnect}>{t("onboarding.connection.reconnectAccount")}</Button>
       )}
       {error && (
         <div className="space-y-2">
           <p role="alert" className="text-sm text-destructive">
             {error}
           </p>
-          <Button type="button" variant="outline" onClick={onRetry}>
-            Retry connections
-          </Button>
+          <Button type="button" variant="outline" onClick={onRetry}>{t("onboarding.connection.retryConnections")}</Button>
         </div>
       )}
       {value?.mode === "responsible_user" && !personal && !loading && !error ? (
         <p role="alert" className="text-sm text-destructive">
-          You have no default account for this provider. Connect an account or choose another connection.
+          {t("onboarding.connection.noDefaultAccount")}
         </p>
       ) : unavailable ? (
         <p role="alert" className="text-sm text-destructive">
-          This connection is unavailable. Choose another connection.
+          {t("onboarding.connection.unavailableChooseAnother")}
         </p>
       ) : incompatible ? (
         <p role="alert" className="text-sm text-destructive">
-          This connection does not support the selected harness. Choose a
-          compatible connection.
+          {t("onboarding.connection.incompatibleChooseAnother")}
         </p>
       ) : selected && aiConnectionProblem(selected) ? (
         <p role="alert" className="text-sm text-destructive">
