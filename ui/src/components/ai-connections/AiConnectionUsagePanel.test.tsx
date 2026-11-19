@@ -101,7 +101,7 @@ it("shows explicit denial and distinguishes equal-duration provider windows", as
 it("shows cached pool observations without offering or making a provider call", () => {
   const observation: AiConnectionUsage = { connectionId: account.id, grantId: account.grantId, provider: account.provider, method: account.method, status: "ok", checkedAt: "2026-10-02T12:00:00Z", source: "fixture", planType: null, limits: [], overage: null };
   flushSync(() => root.render(<QueryClientProvider client={client}><AiConnectionUsagePanel account={account} observation={observation} cachedOnly /></QueryClientProvider>));
-  expect(host.textContent).toContain("Usage not reported");
+  expect(host.querySelector("p")?.textContent).toBe("Not reported");
   expect(host.querySelector("button")).toBeNull();
   expect(api.probeUsage).not.toHaveBeenCalled();
 });
