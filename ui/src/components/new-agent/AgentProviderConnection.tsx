@@ -231,16 +231,14 @@ export function AgentProviderConnection({
       if (run !== epoch.current) return;
       if (connected) onConnected(connection);
       else
-        setError(
-          "The provider did not respond. Check the connection and try again.",
-        );
+        setError(t("onboarding.connection.providerDidNotRespond"));
     } catch (cause) {
       if (run !== epoch.current) return;
       if (managedAccount) setApiKey("");
       setError(
         cause instanceof Error
           ? cause.message
-          : "Could not connect to the provider.",
+          : t("onboarding.connection.providerConnectionFailed"),
       );
     } finally {
       if (run === epoch.current) setBusy(false);
@@ -269,11 +267,11 @@ export function AgentProviderConnection({
   return (
     <div className="min-w-0 max-w-full">
       <ModelSourceTiles
-        label={advancedConnection ? "Connection type" : "Connect your model provider"}
+        label={advancedConnection ? t("onboarding.connection.connectionType") : t("onboarding.connection.connectModelProvider")}
         sources={advancedConnection ? [
           { id: "subscription", label: provider, icon: <AdapterMark type={adapterType} />, credentialMode: "subscription" },
           { id: "api", label: provider, icon: <AdapterMark type={adapterType} />, credentialMode: "api" },
-          { id: "advanced", label: "Advanced", icon: <Cable className="size-6 text-muted-foreground" />, credentialMode: "advanced" },
+          { id: "advanced", label: t("onboarding.connection.advanced"), icon: <Cable className="size-6 text-muted-foreground" />, credentialMode: "advanced" },
         ] : [
           {
             id: adapterType,
@@ -450,8 +448,8 @@ export function AgentProviderConnection({
         }}
         primaryLabel={
           opened && needsLogin
-            ? loginPhase === "waiting" ? adapterType === "codex_local" ? "Waiting for auth…" : "Waiting for code"
-              : loginPhase === "connecting" ? "Connecting"
+            ? loginPhase === "waiting" ? adapterType === "codex_local" ? t("onboarding.connection.waitingForAuth") : t("onboarding.connection.waitingForCode")
+              : loginPhase === "connecting" ? t("onboarding.connection.connecting")
               : automaticComputer && authorizationUrl ? t("onboarding.connection.continueToProvider", { provider }) : t("onboarding.connection.signInToProvider", { provider })
             : busy
             ? t("onboarding.connection.connecting")
