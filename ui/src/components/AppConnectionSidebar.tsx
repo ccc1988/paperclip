@@ -10,6 +10,7 @@ import { queryKeys } from "@/lib/queryKeys";
 import {
   APP_TABS,
   appApplicationTabHref,
+  appTabLabel,
   appTabHref,
   type AppTabKey,
 } from "@/pages/apps/app-tabs";
@@ -115,7 +116,7 @@ export function AppDetailSidebar(props: AppDetailSidebarProps) {
             <SidebarNavItem
               key={tab.key}
               to={tabHref(props, tab.key)}
-              label={poolPluginKey ? "Settings" : tab.label}
+              label={poolPluginKey ? "Settings" : appTabLabel(tab.key)}
               icon={tab.icon}
               end
               badge={tab.key === "review" && reviewCount > 0 ? reviewCount : undefined}

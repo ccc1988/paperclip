@@ -1639,6 +1639,14 @@
     "previous": "Previous",
     "pageOf": "Page {{page}} of {{pages}}",
     "next": "Next",
+    "reviewPage": {
+      "selectOrganization": "Select an organization to review approvals.",
+      "description": "Actions your agents want to run that need your OK first. Approve, always-allow, or decline."
+    },
+    "appTabs": {
+      "permissions": "Permissions",
+      "review": "Review"
+    },
     "connections": "Connections",
     "toolsDescription": "The tools you’ve connected, and whether they’re working.",
     "connectApp": "Connect an app",
@@ -1740,6 +1748,8 @@
       "save": "Save",
       "renameApp": "Rename app",
       "actionsAvailable": "{{count}} actions available",
+      "actionsAvailable_one": "{{count}} action available",
+      "actionsAvailable_other": "{{count}} actions available",
       "loadingMcpActions": "Loading MCP actions, this may take a minute.",
       "loadingTools": "Loading tools…",
       "instructions": {

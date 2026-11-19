@@ -1639,6 +1639,14 @@
     "previous": "上一页",
     "pageOf": "第 {{page}} 页，共 {{pages}} 页",
     "next": "下一页",
+    "reviewPage": {
+      "selectOrganization": "请选择组织以查看审批请求。",
+      "description": "Agent 想要执行但需要您先确认的操作。您可以批准、始终允许或拒绝。"
+    },
+    "appTabs": {
+      "permissions": "权限",
+      "review": "查看"
+    },
     "connections": "连接",
     "toolsDescription": "您已连接的工具及其运行状态。",
     "connectApp": "连接应用",
@@ -1740,6 +1748,8 @@
       "save": "保存",
       "renameApp": "重命名应用",
       "actionsAvailable": "可用操作：{{count}} 项",
+      "actionsAvailable_one": "可用操作：{{count}} 项",
+      "actionsAvailable_other": "可用操作：{{count}} 项",
       "loadingMcpActions": "正在加载 MCP 操作，可能需要一分钟。",
       "loadingTools": "正在加载工具……",
       "instructions": {
