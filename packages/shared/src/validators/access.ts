@@ -184,6 +184,9 @@ const profileImageSchema = z
   .max(4000)
   .refine(isValidProfileImage, { message: "Invalid profile image URL" });
 
+export const supportedLocaleSchema = z.enum(["en", "zh-CN"]);
+export type SupportedLocale = z.infer<typeof supportedLocaleSchema>;
+
 export const currentUserProfileSchema = z.object({
   id: z.string().min(1),
   email: z.preprocess(
@@ -195,6 +198,7 @@ export const currentUserProfileSchema = z.object({
     z.string().min(1).max(120).nullable(),
   ),
   image: profileImageSchema.nullable(),
+  locale: supportedLocaleSchema.nullable().optional(),
 });
 
 export type CurrentUserProfile = z.infer<typeof currentUserProfileSchema>;
@@ -272,3 +276,9 @@ export const updateCurrentUserProfileSchema = z.object({
 });
 
 export type UpdateCurrentUserProfile = z.infer<typeof updateCurrentUserProfileSchema>;
+
+export const updateUserPreferencesSchema = z.object({
+  locale: supportedLocaleSchema,
+});
+
+export type UpdateUserPreferences = z.infer<typeof updateUserPreferencesSchema>;

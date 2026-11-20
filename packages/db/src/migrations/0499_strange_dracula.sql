@@ -1,0 +1,1 @@
+ALTER TABLE "user_workspace_preferences" ADD COLUMN "locale" text;

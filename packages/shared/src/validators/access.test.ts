@@ -35,6 +35,18 @@ describe("currentUserProfileSchema", () => {
     expect(result.success && result.data.name).toBe("Jane");
   });
 
+  it("accepts a persisted interface locale", () => {
+    const result = currentUserProfileSchema.safeParse({
+      id: "u1",
+      email: "a@b.com",
+      name: "Jane",
+      image: null,
+      locale: "zh-CN",
+    });
+    expect(result.success).toBe(true);
+    expect(result.success && result.data.locale).toBe("zh-CN");
+  });
+
   it("preserves null name as null", () => {
     const result = currentUserProfileSchema.safeParse({
       id: "u1",

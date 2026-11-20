@@ -1,11 +1,12 @@
 import { Router } from "express";
 import { eq } from "drizzle-orm";
 import type { Db } from "@paperclipai/db";
-import { authUsers } from "@paperclipai/db";
+import { authUsers, userWorkspacePreferences } from "@paperclipai/db";
 import {
   authSessionSchema,
   currentUserProfileSchema,
   updateCurrentUserProfileSchema,
+  updateUserPreferencesSchema,
 } from "@paperclipai/shared";
 import { unauthorized } from "../errors.js";
 import { validate } from "../middleware/validate.js";
@@ -16,16 +17,23 @@ import { loadBoardBootstrap } from "../services/board-bootstrap.js";
 import { resolveBrowserAnalyticsConfig } from "../services/cloud-posthog-browser.js";
 
 async function loadCurrentUserProfile(db: Db, userId: string) {
-  const user = await db
-    .select({
-      id: authUsers.id,
-      email: authUsers.email,
-      name: authUsers.name,
-      image: authUsers.image,
-    })
-    .from(authUsers)
-    .where(eq(authUsers.id, userId))
-    .then((rows) => rows[0] ?? null);
+  const [user, preference] = await Promise.all([
+    db
+      .select({
+        id: authUsers.id,
+        email: authUsers.email,
+        name: authUsers.name,
+        image: authUsers.image,
+      })
+      .from(authUsers)
+      .where(eq(authUsers.id, userId))
+      .then((rows) => rows[0] ?? null),
+    db
+      .select({ locale: userWorkspacePreferences.locale })
+      .from(userWorkspacePreferences)
+      .where(eq(userWorkspacePreferences.userId, userId))
+      .then((rows) => rows[0] ?? null),
+  ]);
 
   if (!user) {
     throw unauthorized("Signed-in user not found");
@@ -36,6 +44,7 @@ async function loadCurrentUserProfile(db: Db, userId: string) {
     email: user.email ?? null,
     name: user.name ?? null,
     image: user.image ?? null,
+    locale: preference?.locale === "en" || preference?.locale === "zh-CN" ? preference.locale : null,
   });
 }
 
@@ -117,12 +126,25 @@ export function authRoutes(db: Db) {
       throw unauthorized("Signed-in user not found");
     }
 
-    res.json(currentUserProfileSchema.parse({
-      id: updated.id,
-      email: updated.email ?? null,
-      name: updated.name ?? null,
-      image: updated.image ?? null,
-    }));
+    res.json(await loadCurrentUserProfile(db, req.actor.userId));
+  });
+
+  router.patch("/preferences", validate(updateUserPreferencesSchema), async (req, res) => {
+    if (req.actor.type !== "board" || !req.actor.userId) {
+      throw unauthorized("Board authentication required");
+    }
+
+    const patch = updateUserPreferencesSchema.parse(req.body);
+    const now = new Date();
+    await db
+      .insert(userWorkspacePreferences)
+      .values({ userId: req.actor.userId, locale: patch.locale, updatedAt: now })
+      .onConflictDoUpdate({
+        target: userWorkspacePreferences.userId,
+        set: { locale: patch.locale, updatedAt: now },
+      });
+
+    res.json(await loadCurrentUserProfile(db, req.actor.userId));
   });
 
   return router;

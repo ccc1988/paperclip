@@ -3,6 +3,7 @@ import { Languages } from "lucide-react";
 import { getLocale, setLocale, useTranslation } from "@/i18n";
 import { localeLabels, supportedLocales, type SupportedLocale } from "@/i18n/locales";
 import { NativeSelect } from "@/components/ui/select";
+import { authApi } from "@/api/auth";
 
 export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const { i18n, t } = useTranslation();
@@ -12,7 +13,13 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
 
   async function handleChange(nextLocale: string) {
     if (!supportedLocales.includes(nextLocale as SupportedLocale)) return;
-    await setLocale(nextLocale as SupportedLocale);
+    const locale = nextLocale as SupportedLocale;
+    await setLocale(locale);
+    try {
+      await authApi.updatePreferences({ locale });
+    } catch (error) {
+      console.warn("Failed to persist interface language preference", error);
+    }
   }
 
   return (

@@ -4,6 +4,7 @@ import {
   tenantSessionRecovery,
 } from "@/lib/tenant-session-recovery";
 import { authApi } from "./auth";
+import { getLocale, setLocale } from "@/i18n";
 
 afterEach(() => {
   vi.restoreAllMocks();
@@ -11,6 +12,19 @@ afterEach(() => {
 });
 
 describe("authApi.getSession", () => {
+  it("restores the durable server locale after a fresh browser session", async () => {
+    await setLocale("en");
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue(Response.json({
+      session: { id: "session", userId: "one" },
+      user: { id: "one", email: "one@example.com", name: "One", image: null, locale: "zh-CN" },
+      sentryDsn: null,
+    })));
+
+    await authApi.getSession();
+
+    expect(getLocale()).toBe("zh-CN");
+  });
+
   it("keeps a valid session when optional bootstrap is malformed or belongs to another account", async () => {
     const session = { session: { id: "session", userId: "one" },
       user: { id: "one", email: "one@example.com", name: "One", image: null }, sentryDsn: null };

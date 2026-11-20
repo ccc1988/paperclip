@@ -33,9 +33,38 @@ function createUpdateChain(row: unknown) {
 }
 
 function createDb(row: Record<string, unknown>) {
+  let userSelectCount = 0;
+  const mutableRow = { ...row };
+  let storedLocale = typeof row.locale === "string" ? row.locale : null;
   return {
-    select: () => createSelectChain([row]),
-    update: () => createUpdateChain(row),
+    select: () => {
+      userSelectCount += 1;
+      return createSelectChain(userSelectCount % 2 === 1 ? [mutableRow] : [{ locale: storedLocale }]);
+    },
+    update: () => ({
+      set(values: Record<string, unknown>) {
+        Object.assign(mutableRow, values);
+        return {
+          where() {
+            return {
+              returning() {
+                return Promise.resolve([mutableRow]);
+              },
+            };
+          },
+        };
+      },
+    }),
+    insert: () => ({
+      values(values: { locale?: string | null }) {
+        storedLocale = values.locale ?? null;
+        return {
+          onConflictDoUpdate() {
+            return Promise.resolve();
+          },
+        };
+      },
+    }),
   } as any;
 }
 
@@ -57,6 +86,7 @@ describe("auth routes", () => {
     name: "Jane Example",
     email: "jane@example.com",
     image: "https://example.com/jane.png",
+    locale: null,
   };
   const originalSentryDsn = process.env.SENTRY_DSN;
   const originalSentryDsnFrontend = process.env.SENTRY_DSN_FRONTEND;
@@ -323,6 +353,33 @@ describe("auth routes", () => {
       email: "jane@example.com",
       image: "https://example.com/jane.png",
     });
+  });
+
+  it("persists the signed-in user's interface language preference", async () => {
+    const app = await createApp(
+      { type: "board", userId: "user-1", source: "local_implicit" },
+      baseUser,
+    );
+
+    const res = await request(app)
+      .patch("/api/auth/preferences")
+      .send({ locale: "zh-CN" });
+
+    expect(res.status).toBe(200);
+    expect(res.body).toMatchObject({ id: "user-1", locale: "zh-CN" });
+  });
+
+  it("rejects unsupported interface languages", async () => {
+    const app = await createApp(
+      { type: "board", userId: "user-1", source: "local_implicit" },
+      baseUser,
+    );
+
+    const res = await request(app)
+      .patch("/api/auth/preferences")
+      .send({ locale: "fr" });
+
+    expect(res.status).toBe(400);
   });
 
   it("accepts Paperclip asset paths for avatars", async () => {

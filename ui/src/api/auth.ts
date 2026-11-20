@@ -5,12 +5,14 @@ import {
   readBoardBootstrap,
   type CurrentUserProfile,
   type UpdateCurrentUserProfile,
+  type UpdateUserPreferences,
 } from "@paperclipai/shared";
 import { redactUrlSecrets } from "@/lib/redact-url-secrets";
 import { tenantSessionRecovery } from "@/lib/tenant-session-recovery";
 import { apiFetch } from "./client";
 import { apiErrorMessage, isRawErrorCode } from "./errors";
 import { readApiJson } from "./response";
+import { getLocale, setLocale } from "@/i18n";
 
 type AuthErrorBody =
   | {
@@ -48,6 +50,10 @@ function toSession(value: unknown): BoardBootstrapSession | null {
 
   if (!value || typeof value !== "object") return null;
   return toSession((value as Record<string, unknown>).data);
+}
+
+async function applyServerLocale(locale: CurrentUserProfile["locale"]): Promise<void> {
+  if (locale && locale !== getLocale()) await setLocale(locale);
 }
 
 /** The server's own explanation on an auth error body, if it sent one. */
@@ -177,8 +183,12 @@ export const authApi = {
       throw extractAuthError(payload as AuthErrorBody, res.status);
     }
     const direct = toSession(payload);
-    if (direct) return direct;
+    if (direct) {
+      await applyServerLocale(direct.user.locale);
+      return direct;
+    }
     const nested = payload && typeof payload === "object" ? toSession((payload as Record<string, unknown>).data) : null;
+    if (nested) await applyServerLocale(nested.user.locale);
     return nested;
   },
 
@@ -201,11 +211,16 @@ export const authApi = {
       if (recovery) return recovery;
       throw new Error((payload as { error?: string } | null)?.error ?? `Failed to load profile (${res.status})`);
     }
-    return currentUserProfileSchema.parse(payload);
+    const profile = currentUserProfileSchema.parse(payload);
+    await applyServerLocale(profile.locale);
+    return profile;
   },
 
   updateProfile: async (input: UpdateCurrentUserProfile): Promise<CurrentUserProfile> =>
     authPatch("/profile", input, (payload) => currentUserProfileSchema.parse(payload)),
+
+  updatePreferences: async (input: UpdateUserPreferences): Promise<CurrentUserProfile> =>
+    authPatch("/preferences", input, (payload) => currentUserProfileSchema.parse(payload)),
 
   signOut: async (): Promise<SignOutResult | null> => {
     const payload = await authPost("/sign-out", {});

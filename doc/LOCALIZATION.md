@@ -14,13 +14,22 @@ messages and a dedicated review.
 
 ## Runtime behavior
 
-- The saved browser preference is `paperclip.locale`.
+- The browser keeps a fast local copy in `paperclip.locale`.
+- After sign-in, the same preference is persisted in the server database as the
+  user's workspace preference and is returned in the auth session. This is the
+  durable source that restores the language after a Paperclip process restart,
+  browser reload, or a new browser context on the same instance.
 - When no preference exists, a browser language beginning with `zh` selects
   `zh-CN`; all other languages select `en`.
 - Unsupported or unreadable preferences fall back to `en`.
 - Missing Chinese messages fall back to English through i18next.
 - Language switching does not change authentication, server state, or query
   data.
+
+The database must itself be persistent. For local embedded storage, keep
+`~/.paperclip/instances/default/db/`. For Docker, persist the `/paperclip`
+volume. Recreating a container without its database volume cannot preserve any
+user preference, including the language choice.
 
 The language selector is available in the organization settings page, the
 account menu, and the profile settings page. The organization settings entry is
