@@ -1,8 +1,8 @@
 # Paperclip CN 1.0 实施 PRD
 
-**文档状态：** 已确认实施规格；首次引导无可复用凭据时默认 API 密钥，并提供 OpenAI 兼容/中转 API 入口；固定侧栏菜单中文化已实现；界面语言选择已同时放入组织设置、个人资料和账户菜单。真实中转 API 调用、OAuth 回调和完整 Agent 创建闭环尚未验证；候选未提交、未推送、未发布，1.0 尚未完成。
-**版本：** 5.28
-**日期：** 2026-11-19
+**文档状态：** 已确认实施规格；首次引导无可复用凭据时默认 API 密钥，并提供 OpenAI 兼容/中转 API 入口；固定侧栏菜单中文化已实现；界面语言选择已同时放入组织设置、个人资料和账户菜单。功能候选已提交并推送 GitHub 分支，尚未合并 `master`、尚未正式发布；真实中转 API 调用、OAuth 回调和完整 Agent 创建闭环仍未验证，1.0 尚未完成。
+**版本：** 5.30
+**日期：** 2026-11-20
 **项目：** `ccc1988/paperclip` 自有发行版  
 **权威代码仓库：** `/Users/landonclark/Paperclip AI agents/paperclip-cn`  
 **官方上游：** `https://github.com/paperclipai/paperclip.git`  
@@ -12,12 +12,12 @@
 
 **当前实施基线（2026-11-19）：**
 
-- 此前已提交中文实现代码基线：`859c7e4a3`；本次候选位于 `sync/upstream-20261119-v2`，基线 `8afd7c55ba8c0dd3cb1a1678ec2a9e91dc430a35`，工作树包含未提交源码与文档改动；上游只读预检基线为 `upstream/master`（`07d931621803e33106d688261e481c88cbceb5aa`）。
+- 此前已提交中文实现代码基线：`859c7e4a3`；本次功能候选位于 `sync/upstream-20261119-v2`，基线 `8afd7c55ba8c0dd3cb1a1678ec2a9e91dc430a35`，功能提交为 `7ea264d54`，已推送到 `origin/sync/upstream-20261119-v2`；上游只读预检基线为 `upstream/master`（`07d931621803e33106d688261e481c88cbceb5aa`）。
 - `origin` 保持为 `https://github.com/ccc1988/paperclip.git`，`upstream` 保持为 `https://github.com/paperclipai/paperclip.git`。
 - S2 引导登录中文化已提交；本地 `.playwright-cli/` 临时目录已清理，不属于交付内容。
-- 当前提交和工作树均未推送 GitHub，未替换用户正在使用的 npm 安装版本。
+- 功能提交已推送 GitHub，未合并 `master`，未创建正式发布 Tag，未替换用户正在使用的 npm 安装版本。
 - 上游同步候选已在独立 worktree 形成，尚未合并回 `master`；候选分支、提交和验证证据见第 12.5 节。
-- 本轮将无可复用凭据时的引导默认方式调整为 API 密钥，并将已有 Gateway 路由接入 Codex、Claude、OpenCode 初始化；没有新增服务端 API、数据库、权限或运行协议。当前 `3100` 服务健康，构建后的 UI 已由本机 Chrome 刷新确认；未替换当前安装版本，未推送 GitHub。
+- 本轮将无可复用凭据时的引导默认方式调整为 API 密钥，并将已有 Gateway 路由接入 Codex、Claude、OpenCode 初始化；没有新增服务端 API、数据库、权限或运行协议。当前 `3100` 服务健康，源码模块和本机页面入口已检查；未替换正式安装版本，功能提交已推送 GitHub。
 
 ## 0. 本次决策
 
@@ -1103,3 +1103,4 @@ type LocalePackManifest = {
 | 5.27 | 2026-11-19 | 补齐 AI 连接用量面板固定状态和错误文案；i18n 审计通过（`2940` 条），2 个测试文件共 18 项通过，UI 类型检查和 `git diff --check` 通过，未部署 |
 | 5.28 | 2026-11-19 | 首次无可复用凭据时默认 API 密钥；初始化暴露现有 OpenAI 兼容/中转 Gateway，Codex/Claude/OpenCode 分别默认 Responses/Messages/Chat Completions；固定侧栏菜单和功能辅助标签默认简体中文；i18n 审计通过（`2974` 条），7 个测试文件共 348 项通过，UI 类型检查、生产构建及本机 Chrome `3100` 检查通过；真实中转 API 调用、OAuth 回调、完整 Agent 创建、发布仍未验证 |
 | 5.29 | 2026-11-20 | 修复语言入口可发现性：在组织设置页直接显示“界面语言”选择器，并保留个人资料与账户菜单入口；`LanguageSwitcher` 的无障碍标签跟随当前语言；源码服务使用同一 `3100` 端口和现有默认实例数据启动，健康检查与源码模块响应通过；真实 Chrome 刷新仍需用户执行，Runner 原生二进制因本机缺少 `cargo` 未重新构建 |
+| 5.30 | 2026-11-20 | 收口 Paperclip CN 当前候选：7 个相关测试文件共 316 项通过，i18n 审计、UI 类型检查和 `git diff --check` 通过；功能提交 `7ea264d54` 已推送到 `origin/sync/upstream-20261119-v2`；未合并 `master`、未打正式 Tag、真实中转 API/Agent 执行和原生 Runner 仍未验收 |
