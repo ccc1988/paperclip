@@ -14,6 +14,7 @@ import { useCompany } from "../context/CompanyContext";
 import type { ProjectWorkspaceSummary } from "../lib/project-workspaces-tab";
 import { queryKeys } from "../lib/queryKeys";
 import { projectRouteRef } from "../lib/utils";
+import { useTranslation } from "@/i18n";
 
 type ProjectWorkspaceGroup = {
   projectId: string | null;
@@ -46,7 +47,7 @@ function overviewItemToSummary(item: WorkspaceOverviewItem): ProjectWorkspaceSum
   };
 }
 
-function buildProjectWorkspaceGroups(items: WorkspaceOverviewItem[]): ProjectWorkspaceGroup[] {
+function buildProjectWorkspaceGroups(items: WorkspaceOverviewItem[], taskWorkspaces: string, projectLabel: string): ProjectWorkspaceGroup[] {
   const groups = new Map<string | null, ProjectWorkspaceGroup>();
   for (const item of items) {
     const existing = groups.get(item.projectId);
@@ -61,8 +62,8 @@ function buildProjectWorkspaceGroups(items: WorkspaceOverviewItem[]): ProjectWor
     }
     groups.set(item.projectId, {
       projectId: item.projectId,
-      projectName: item.projectName ?? "Task workspaces",
-      projectRef: item.projectId ? projectRouteRef({ id: item.projectId, name: item.projectName ?? "Project", urlKey: item.projectUrlKey }) : null,
+      projectName: item.projectName ?? taskWorkspaces,
+      projectRef: item.projectId ? projectRouteRef({ id: item.projectId, name: item.projectName ?? projectLabel, urlKey: item.projectUrlKey }) : null,
       summaries: [summary],
       lastUpdatedAt: summary.lastUpdatedAt,
       runningServiceCount: summary.runningServiceCount,
@@ -78,6 +79,7 @@ function buildProjectWorkspaceGroups(items: WorkspaceOverviewItem[]): ProjectWor
 }
 
 export function Workspaces() {
+  const { t } = useTranslation();
   const { selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
   const experimentalSettingsQuery = useQuery({
@@ -99,15 +101,15 @@ export function Workspaces() {
   const overviewView = useQueryView(overviewQuery);
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Workspaces" }]);
-  }, [setBreadcrumbs]);
+    setBreadcrumbs([{ label: t("workspacesPage.title") }]);
+  }, [setBreadcrumbs, t]);
 
   const overviewPages = overviewQuery.data?.pages ?? [];
   const overviewItems = useMemo(
     () => overviewPages.flatMap((page) => page.items),
     [overviewPages],
   );
-  const groups = useMemo(() => buildProjectWorkspaceGroups(overviewItems), [overviewItems]);
+  const groups = useMemo(() => buildProjectWorkspaceGroups(overviewItems, t("workspacesPage.taskWorkspaces"), t("workspacesPage.project")), [overviewItems, t]);
   const firstPage = overviewPages[0] ?? null;
   const totalWorkspaceCount = firstPage?.total ?? overviewItems.length;
   const dataLoading = overviewQuery.isLoading || overviewView.kind === "reconnecting";
@@ -123,7 +125,7 @@ export function Workspaces() {
       <QueryErrorState
         size="page"
         error={experimentalSettingsQuery.error}
-        action="load workspaces"
+        action={t("workspacesPage.load")}
         onRetry={experimentalSettingsView.retry}
         retrying={experimentalSettingsView.isFetching}
       />
@@ -132,24 +134,24 @@ export function Workspaces() {
   if (!isolatedWorkspacesEnabled) return <Navigate to="/issues" replace />;
   if (dataLoading) return <PageSkeleton variant="list" />;
   if (overviewView.kind === "error") {
-    return <QueryErrorState size="page" error={error} action="load workspaces" onRetry={overviewView.retry} retrying={overviewView.isFetching} />;
+    return <QueryErrorState size="page" error={error} action={t("workspacesPage.load")} onRetry={overviewView.retry} retrying={overviewView.isFetching} />;
   }
 
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-xl font-bold">Workspaces</h2>
+        <h2 className="text-xl font-bold">{t("workspacesPage.title")}</h2>
       </div>
 
       <SummarySlotCard
         companyId={selectedCompanyId}
         scopeKind="workspaces_overview"
-        title="Workspace summary"
-        description="Summarizer tracks workspace activity, live services, and follow-up needs across projects."
+        title={t("workspacesPage.summaryTitle")}
+        description={t("workspacesPage.summaryDescription")}
       />
 
       {groups.length === 0 ? (
-        <p className="text-sm text-muted-foreground">No workspace activity yet.</p>
+        <p className="text-sm text-muted-foreground">{t("workspacesPage.empty")}</p>
       ) : (
         <div className="space-y-8">
           {groups.map((group) => (
@@ -164,7 +166,9 @@ export function Workspaces() {
                   </Link> : <h3 className="text-base font-semibold">{group.projectName}</h3>}
                 </div>
                 <span className="text-xs text-muted-foreground">
-                  {group.summaries.length} workspace{group.summaries.length === 1 ? "" : "s"}
+                  {group.summaries.length === 1
+                    ? t("workspacesPage.count", { count: group.summaries.length })
+                    : t("workspacesPage.countPlural", { count: group.summaries.length })}
                 </span>
               </div>
               <ProjectWorkspacesContent
@@ -178,7 +182,7 @@ export function Workspaces() {
           {overviewQuery.hasNextPage ? (
             <div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4">
               <p className="text-sm text-muted-foreground">
-                Showing {overviewItems.length} of {totalWorkspaceCount} workspaces.
+                {t("workspacesPage.showing", { shown: overviewItems.length, total: totalWorkspaceCount })}
               </p>
               <Button
                 type="button"
@@ -187,7 +191,7 @@ export function Workspaces() {
                 onClick={() => void overviewQuery.fetchNextPage()}
                 disabled={overviewQuery.isFetchingNextPage}
               >
-                {overviewQuery.isFetchingNextPage ? "Loading..." : "Load more"}
+                {overviewQuery.isFetchingNextPage ? t("workspacesPage.loading") : t("workspacesPage.loadMore")}
               </Button>
             </div>
           ) : null}

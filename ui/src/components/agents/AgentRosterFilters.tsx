@@ -8,10 +8,13 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { NativeSelect } from "@/components/ui/select";
+import { getLocale } from "@/i18n";
 
 const emptyAgents: Agent[] = [];
 const labels: Record<AgentRosterFilterField, string> = { model: "Model", status: "Status", harness: "Harness", connection: "Connection" };
 const allLabels: Record<AgentRosterFilterField, string> = { model: "All models", status: "All statuses", harness: "All harnesses", connection: "All connections" };
+const zhLabels: Record<AgentRosterFilterField, string> = { model: "模型", status: "状态", harness: "运行工具", connection: "连接" };
+const zhAllLabels: Record<AgentRosterFilterField, string> = { model: "所有模型", status: "所有状态", harness: "所有运行工具", connection: "所有连接" };
 
 /** Page-owned state keeps filters when switching views and isolates them by company. */
 export function useAgentRosterFilters(companyId: string | null, agents: Agent[] = emptyAgents) {
@@ -40,6 +43,9 @@ export function AgentRosterFilters({ filters, options, onChange, activeCount, co
   connectionError?: unknown;
   retryConnections: () => void;
 }) {
+  const zh = getLocale() === "zh-CN";
+  const visibleLabels = zh ? zhLabels : labels;
+  const visibleAllLabels = zh ? zhAllLabels : allLabels;
   return <div data-canonical-toolbar="agent-filters" role="toolbar" aria-label="Agent filters" className={cn("flex flex-wrap items-center gap-3", !compact && "justify-between")}>
     <Popover>
       <PopoverTrigger asChild>
@@ -51,21 +57,21 @@ export function AgentRosterFilters({ filters, options, onChange, activeCount, co
       </PopoverTrigger>
       <PopoverContent aria-label="Agent filter choices" align="start" className="max-h-96 w-72 space-y-3 overflow-y-auto p-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">Filters</span>
-          {activeCount > 0 && <Button variant="ghost" size="sm" onClick={() => onChange(emptyAgentRosterFilters)}>Clear filters</Button>}
+          <span className="text-sm font-medium">{zh ? "筛选" : "Filters"}</span>
+          {activeCount > 0 && <Button variant="ghost" size="sm" onClick={() => onChange(emptyAgentRosterFilters)}>{zh ? "清除筛选" : "Clear filters"}</Button>}
         </div>
         {agentRosterFilterFields.map(field => <label key={field} className="block space-y-1 text-xs font-medium text-muted-foreground">
-          <span>{labels[field]}</span>
+          <span>{visibleLabels[field]}</span>
           <NativeSelect aria-label={labels[field]} value={filters[field]} onChange={event => onChange({ ...filters, [field]: event.target.value })}
             className="h-11 text-base md:text-sm">
-            <option value="">{allLabels[field]}</option>
-            {filters[field] && !options[field].some(option => option.value === filters[field]) && <option value={filters[field]}>Previously selected {labels[field].toLowerCase()}</option>}
+            <option value="">{visibleAllLabels[field]}</option>
+            {filters[field] && !options[field].some(option => option.value === filters[field]) && <option value={filters[field]}>{zh ? `之前选择的${visibleLabels[field]}` : `Previously selected ${labels[field].toLowerCase()}`}</option>}
             {options[field].map(option => <option key={option.value} value={option.value}>{option.label}</option>)}
           </NativeSelect>
         </label>)}
       </PopoverContent>
     </Popover>
-    {!compact && <span className="text-xs text-muted-foreground">{count} {count === 1 ? "agent" : "agents"}</span>}
-    {!!connectionError && <p role="alert" className="basis-full text-xs text-destructive">Connection names couldn’t be loaded. <Button variant="link" size="sm" onClick={retryConnections}>Retry</Button></p>}
+    {!compact && <span className="text-xs text-muted-foreground">{zh ? `${count} 个 Agent` : `${count} ${count === 1 ? "agent" : "agents"}`}</span>}
+    {!!connectionError && <p role="alert" className="basis-full text-xs text-destructive">{zh ? "无法加载连接名称。" : "Connection names couldn’t be loaded."} <Button variant="link" size="sm" onClick={retryConnections}>{zh ? "重试" : "Retry"}</Button></p>}
   </div>;
 }

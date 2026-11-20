@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { Artifacts } from "./Artifacts";
+import { setLocale } from "@/i18n";
 import type { CompanyArtifact, CompanyArtifactGroup } from "../api/artifacts";
 
 const companyState = vi.hoisted(() => ({
@@ -173,7 +174,8 @@ describe("Artifacts page", () => {
     window.IntersectionObserver = MockIntersectionObserver as unknown as typeof IntersectionObserver;
   });
 
-  afterEach(() => {
+  afterEach(async () => {
+    await setLocale("en");
     window.IntersectionObserver = originalIntersectionObserver as typeof IntersectionObserver;
     container.remove();
   });
@@ -206,6 +208,20 @@ describe("Artifacts page", () => {
     flushSync(() => {
       root.unmount();
     });
+  });
+
+  it("shows fixed artifact controls and empty copy in Chinese", async () => {
+    await setLocale("zh-CN");
+    artifactsV1Flag.enabled = true;
+    artifactsApiMock.list.mockResolvedValue({ artifacts: [], groups: [], nextCursor: null });
+    const { root } = renderArtifacts(container);
+    await waitForAssertion(() => {
+      expect(container.textContent).toContain("暂无产物合集");
+    });
+    expect(container.querySelector<HTMLInputElement>('input[aria-label="搜索产物"]')).not.toBeNull();
+    expect(container.querySelector('[aria-label="按任务或类型查看产物"]')).not.toBeNull();
+    expect(breadcrumbState.setBreadcrumbs).toHaveBeenCalledWith([{ label: "产物" }]);
+    flushSync(() => root.unmount());
   });
 
   it("debounces artifact search into the artifacts API", async () => {

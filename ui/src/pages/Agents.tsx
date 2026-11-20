@@ -35,6 +35,7 @@ import { Tooltip as TooltipPrimitive } from "radix-ui";
 import { AlertTriangle, Bot, MessagesSquare } from "lucide-react";
 import { AGENT_ROLE_LABELS, type Agent, type Environment, type EnvironmentCapabilities } from "@paperclipai/shared";
 import { usePublishSharedQueryData, useSharedPollingQuery } from "../hooks/useSharedPolling";
+import { t as translate } from "@/i18n";
 
 import { agentDisplayAdapterType, getAdapterLabel } from "../adapters/adapter-display-registry";
 
@@ -62,17 +63,16 @@ interface EnvironmentDescriptor {
   title: string;
 }
 
-const localEnvironmentDescriptor: EnvironmentDescriptor = {
-  label: "Local",
-  detail: "Paperclip host",
-  title: "Local - Paperclip host",
-};
+function localEnvironmentDescriptor(): EnvironmentDescriptor {
+  const label = translate("agentsPage.local");
+  const detail = translate("agentsPage.host");
+  return { label, detail, title: `${label} - ${detail}` };
+}
 
-const loadingEnvironmentDescriptor: EnvironmentDescriptor = {
-  label: "—",
-  detail: "Loading environment",
-  title: "Loading environment",
-};
+function loadingEnvironmentDescriptor(): EnvironmentDescriptor {
+  const detail = translate("agentsPage.loadingEnvironment");
+  return { label: "—", detail, title: detail };
+}
 
 // Agents in these states never appear in the agents list — `terminated` is
 // hidden like an archived company, and `pending_approval` is a hiring gate that
@@ -132,11 +132,11 @@ function describeEnvironment(
   capabilities?: EnvironmentCapabilities | null,
 ): EnvironmentDescriptor {
   const detail = isPlatformManagedEnvironment(environment)
-    ? "Managed by Paperclip"
+    ? translate("agentsPage.managedByPaperclip")
     : environment.driver === "sandbox"
-      ? `${getSandboxProviderLabel(environment, capabilities)} sandbox provider`
+      ? translate("agentsPage.sandboxProvider", { provider: getSandboxProviderLabel(environment, capabilities) })
       : environment.driver === "local"
-        ? "Paperclip host"
+        ? translate("agentsPage.host")
         : formatEnvironmentDriver(environment.driver);
 
   return {
@@ -148,9 +148,9 @@ function describeEnvironment(
 
 function describeMissingEnvironment(environmentId: string): EnvironmentDescriptor {
   return {
-    label: "Unknown environment",
+    label: translate("agentsPage.unknownEnvironment"),
     detail: environmentId.slice(0, 8),
-    title: `Unknown environment - ${environmentId}`,
+    title: `${translate("agentsPage.unknownEnvironment")} - ${environmentId}`,
   };
 }
 
@@ -161,7 +161,7 @@ function resolveAgentEnvironment(
   capabilities?: EnvironmentCapabilities | null,
 ): EnvironmentDescriptor {
   const environmentId = agent.defaultEnvironmentId ?? instanceDefaultEnvironmentId;
-  if (!environmentId) return localEnvironmentDescriptor;
+  if (!environmentId) return localEnvironmentDescriptor();
   const environment = environmentsById.get(environmentId);
   return environment
     ? describeEnvironment(environment, capabilities)
@@ -327,7 +327,7 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
   }, [agents, environmentsById, environmentCapabilities, instanceSettings?.defaultEnvironmentId]);
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Agents" }]);
+    setBreadcrumbs([{ label: translate("agentsPage.title") }]);
   }, [setBreadcrumbs]);
 
   useEffect(() => {
@@ -344,7 +344,7 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
   const matchingAgentIds = useMemo(() => new Set(filtered.map(agent => agent.id)), [filtered]);
 
   if (!selectedCompanyId) {
-    return <EmptyState icon={Bot} message="Select an organization to view agents." />;
+    return <EmptyState icon={Bot} message={translate("agentsPage.selectOrganization")} />;
   }
 
   // Keep a loaded list on screen through a failed refetch; only a real
@@ -357,7 +357,7 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
       <QueryErrorState
         size="page"
         error={agentsView.error}
-        action="load agents"
+        action={translate("agentsPage.load")}
         onRetry={agentsView.retry}
         retrying={agentsView.isFetching}
       />
@@ -368,8 +368,8 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
   const showEnvironmentColumn = environmentsEnabled && (environments === undefined || environments.length > 1);
   const resolveRenderedEnvironment = (agentId: string) => (
     environmentDataLoading
-      ? loadingEnvironmentDescriptor
-      : environmentByAgentId.get(agentId) ?? localEnvironmentDescriptor
+      ? loadingEnvironmentDescriptor()
+      : environmentByAgentId.get(agentId) ?? localEnvironmentDescriptor()
   );
 
   const renderAgentRow = (agent: Agent) => {
@@ -393,7 +393,7 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
               variant="outline"
               onClick={() => setConfigureState(builtInState)}
             >
-              Set up
+              {translate("agentsPage.setUp")}
             </Button>
           </span>
         )}
@@ -411,7 +411,7 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
         to={agentUrl(agent)}
         className="agent-roster-identity group py-3 group-hover/agent-pin:bg-accent/50 group-focus-within/agent-pin:bg-accent/50"
         leading={hasInvalidOrgChain ? (
-          <AlertTriangle className="h-3.5 w-3.5 text-amber-500" aria-label="Invalid reporting chain" />
+          <AlertTriangle className="h-3.5 w-3.5 text-amber-500" aria-label={translate("agentsPage.invalidReportingChain")} />
         ) : (
           <AgentAvatar agent={agent} size={32} />
         )}
@@ -422,7 +422,7 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
             {showEnvironmentColumn && <span className="text-xs text-muted-foreground" title={resolveRenderedEnvironment(agent.id).title}>
               {resolveRenderedEnvironment(agent.id).label} · {resolveRenderedEnvironment(agent.id).detail}
             </span>}
-            {agent.lastHeartbeatAt && <span className="text-xs text-muted-foreground" title="Last heartbeat">{relativeTime(agent.lastHeartbeatAt)}</span>}
+            {agent.lastHeartbeatAt && <span className="text-xs text-muted-foreground" title={translate("agentsPage.lastHeartbeat")}>{relativeTime(agent.lastHeartbeatAt)}</span>}
           </div>
         )}
       />
@@ -460,8 +460,8 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
       {agents && agents.length === 0 && (
         <EmptyState
           icon={Bot}
-          message="Create your first agent to get started."
-          action="New Agent"
+          message={translate("agentsPage.createFirst")}
+          action={translate("agentsPage.newAgent")}
           onAction={openNewAgent}
         />
       )}
@@ -479,14 +479,14 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
                   <button
                     type="button"
                     className="inline-flex shrink-0 items-center gap-1.5 rounded-md px-2 py-1 text-xs font-medium text-muted-foreground opacity-0 transition-opacity hover:bg-accent hover:text-foreground group-hover/agent-row:opacity-100 focus-visible:opacity-100"
-                    aria-label={`Chat with ${agent.name}`}
+                    aria-label={translate("agentsPage.chatWithName", { name: agent.name })}
                     onClick={() => navigate(`/chats/${agentRouteRef(agent)}`)}
                   >
                     <MessagesSquare className="size-3.5" aria-hidden />
-                    Chat
+                    {translate("agentsPage.chat")}
                   </button>
                 </TooltipTrigger>
-                <TooltipContent>chat with this agent</TooltipContent>
+                <TooltipContent>{translate("agentsPage.chatWith")}</TooltipContent>
               </Tooltip>
             </TooltipPrimitive.Provider>
           ) : undefined} />
@@ -501,7 +501,7 @@ export function Agents({ initialView = "list" }: { initialView?: AgentsView } = 
 
       {effectiveView === "org" && orgTree && orgTree.length === 0 && (
         <p className="text-sm text-muted-foreground text-center py-8">
-          No organizational hierarchy defined.
+          {translate("agentsPage.noHierarchy")}
         </p>
       )}
       {configureState && selectedCompanyId && (
@@ -554,7 +554,7 @@ function OrgTreeNode({
         className="group flex items-center gap-3 rounded-lg px-3 py-2 hover:bg-accent/50 transition-colors w-full text-left no-underline text-inherit"
       >
         {hasInvalidOrgChain ? (
-          <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-500" aria-label="Invalid reporting chain" />
+          <AlertTriangle className="h-3.5 w-3.5 shrink-0 text-amber-500" aria-label={translate("agentsPage.invalidReportingChain")} />
         ) : (
           <AgentAvatar agent={agent ?? node} size={24} />
         )}
@@ -580,7 +580,7 @@ function OrgTreeNode({
                   }}
                 >
                   <Button size="xs" variant="outline" onClick={() => onConfigureBuiltIn(builtInState)}>
-                    Set up
+                    {translate("agentsPage.setUp")}
                   </Button>
                 </span>
               )}
@@ -613,8 +613,8 @@ function OrgTreeNode({
                   agent={agent}
                   environment={
                     environmentDataLoading
-                      ? loadingEnvironmentDescriptor
-                      : environmentByAgentId.get(agent.id) ?? localEnvironmentDescriptor
+                      ? loadingEnvironmentDescriptor()
+                      : environmentByAgentId.get(agent.id) ?? localEnvironmentDescriptor()
                   }
                   showEnvironment={showEnvironment}
                 />
