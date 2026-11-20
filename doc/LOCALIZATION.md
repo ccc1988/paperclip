@@ -22,8 +22,10 @@ messages and a dedicated review.
 - Language switching does not change authentication, server state, or query
   data.
 
-The language selector is available in the account menu and the profile settings
-page.
+The language selector is available in the organization settings page, the
+account menu, and the profile settings page. The organization settings entry is
+the primary discoverable entry because it is the page users commonly open when
+configuring a local Paperclip instance.
 
 ## Translation rules
 

@@ -26,7 +26,7 @@ export function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
       </label>
       <NativeSelect
         id="paperclip-language"
-        aria-label="Interface language"
+        aria-label={t("common.interfaceLanguage")}
         value={locale}
         onChange={(event) => void handleChange(event.target.value)}
         className={compact ? "h-8 min-w-28 py-1 text-xs" : "max-w-sm"}

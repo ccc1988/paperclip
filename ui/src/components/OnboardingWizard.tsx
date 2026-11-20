@@ -677,7 +677,7 @@ function OnboardingWizardInner({
   const selectedApiKey = savedKeys.options.find((option) => option.id === selectedApiKeyId);
   const credentialMode = credentialModeChoice ?? (
     (savedKeys.subscriptions.length > 0 || (adapterType === "claude_local" && savedKeys.storedLogin.data))
-      ? "subscription" : savedKeys.options.length || adapterType === "opencode_local" ? "api" : "subscription"
+      ? "subscription" : "api"
   );
   const [createdCompanyPrefix, setCreatedCompanyPrefix] = useState<
     string | null
@@ -3291,9 +3291,8 @@ function OnboardingWizardInner({
                     ) : null}
                   </motion.div>
 
-                  {sourceSelected && connectCardLive && connectCardMounted && !connectProgress && credentialMode === "api" && createdCompanyId && (adapterType === "codex_local" || adapterType === "claude_local") && (
-                    <details className="space-y-3">
-                      <summary className="cursor-pointer text-sm text-muted-foreground">{t("onboarding.connection.advanced")}</summary>
+                  {sourceSelected && connectCardLive && connectCardMounted && !connectProgress && credentialMode === "api" && createdCompanyId && (adapterType === "codex_local" || adapterType === "claude_local" || adapterType === "opencode_local") && (
+                    <div className="pt-2">
                       <OnboardingGatewaySetup
                         companyId={createdCompanyId} agentId={setupAgentId ?? undefined} environmentId={resolvedLoginEnvironmentId ?? undefined}
                         adapterType={adapterType} disabled={loading || adapterEnvLoading}
@@ -3304,7 +3303,7 @@ function OnboardingWizardInner({
                           setModel("");
                           setError(null);
                         }} />
-                    </details>
+                    </div>
                   )}
 
                   {/* Conditional adapter fields */}

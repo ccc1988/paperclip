@@ -35,6 +35,7 @@ import {
   ToggleField,
 } from "../components/agent-config-primitives";
 import { InstanceGeneralSettings } from "./InstanceGeneralSettings";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { useTranslation } from "@/i18n";
 
 export function CompanySettings() {
@@ -270,6 +271,20 @@ export function CompanySettings() {
       <div className="flex items-center gap-2">
         <SlidersHorizontal className="h-5 w-5 text-muted-foreground" />
         <h1 className="text-lg font-semibold">{t("companySettings.general")}</h1>
+      </div>
+
+      {/* Keep the interface preference visible on the settings page users already open. */}
+      <div className="max-w-2xl space-y-3">
+        <div className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+          {t("common.language")}
+        </div>
+        <div className="rounded-md border border-border p-4 space-y-2">
+          <div className="text-sm font-medium">{t("common.interfaceLanguage")}</div>
+          <p className="text-xs text-muted-foreground">
+            {t("common.languageDescription")}
+          </p>
+          <LanguageSwitcher />
+        </div>
       </div>
 
       {/* General */}

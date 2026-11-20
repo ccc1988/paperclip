@@ -79,6 +79,16 @@ const providerDescriptionKeys = {
   gateway: "gateway",
   local: "local",
 } as const;
+const providerNameKeys = {
+  openai: "openai",
+  anthropic: "anthropic",
+  google: "google",
+  xai: "xai",
+  openrouter: "openrouter",
+  bedrock: "bedrock",
+  gateway: "gateway",
+  local: "local",
+} as const;
 
 export function AiProviderSetup({
   companyId,
@@ -151,7 +161,9 @@ export function AiProviderSetup({
     queryFn: () => agentsApi.list(companyId),
   });
   const agentsView = useQueryView(agents);
-  const label = providerLabel ?? providers.find((p) => p.id === provider)?.name ?? (provider === "github" ? "GitHub Copilot" : "provider");
+  const label = providerLabel ?? (provider && provider !== "github"
+    ? t(`aiProviderSetup.providerNames.${providerNameKeys[provider]}`)
+    : provider === "github" ? "GitHub Copilot" : "provider");
   const advanced = reconnect ? Boolean(reconnect.routing) : ["openrouter", "bedrock", "gateway", "local"].includes(provider ?? "");
   const nativeProvider: AiProvider =
     provider === "bedrock"
@@ -273,7 +285,7 @@ export function AiProviderSetup({
   const accessDefaults = !reconnect ? (
     <ConnectionAccessDefaults
       companyId={companyId}
-      extra={advanced ? modelSettings : undefined}
+      extra={advanced && provider !== "gateway" && provider !== "local" ? modelSettings : undefined}
       agents={agents.data ?? []}
       sentence={connectionDefaultSummarySentence({ grantKind: ownership === "shared" ? "organization" : "user", authKind: auth === "none" ? "none" : "api_key", installChoice: allAgents ? "all" : "specific", installCount: agentIds.size })}
       capabilities={{ canCreateOrganizationGrant: canManageConnections, canSetCompanyInstall: canManageConnections }}
@@ -375,13 +387,13 @@ export function AiProviderSetup({
                   </SelectTrigger>
                   <SelectContent className={ANALYTICS_MASK_CLASS}>
                     <SelectItem value="responses">
-                      OpenAI Responses · Codex
+                      {t("aiProviderSetup.protocols.responses")}
                     </SelectItem>
                     <SelectItem value="messages">
-                      Anthropic Messages · Claude
+                      {t("aiProviderSetup.protocols.messages")}
                     </SelectItem>
                     <SelectItem value="chat">
-                      Chat Completions · OpenCode, Hermes
+                      {t("aiProviderSetup.protocols.chat")}
                     </SelectItem>
                   </SelectContent>
                 </Select>
@@ -444,6 +456,7 @@ export function AiProviderSetup({
               </label>
             )
           }
+          {!reconnect && (provider === "gateway" || provider === "local") && modelSettings}
           {reconnect && <details><summary className="cursor-pointer text-sm text-muted-foreground">{t("aiProviderSetup.modelSettings")}</summary>{modelSettings}</details>}
           <p className="text-xs text-muted-foreground">
             {t("aiProviderSetup.testAfterConnecting")}

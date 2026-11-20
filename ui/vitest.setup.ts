@@ -1,4 +1,6 @@
 const storageEntries = new Map<string, string>();
+// Keep upstream English assertions deterministic; locale-specific tests opt in explicitly.
+storageEntries.set("paperclip.locale", "en");
 
 function installStorageMock(target: Record<string, unknown>) {
   Object.defineProperty(target, "localStorage", {
@@ -27,8 +29,11 @@ if (
   installStorageMock(globalThis);
 }
 
+globalThis.localStorage?.setItem("paperclip.locale", "en");
+
 if (typeof window !== "undefined" && window.localStorage !== globalThis.localStorage) {
   installStorageMock(window as unknown as Record<string, unknown>);
+  window.localStorage.setItem("paperclip.locale", "en");
 }
 
 // jsdom does not implement Element.prototype.scrollIntoView. Several surfaces

@@ -141,6 +141,16 @@
     "stopRun": "停止运行"
   },
   "aiProviderSetup": {
+    "providerNames": {
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "google": "Google",
+      "xai": "xAI",
+      "openrouter": "OpenRouter",
+      "bedrock": "Amazon Bedrock",
+      "gateway": "自定义网关",
+      "local": "本地端点"
+    },
     "providerDescriptions": {
       "openai": "ChatGPT 订阅或 API 密钥",
       "anthropic": "Claude 订阅或 API 密钥",
@@ -172,7 +182,12 @@
     "apiKey": "API 密钥",
     "modelSettings": "模型设置",
     "testAfterConnecting": "连接后，会在 Agent 的执行环境中使用您选择的模型测试连接。",
-    "invalidFields": "请检查 URL、API 格式和认证字段。"
+    "invalidFields": "请检查 URL、API 格式和认证字段。",
+    "protocols": {
+      "responses": "OpenAI Responses API · Codex",
+      "messages": "Anthropic Messages API · Claude",
+      "chat": "OpenAI Chat Completions API · OpenCode / Hermes"
+    }
   },
   "errors": {
     "actionFailed": "无法{{action}}",
@@ -218,6 +233,25 @@
     "decisions": "决策",
     "unreadChats": "未读对话",
     "newTask": "新建任务",
+    "work": "工作",
+    "org": "组织",
+    "organization": "组织",
+    "company": "公司",
+    "timeline": "时间线",
+    "costs": "成本",
+    "activity": "活动",
+    "commentary": "评论",
+    "status": "状态",
+    "conferenceRoom": "会议室",
+    "workspaces": "工作区",
+    "goals": "目标",
+    "newAgent": "新建 Agent",
+    "agentsActions": "Agent 分区操作",
+    "browseAgents": "浏览 Agent",
+    "allAgents": "查看全部 Agent",
+    "unread": "未读",
+    "collapseSection": "收起{{section}}",
+    "expandSection": "展开{{section}}",
     "more": "更多",
     "moreWorkspacePages": "更多工作区页面",
     "recents": "最近使用"
@@ -3153,6 +3187,10 @@
       "differentApiKey": "改用其他 API 密钥",
       "noBrowserSignIn": "此环境不支持浏览器登录。请选择其他登录环境，或使用 API 密钥连接。",
       "advanced": "高级",
+      "useCompatibleApi": "使用 OpenAI 兼容 API / 中转 API",
+      "compatibleApiTitle": "连接 OpenAI 兼容 API / 中转 API",
+      "compatibleApiDescription": "填写中转服务或兼容提供方的接口地址、API 密钥和模型 ID。",
+      "saveConnection": "保存连接",
       "passed": "通过",
       "retrySetup": "重试设置",
       "retrying": "正在重试…",

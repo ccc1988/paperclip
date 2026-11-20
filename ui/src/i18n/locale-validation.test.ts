@@ -1,10 +1,12 @@
-import { describe, expect, it } from "vitest";
-import { t } from ".";
+import { beforeEach, describe, expect, it } from "vitest";
+import { setLocale, t } from ".";
 import en from "./locales/en.json";
-import { localeMessages, supportedLocales } from "./locales";
+import { DEFAULT_LOCALE, localeMessages, supportedLocales } from "./locales";
 import { validateLocaleMessages } from "./locale-validation";
 
 describe("locale validation", () => {
+  beforeEach(async () => { await setLocale("en"); });
+
   it("resolves English messages with key and default fallbacks", () => {
     expect(t("app.noCompanies.title")).toBe(en.app.noCompanies.title);
     expect(t("app.missing", { defaultValue: "Fallback" })).toBe("Fallback");
@@ -12,6 +14,7 @@ describe("locale validation", () => {
   });
 
   it("accepts registered locale files", () => {
+    expect(DEFAULT_LOCALE).toBe("zh-CN");
     expect(Object.keys(localeMessages)).toContain("en");
     for (const locale of supportedLocales) {
       expect(validateLocaleMessages(localeMessages[locale]), locale).toEqual([]);

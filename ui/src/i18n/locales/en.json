@@ -141,6 +141,16 @@
     "stopRun": "Stop run"
   },
   "aiProviderSetup": {
+    "providerNames": {
+      "openai": "OpenAI",
+      "anthropic": "Anthropic",
+      "google": "Google",
+      "xai": "xAI",
+      "openrouter": "OpenRouter",
+      "bedrock": "Amazon Bedrock",
+      "gateway": "Custom gateway",
+      "local": "Local endpoint"
+    },
     "providerDescriptions": {
       "openai": "ChatGPT subscription or API key",
       "anthropic": "Claude subscription or API key",
@@ -172,7 +182,12 @@
     "apiKey": "API key",
     "modelSettings": "Model settings",
     "testAfterConnecting": "Test the connection with your chosen model in the agent’s execution environment after connecting.",
-    "invalidFields": "Check the URL, API format, and authentication fields."
+    "invalidFields": "Check the URL, API format, and authentication fields.",
+    "protocols": {
+      "responses": "OpenAI Responses API · Codex",
+      "messages": "Anthropic Messages API · Claude",
+      "chat": "OpenAI Chat Completions API · OpenCode / Hermes"
+    }
   },
   "errors": {
     "actionFailed": "Couldn't {{action}}",
@@ -215,9 +230,28 @@
     "chat": "Chat",
     "tasks": "Tasks",
     "inbox": "Inbox",
-    "decisions": "decisions",
+    "decisions": "Decisions",
     "unreadChats": "unread chats",
-    "newTask": "New task",
+    "newTask": "New Task",
+    "work": "Work",
+    "org": "Org",
+    "organization": "Organization",
+    "company": "Company",
+    "timeline": "Timeline",
+    "costs": "Costs",
+    "activity": "Activity",
+    "commentary": "Commentary",
+    "status": "Status",
+    "conferenceRoom": "Conference Room",
+    "workspaces": "Workspaces",
+    "goals": "Goals",
+    "newAgent": "New agent",
+    "agentsActions": "Agents section actions",
+    "browseAgents": "Browse agents",
+    "allAgents": "See all agents",
+    "unread": "unread",
+    "collapseSection": "Collapse {{section}}",
+    "expandSection": "Expand {{section}}",
     "more": "More",
     "moreWorkspacePages": "More workspace pages",
     "recents": "Recents"
@@ -3153,6 +3187,10 @@
       "differentApiKey": "Use a different API key",
       "noBrowserSignIn": "This environment does not support browser sign-in. Choose another sign-in environment or connect with an API key.",
       "advanced": "Advanced",
+      "useCompatibleApi": "Use OpenAI-compatible API / relay API",
+      "compatibleApiTitle": "Connect an OpenAI-compatible API / relay API",
+      "compatibleApiDescription": "Enter the endpoint, API key, and model ID for your relay or compatible provider.",
+      "saveConnection": "Save connection",
       "passed": "Passed",
       "retrySetup": "Retry setup",
       "retrying": "Retrying…",

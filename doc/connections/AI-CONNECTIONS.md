@@ -794,12 +794,24 @@ Google Gemini, a Responses API, Messages API, Chat Completions API, or local
 endpoint connection. Each row has its own Connect action and saved accounts.
 The catalog tags these entries `model-provider`; no category UI is shown.
 Responses-compatible gateways such as Emissary use the Responses API row.
-The native subscription/API-key onboarding remains the default. Provider choices
-show the existing local brand artwork and reuse the existing access step. Custom
-URLs, protocol, AWS region, and credential fields appear only after choosing the
-corresponding connector. New connections default to everyone in the organization
-and all agents when the actor has permission; the existing Advanced disclosure
-contains the controls to narrow access, without a separate Access step. New-agent setup also offers the connection picker in its persistent
+Subscription and API-key onboarding both remain available. In the Paperclip CN
+fork, a new setup with no reusable saved subscription or API credential defaults
+to API-key setup; OAuth is not a prerequisite. Its API-key path exposes the
+existing custom Gateway connection for Codex, Claude, and OpenCode. The selected
+harness determines the default wire protocol: Codex uses OpenAI Responses,
+Claude uses Anthropic Messages, and OpenCode uses OpenAI Chat Completions. A
+gateway must support that protocol; a Chat Completions-only endpoint is not a
+Codex Responses endpoint. The form saves the URL, credential, and optional model
+IDs as a managed connection. The user then selects a model and the existing
+agent-environment test must pass before hire. This onboarding change adds no
+protocol, arbitrary headers, or model-catalog discovery.
+
+Provider choices show the existing local brand artwork and reuse the existing
+access step. Custom URLs, protocol, AWS region, and credential fields appear only
+after choosing the corresponding connector. New connections default to everyone
+in the organization and all agents when the actor has permission; the existing
+Advanced disclosure contains the controls to narrow access, without a separate
+Access step. New-agent setup also offers the connection picker in its persistent
 **Advanced / Custom Gateway** tile.
 
 At **Agents → [agent] → Harness / Runtime**, **Connection** is a dropdown of

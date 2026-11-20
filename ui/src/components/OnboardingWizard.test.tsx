@@ -559,7 +559,7 @@ describe("OnboardingWizard restore-gate (stale localStorage across accounts)", (
     async function openStepOne(savedOverrides: Record<string, unknown> = {}) {
       window.localStorage.setItem(
         ONBOARDING_STORAGE_KEY,
-        JSON.stringify({ step: 1, companyName: "Initech", ...savedOverrides }),
+        JSON.stringify({ step: 1, companyName: "Initech", credentialMode: "subscription", ...savedOverrides }),
       );
       mockDialog.onboardingOptions = {};
       mockCompany.companies = [];
@@ -677,6 +677,7 @@ describe("OnboardingWizard restore-gate (stale localStorage across accounts)", (
         { id: "agent-existing", name: "Ada", adapterType: "claude_local" },
       ]);
       mockAdapterRegistry.list = [{ type: "claude_local" }, { type: "codex_local" }];
+      window.localStorage.setItem(ONBOARDING_STORAGE_KEY, JSON.stringify({ step: 1, companyName: "Initech", credentialMode: "subscription" }));
       const { root, queryClient } = render();
       await renderWizardView(root, queryClient);
       await flushReact();
@@ -762,7 +763,7 @@ describe("OnboardingWizard restore-gate (stale localStorage across accounts)", (
       // through a restored draft instead of a fresh one.
       window.localStorage.setItem(
         ONBOARDING_STORAGE_KEY,
-        JSON.stringify({ step: 1, companyName: "Initech", agentRole: "" }),
+        JSON.stringify({ step: 1, companyName: "Initech", agentRole: "", credentialMode: "subscription" }),
       );
       mockDialog.onboardingOptions = {};
       mockCompany.companies = [];
@@ -941,7 +942,7 @@ describe("OnboardingWizard restore-gate (stale localStorage across accounts)", (
       mockCompaniesApi.create.mockResolvedValue({ id: "company-new", issuePrefix: "INI" });
       window.localStorage.setItem(
         ONBOARDING_STORAGE_KEY,
-        JSON.stringify({ step: 1, companyName: "Initech" }),
+        JSON.stringify({ step: 1, companyName: "Initech", credentialMode: useApiKeys ? "api" : "subscription" }),
       );
       mockDialog.onboardingOptions = {};
       mockCompany.companies = [];
@@ -972,14 +973,6 @@ describe("OnboardingWizard restore-gate (stale localStorage across accounts)", (
       await flushReact();
       await clickByText((t) => isArcPrimary(t));
       expect(document.body.textContent).toContain("Connect a model");
-
-      // The credential mode is chosen *before* a source, because picking a
-      // source starts the sequence and the mode link fades out with the row —
-      // after that it is inert, and switching would mean changing the card out
-      // from under a running sign-in.
-      if (useApiKeys) {
-        await clickByText((t) => t.startsWith("Use API key"));
-      }
 
       // Pick a source. The step arrives with nothing chosen — `adapterType`
       // carries a value for the hire, but that is not the same as the customer
@@ -1068,7 +1061,7 @@ describe("OnboardingWizard restore-gate (stale localStorage across accounts)", (
           id: "saved-org-key", companyId: "company-new", key, name: "Saved key", scope: "company", status: "active",
         }]);
       }
-      const { root, clickByText } = await openConnectStep();
+      const { root, clickByText } = await openConnectStep({ useApiKeys: true });
       const picker = document.body.querySelector('select[aria-label="Saved API key"]') as HTMLSelectElement;
       expect(picker.value).toBe(scope === "personal" ? "user:saved-key" : "company:saved-org-key");
       await clickByText((t) => isArcPrimary(t));
@@ -2158,6 +2151,10 @@ describe("OnboardingWizard restore-gate (stale localStorage across accounts)", (
           agentName: "Ada",
           createdCompanyId: "company-new",
           adapterType: "claude_local",
+          // Existing cases in this block exercise subscription-specific flows.
+          // The production default for a new, credential-less setup is API key;
+          // those cases opt into subscription explicitly so their intent stays clear.
+          credentialMode: "subscription",
           ...overrides,
         }),
       );
@@ -2175,6 +2172,17 @@ describe("OnboardingWizard restore-gate (stale localStorage across accounts)", (
       // adapter, which is what a run returning to this step actually carries.
       return { root, queryClient };
     }
+
+    it("defaults a new model connection to API key setup instead of subscription sign-in", async () => {
+      const { root } = await openStep4({ adapterType: "codex_local", credentialModeChoice: null });
+      try {
+        await pickSource(/OpenAI/);
+        expect(document.querySelector('input[aria-label="API key"]')).toBeTruthy();
+        expect(document.querySelector('[aria-label="Authorization code"]')).toBeNull();
+      } finally {
+        await act(async () => root.unmount());
+      }
+    });
 
     it.each((["success", "failed probe", "failed save"] as const).flatMap(outcome => [false, true].map(native => ({ outcome, native }))))("saves the API connection after returning from a completed subscription setup: $outcome, native $native", async ({ outcome, native }) => {
       managedApi.list.mockResolvedValue({ currentUserId: "user-1", connections: [{
@@ -2348,28 +2356,18 @@ describe("OnboardingWizard restore-gate (stale localStorage across accounts)", (
       } finally { await act(async () => root.unmount()); }
     });
 
-    // N-16: the gateway is an advanced route, not the next thing after the key.
-    // It sat directly under the API key field, inside the key card; it belongs
-    // in the step's Advanced disclosure, hidden until that is opened.
-    it.each([["Claude API", "claude_local", /Claude.*API/], ["Codex API", "codex_local", /OpenAI.*API/]] as const)("keeps Use a custom gateway in the closed Advanced disclosure on the %s key step", async (_path, adapterType, source) => {
+    it.each([["Claude API", "claude_local", /Claude.*API/], ["Codex API", "codex_local", /OpenAI.*API/]] as const)("shows the compatible API entry on the %s key step", async (_path, adapterType, source) => {
       const handles = await openStep4({ adapterType, runner: "paperclip", credentialMode: "api" });
       try {
         await pickSource(source);
         const keyField = document.body.querySelector('input[type="password"]') as HTMLInputElement;
         expect(keyField, "the API key field should be showing").toBeTruthy();
-        const gateway = () => [...document.body.querySelectorAll("button")].find(entry => entry.textContent?.trim() === "Use a custom gateway");
-        expect(gateway(), "the custom gateway control should still exist").toBeTruthy();
+        const gateway = () => [...document.body.querySelectorAll("button")].find(entry => entry.textContent?.trim() === "Use OpenAI-compatible API / relay API");
+        expect(gateway(), "the compatible API control should be visible").toBeTruthy();
         expect(document.body.querySelector('[aria-label="Runner"]')).toBeNull();
-        const advanced = gateway()!.closest("details");
-        expect(advanced, "Use a custom gateway should live inside the Advanced disclosure").toBeTruthy();
-        expect(advanced!.querySelector(":scope > summary")?.textContent?.trim()).toBe("Advanced");
-        expect(advanced!.open, "Advanced should start closed").toBe(false);
-        expect(advanced!.contains(keyField), "the key field stays outside Advanced").toBe(false);
-        await act(async () => { advanced!.open = true; });
-        await flushReact();
         await act(async () => gateway()!.click());
         await flushReact();
-        expect(document.querySelector('input[aria-label="Provider URL"]'), "the gateway dialog should still open from Advanced").toBeTruthy();
+        expect(document.querySelector('input[aria-label="Provider URL"]'), "the compatible API dialog should open").toBeTruthy();
       } finally { await act(async () => handles.root.unmount()); }
     });
 
@@ -2402,14 +2400,13 @@ describe("OnboardingWizard restore-gate (stale localStorage across accounts)", (
       };
       try {
         await pickSource(/OpenAI.*API/);
-        await click("Use a custom gateway");
+        await click("Use OpenAI-compatible API / relay API");
         const gatewayDialog = document.querySelector('input[aria-label="Provider URL"]')!.closest('[role="dialog"]')!;
         await act(async () => {
           setControlledValue(gatewayDialog.querySelector('input[aria-label="Provider URL"]')!, "https://gateway.example.test/v1");
           setControlledValue(gatewayDialog.querySelector('input[aria-label="API key"]')!, "example-gateway-key");
         });
-        await click("Change");
-        await act(async () => setControlledValue(document.querySelector('input[aria-label="Model IDs"]')!, "gpt-5.4-mini"));
+        await act(async () => setControlledValue(document.querySelector('input[aria-label^="Model IDs"]')!, "gpt-5.4-mini"));
         await act(async () => gatewayDialog.dispatchEvent(new KeyboardEvent("keydown", { key: "Enter", metaKey: true, bubbles: true })));
         expect(mockAgentsApi.testEnvironment).not.toHaveBeenCalled();
         expect(mockAgentsApi.hire).not.toHaveBeenCalled();
