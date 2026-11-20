@@ -13,6 +13,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ApiError } from "@/api/client";
 import { InstanceExperimentalSettings } from "./InstanceExperimentalSettings";
 import { queryKeys } from "../lib/queryKeys";
+import { i18n } from "@/i18n";
 
 const mockInstanceSettingsApi = vi.hoisted(() => ({
   getExperimental: vi.fn(),
@@ -209,7 +210,7 @@ describe("InstanceExperimentalSettings — Conference Room Chat card (PAP-11233)
     });
   });
 
-  afterEach(() => {
+  afterEach(async () => {
     flushSync(() => {
       root?.unmount();
     });
@@ -218,6 +219,17 @@ describe("InstanceExperimentalSettings — Conference Room Chat card (PAP-11233)
     setWorktreeRuntimeMeta(false);
     setWorktreeInstanceIdMeta(null);
     vi.clearAllMocks();
+    await i18n.changeLanguage("en");
+  });
+
+  it("shows localized card titles and descriptions in Chinese", async () => {
+    await i18n.changeLanguage("zh-CN");
+    await renderPage();
+
+    expect(container.textContent).toContain("实验功能可能随时出现问题");
+    expect(container.textContent).toContain("AWS 连接器");
+    expect(container.textContent).toContain("通过 AWS 托管的 MCP 服务让 Agent 操作 AWS");
+    expect(container.querySelector('button[aria-label="切换AWS 连接器"]')).not.toBeNull();
   });
 
   it("renders a page-level warning about instability and lack of guarantees", async () => {

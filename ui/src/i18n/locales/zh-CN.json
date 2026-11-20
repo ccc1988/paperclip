@@ -29,8 +29,8 @@
     "done": "完成",
     "retry": "重试",
     "stepOf": "第 {{step}} 步，共 {{total}} 步",
-    "step": "第 {{step}} 步"
-    ,"ready": "就绪",
+    "step": "第 {{step}} 步",
+    "ready": "就绪",
     "notReady": "未就绪",
     "active": "已启用",
     "none": "无"
@@ -197,28 +197,88 @@
   "errors": {
     "actionFailed": "无法{{action}}",
     "codes": {
-      "tenant_app_unavailable": { "title": "正在重新连接 Paperclip", "body": "Paperclip 正在重启或更新，请稍后重试。" },
-      "tenant_app_starting": { "title": "Paperclip 正在启动", "body": "Paperclip 正在启动，请几秒后重试。" },
-      "WORKER_UNAVAILABLE": { "title": "插件不可用", "body": "此插件正在重启，请稍后重试。" },
-      "TIMEOUT": { "title": "请求超时", "body": "响应时间过长，请稍后重试。" },
-      "queued_comment_revision_conflict": { "title": "队列已变化", "body": "队列已在其他会话中变化。您的编辑仍在此处，请再次保存以应用到最新队列。" },
-      "queued_comment_stale_queue": { "title": "队列已变化", "body": "队列已在其他会话中变化。您的编辑仍在此处，请再次保存以应用到最新队列。" },
-      "queued_comment_stale_target": { "title": "排队消息已变化", "body": "此排队消息已发送或移除。您的文字仍在此处，可以将其作为新消息重新排队。" },
-      "queued_comment_not_pending": { "title": "排队消息已变化", "body": "此排队消息已发送或移除。您的文字仍在此处，可以将其作为新消息重新排队。" },
-      "interaction_audience_denied": { "title": "您无法回复此卡片", "body": "您不在此卡片的处理人范围内。" },
-      "interaction_forbidden": { "title": "您无法回复此卡片", "body": "您没有回复此卡片的权限。" },
-      "interaction_settled": { "title": "已处理", "body": "此请求已不再等待决策。" },
-      "interaction_submit_failed": { "title": "提交失败", "body": "提交失败，请重试。" }
+      "tenant_app_unavailable": {
+        "title": "正在重新连接 Paperclip",
+        "body": "Paperclip 正在重启或更新，请稍后重试。"
+      },
+      "tenant_app_starting": {
+        "title": "Paperclip 正在启动",
+        "body": "Paperclip 正在启动，请几秒后重试。"
+      },
+      "WORKER_UNAVAILABLE": {
+        "title": "插件不可用",
+        "body": "此插件正在重启，请稍后重试。"
+      },
+      "TIMEOUT": {
+        "title": "请求超时",
+        "body": "响应时间过长，请稍后重试。"
+      },
+      "queued_comment_revision_conflict": {
+        "title": "队列已变化",
+        "body": "队列已在其他会话中变化。您的编辑仍在此处，请再次保存以应用到最新队列。"
+      },
+      "queued_comment_stale_queue": {
+        "title": "队列已变化",
+        "body": "队列已在其他会话中变化。您的编辑仍在此处，请再次保存以应用到最新队列。"
+      },
+      "queued_comment_stale_target": {
+        "title": "排队消息已变化",
+        "body": "此排队消息已发送或移除。您的文字仍在此处，可以将其作为新消息重新排队。"
+      },
+      "queued_comment_not_pending": {
+        "title": "排队消息已变化",
+        "body": "此排队消息已发送或移除。您的文字仍在此处，可以将其作为新消息重新排队。"
+      },
+      "interaction_audience_denied": {
+        "title": "您无法回复此卡片",
+        "body": "您不在此卡片的处理人范围内。"
+      },
+      "interaction_forbidden": {
+        "title": "您无法回复此卡片",
+        "body": "您没有回复此卡片的权限。"
+      },
+      "interaction_settled": {
+        "title": "已处理",
+        "body": "此请求已不再等待决策。"
+      },
+      "interaction_submit_failed": {
+        "title": "提交失败",
+        "body": "提交失败，请重试。"
+      }
     },
     "kinds": {
-      "transient": { "title": "连接中断", "body": "Paperclip 暂时不可用，请稍后重试。" },
-      "auth": { "title": "登录状态已失效", "body": "您的会话已结束，请重新登录后继续。" },
-      "forbidden": { "title": "无权操作", "body": "您没有执行此操作的权限。" },
-      "not_found": { "title": "未找到", "body": "此项目不存在或已被移动。" },
-      "conflict": { "title": "内容已过期", "body": "此内容在您加载后发生了变化，请刷新后重试。" },
-      "invalid": { "title": "请检查输入", "body": "部分信息无效，请检查后重试。" },
-      "aborted": { "title": "已取消", "body": "请求已取消。" },
-      "unknown": { "title": "发生错误", "body": "发生了意外错误，请重试。" }
+      "transient": {
+        "title": "连接中断",
+        "body": "Paperclip 暂时不可用，请稍后重试。"
+      },
+      "auth": {
+        "title": "登录状态已失效",
+        "body": "您的会话已结束，请重新登录后继续。"
+      },
+      "forbidden": {
+        "title": "无权操作",
+        "body": "您没有执行此操作的权限。"
+      },
+      "not_found": {
+        "title": "未找到",
+        "body": "此项目不存在或已被移动。"
+      },
+      "conflict": {
+        "title": "内容已过期",
+        "body": "此内容在您加载后发生了变化，请刷新后重试。"
+      },
+      "invalid": {
+        "title": "请检查输入",
+        "body": "部分信息无效，请检查后重试。"
+      },
+      "aborted": {
+        "title": "已取消",
+        "body": "请求已取消。"
+      },
+      "unknown": {
+        "title": "发生错误",
+        "body": "发生了意外错误，请重试。"
+      }
     }
   },
   "nav": {
@@ -387,17 +447,24 @@
       "daily": "每日",
       "weekly": "每周",
       "monthly": "每月",
+      "days": "{{count}} 天",
+      "weeks": "{{count}} 周",
+      "months": "{{count}} 个月",
       "feedbackTitle": "AI 反馈共享",
       "feedbackDescription": "控制点赞和点踩是否将被评价的 AI 输出发送给 Paperclip Labs。评价始终会保存在本地。",
       "terms": "阅读服务条款",
       "feedbackPrompt": "尚未保存默认选择。下次点赞或点踩时会询问一次，然后将选择保存到这里。",
+      "feedbackDevHint": "如需在本地开发环境重新测试首次提示，请把 instance_settings.general 中的 feedbackDataSharingPreference 重置为 prompt。未设置或 prompt 均表示尚未选择默认值。",
       "alwaysAllow": "始终允许",
       "alwaysAllowDescription": "自动共享被评价的 AI 输出。",
       "dontAllow": "不允许",
       "dontAllowDescription": "仅在本地保留被评价的 AI 输出。",
       "signOut": "退出登录",
       "signOutDescription": "退出此 Paperclip 实例。退出后将跳转到登录页。",
-      "signingOut": "正在退出……"
+      "signingOut": "正在退出……",
+      "localTrustedBadge": "本地可信",
+      "authenticatedPublicBadge": "公开认证",
+      "authenticatedPrivateBadge": "私有认证"
     },
     "access": {
       "instanceSettings": "实例设置",
@@ -417,7 +484,9 @@
       "organizationAccess": "组织访问权限",
       "organizationDescription": "切换该用户的组织成员身份。新访问权限默认创建为有效的操作员成员身份。",
       "saveOrganization": "保存组织访问权限",
-      "currentMemberships": "当前成员身份"
+      "currentMemberships": "当前成员身份",
+      "membershipCount": "{{count}} 个有效组织成员身份",
+      "loadUserAccess": "加载用户访问权限"
     },
     "observability": {
       "title": "Agent 可观测性",
@@ -453,8 +522,8 @@
       "disableExport": "禁用导出",
       "removeConfiguration": "移除配置",
       "loading": "正在加载 Agent 可观测性……",
-      "loadFailed": "无法加载 Agent 可观测性设置。"
-      ,"refreshFailed": "无法刷新已保存的设置，您的草稿未改变。"
+      "loadFailed": "无法加载 Agent 可观测性设置。",
+      "refreshFailed": "无法刷新已保存的设置，您的草稿未改变。"
     },
     "governance": {
       "title": "交互治理",
@@ -462,6 +531,8 @@
       "kindLabel": "类型",
       "defaultPolicy": "默认策略",
       "cap": "上限",
+      "defaultAudienceFor": "{{kind}}的默认响应受众",
+      "capFor": "{{kind}}的响应上限",
       "anyoneDefault": "任何人（默认）",
       "noCap": "不设上限",
       "defaultOpen": "新卡片对所有人开放，董事会成员或任何 Agent（包括发起者）都可以响应。",
@@ -471,6 +542,7 @@
       "capNotCreator": "即使卡片请求任何人，也会收窄为排除创建者。",
       "capHumanOnly": "此类卡片无论请求什么受众，都只等待人员处理。",
       "policy": {
+        "anyone": "任何人",
         "not_creator": "除创建者外的任何人",
         "human_only": "仅限人员"
       },
@@ -502,7 +574,230 @@
       "missingCutoff": "此设置缺少激活截止时间，因此不会自动运行任务。",
       "rearmExecution": "先关闭再重新开启，即可为在此创建的任务重新启用执行。",
       "legacyTitle": "旧版功能",
-      "legacyDescription": "这些功能将被移除。"
+      "legacyDescription": "这些功能将被移除。",
+      "toggle": "切换{{title}}",
+      "cards": {
+        "enableResponsibilities": {
+          "title": "领域与职责看板",
+          "description": "用关注的领域和承担的职责构建看板，替换经典看板。Agent 可通过访谈协助创建，所有变更均可撤销。",
+          "footnote": "关闭后恢复经典看板，已保存的领域和职责仍会保留。"
+        },
+        "enableAwsConnector": {
+          "title": "AWS 连接器",
+          "description": "通过 AWS 托管的 MCP 服务让 Agent 操作 AWS，每次连接使用短期凭据。",
+          "footnote": "默认关闭。关闭时无法配置或运行 AWS 连接器。"
+        },
+        "enableBetaSkills": {
+          "title": "测试版技能",
+          "description": "允许 Agent 固定使用 Paperclip 核心技能的测试版。关闭后所有 Agent 恢复使用默认正式版，但已保存的版本固定设置不会删除。"
+        },
+        "enableBuiltInAgents": {
+          "title": "内置 Agent",
+          "description": "显示 Paperclip 管理的内置 Agent 界面，包括名单标识、内置 Agent 页签和设置控件。"
+        },
+        "enableCases": {
+          "title": "案例",
+          "description": "让任务创建和迭代持久化成果（如博客文章、推文系列），并显示“案例”页签与 Agent 案例 API。",
+          "footnote": "关闭后隐藏页签并阻止案例 API，已有案例数据仍会保留。"
+        },
+        "enableChatConnectors": {
+          "title": "聊天连接器",
+          "description": "将 Agent 接入 Slack、Discord、Microsoft Teams 和 Telegram 对话。",
+          "footnote": "关闭后隐藏实验性聊天设置和关联任务控件，已有聊天连接继续运行。AgentMail、GitHub 审查机器人和工具连接器分别控制。"
+        },
+        "enableCombinedInboxTasks": {
+          "title": "合并收件箱与任务列表",
+          "description": "在经典工作区将收件箱合并到任务中，任务行显示未读标识，通过视图菜单访问个人和组织的任务视图。",
+          "footnote": "协调员工作区的任务始终包含个人视图；经典工作区关闭此项会恢复独立收件箱，不更改数据。"
+        },
+        "enableConferenceRoomChat": {
+          "title": "会议室聊天",
+          "description": "新增供您和整个团队协作的会议室聊天、实时动态和重新设计的引导，并将任务讨论显示为聊天气泡。随时关闭即可恢复经典界面。"
+        },
+        "enableLegacyComposerSubmit": {
+          "title": "使用 Command/Ctrl+Enter 提交",
+          "description": "恢复任务回复和新建任务的旧快捷键：Command/Ctrl+Enter 提交，Enter 换行。",
+          "footnote": "默认关闭：Enter 提交，Shift+Enter 换行。"
+        },
+        "enableDecisions": {
+          "title": "决策",
+          "description": "在主侧栏显示“决策”入口，集中查看等待您输入的任务；此界面仍在评估中。"
+        },
+        "enableMcpTasks": {
+          "title": "持久化应用操作（MCP Tasks）",
+          "description": "把已连接应用的长时间操作（如 CI 或部署）作为 Paperclip 跟踪的任务。即使操作跨越调用、重启或部署，Agent 也会稍后收取结果，避免重复启动。",
+          "footnote": "仅适用于支持 MCP Tasks 的应用。关闭后停止新任务，应用恢复原有响应方式。"
+        },
+        "enableEnvironments": {
+          "title": "启用环境",
+          "description": "在组织设置中显示环境管理，并允许为项目和 Agent 分配环境。"
+        },
+        "enableExternalObjects": {
+          "title": "启用外部对象",
+          "description": "识别任务中的外部 URL，显示拉取请求、工单和其他引用对象的解析状态。"
+        },
+        "enableIsolatedWorkspaces": {
+          "title": "启用隔离工作区",
+          "description": "在项目配置中显示执行工作区控件，允许新任务和已有任务使用隔离工作区。"
+        },
+        "enableFastResponses": {
+          "title": "实验性快速响应",
+          "description": "允许 Agent 开始工作时先给出简短确认；可在“设置 → 连接”中配置。"
+        },
+        "enableExperimentalFileViewer": {
+          "title": "实验性文件查看器",
+          "description": "在任务详情中显示浏览和预览相关工作区文件的控件。"
+        },
+        "enableFirstTaskPlanProposal": {
+          "title": "首个任务：以计划文档提议",
+          "description": "当用户的首个请求是单个任务时，幕僚长会编写简短计划文档和复选框卡片，而非单张确认卡。仅对开启后创建的组织生效。"
+        },
+        "enableGitHubReviewBots": {
+          "title": "GitHub 审查机器人",
+          "description": "以独立的 GitHub App 身份连接 Agent，审查拉取请求并回复问题。",
+          "footnote": "与聊天连接器独立。关闭后隐藏设置和管理入口，已有机器人继续运行，GitHub 工具连接仍可使用。"
+        },
+        "enableGoogleWorkspaceConnector": {
+          "title": "Google Workspace 连接器（Paperclip）",
+          "description": "在 Google 验证尚未完成时，显示内置的 Gmail、Drive 和 Calendar 连接器。",
+          "footnote": "默认关闭。关闭时 Google 应用通过 Composio 和 Arcade 提供，无法设置或运行内置连接器。"
+        },
+        "enableGrokBot": {
+          "title": "Grok Bot",
+          "description": "将已有 Grok Bot 接入为 Agent。分配工作前先验证例行消息送达及认证后的回复。",
+          "footnote": "需要 Paperclip Runner 和经过认证的公开 HTTPS。用量不会上报；关闭后阻止 Grok 调用和新任务派发。"
+        },
+        "enableMemoryConnectors": {
+          "title": "记忆连接器",
+          "description": "连接 Mem0、Zep、Supermemory、Cognee 和 Honcho，提供长期记忆和上下文。",
+          "footnote": "关闭后隐藏这些连接器的设置入口，已有连接继续运行。"
+        },
+        "enableMuse": {
+          "title": "Muse：个人 Agent",
+          "description": "连接个人 Meta Muse。分配任务前完成配对、检测接收端并验证独立的后台回复。",
+          "footnote": "需要 Paperclip Runner 和具有公开 HTTPS 地址的已认证实例。关闭后阻止新工作，但保留清理及停止记录；提供方用量和成本不可用。"
+        },
+        "enableOpenAiDot": {
+          "title": "OpenAI Dot",
+          "description": "把 OpenAI Dot 添加为独立的 Agent 选项。分配工作前先完成配对并验证事件送达。",
+          "footnote": "需要具有公开 HTTPS 地址的已认证实例。关闭后阻止 Dot 调用和新工作，但保留已保存的连接。"
+        },
+        "enableNativeRunner": {
+          "title": "Paperclip Runner",
+          "description": "允许 Agent 选择 Paperclip Runner，包括沙箱需要的认证运行器入口。首次设置会提供符合条件的 GitHub Copilot。关闭后仅隐藏选项，不影响已有原生运行。"
+        },
+        "enableSimplifiedEnglishInteractions": {
+          "title": "简化英语交互",
+          "description": "要求 Agent 使用 ASD-STE100 简化技术英语编写用户交互（计划确认、提问、建议任务、复选框提示），并简要说明决策所需信息及各选项的后果。"
+        },
+        "enableStatusCards": {
+          "title": "状态卡片",
+          "description": "启用实验性的共享状态卡片看板及受控 API。关闭时保留已有卡片数据。",
+          "footnote": "启用状态卡片也会启用摘要。"
+        },
+        "enableStreamlinedUi": {
+          "title": "精简界面",
+          "description": "使用精简主侧栏、统一的任务与收件箱视图、聚焦的任务详情布局，以及 Agent、例行任务、技能和设置之间的上下文导航。",
+          "footnote": "关闭后恢复旧版外壳和导航，不更改任务或页面数据。"
+        },
+        "enableSummaries": {
+          "title": "摘要",
+          "description": "在项目和工作区页面显示摘要器生成的状态摘要，支持按需刷新和历史版本。关闭后保留已有摘要数据。",
+          "footnote": "状态卡片依赖摘要；关闭摘要也会关闭状态卡片。"
+        },
+        "enableIsolatedWorkspacesByDefault": {
+          "title": "默认使用隔离工作区",
+          "description": "没有单独执行工作区策略的项目默认使用隔离工作区，每个任务获得独立工作树，不再共用项目检出目录；已有项目策略保持不变。"
+        },
+        "autoRestartDevServerWhenIdle": {
+          "title": "空闲时自动重启开发服务",
+          "description": "使用 `pnpm dev:once` 时，等待已排队和正在运行的本地 Agent 执行结束；若后端变更或迁移使当前服务过期，则自动重启。"
+        },
+        "enableManagedSandboxOnly": {
+          "title": "仅使用托管环境",
+          "description": "隐藏本地环境，让所有 Agent 在平台托管环境中运行。"
+        },
+        "enablePaperclipDeveloperMode": {
+          "title": "Paperclip 开发者模式",
+          "description": "显示 Paperclip 维护工具和可观测性链接，包括运行页面上的 Honeycomb 追踪查询。"
+        },
+        "enableServerInfoDebugView": {
+          "title": "服务信息调试视图",
+          "description": "在账户抽屉中显示“服务”部分，包含最近重启时间和当前运行的提交。"
+        },
+        "enableSmokeLab": {
+          "title": "冒烟测试实验室",
+          "description": "在“应用 → 开发者”中添加冒烟测试页签，并在看板显示集成测试卡片；使用可复现的本地模拟 OAuth 提供方和回环 MCP 服务测试集成路径。仅用于非公开的私有部署。"
+        },
+        "enableIssuePlanDecompositions": {
+          "title": "任务计划拆分",
+          "description": "在任务详情页显示已接受计划的拆分历史，供调试和验证子任务创建；界面仍在完善。"
+        },
+        "enableClassicTaskInterface": {
+          "title": "经典任务界面",
+          "description": "恢复旧版任务详情：页面级标题、行内描述编辑、普通评论线程和固定属性侧栏。聊天版专有的活动折叠、行内计划与提问卡片以及三模式输入框不可用。",
+          "footnote": "切换立即生效，不影响任务数据。"
+        },
+        "enableGoalsSidebarLink": {
+          "title": "侧栏目标入口",
+          "description": "在目标页面仍在评估期间，恢复主侧栏中的“目标”入口。"
+        }
+      }
+    },
+    "secrets": {
+      "selectOrganization": "请选择组织以管理密钥。"
+    },
+    "portability": {
+      "organization": "组织",
+      "packageFiles": "打包文件",
+      "whatToInclude": "包含内容",
+      "importCompleted": "导入已完成",
+      "importComplete": "导入完成",
+      "skillImportResults": "技能导入结果",
+      "activateImported": "启用已导入的 Agent 和例行任务",
+      "resumeImport": "继续查看导入进度",
+      "importSource": "导入来源"
+    },
+    "skills": {
+      "views": "技能视图",
+      "installed": "已安装",
+      "discover": "发现",
+      "authored": "我的技能",
+      "installedSkills": "已安装技能",
+      "discoverSkills": "发现技能",
+      "authoredDescription": "可在工作室打开、编辑和测试的技能。",
+      "installedDescription": "此组织可用的技能。",
+      "discoverDescription": "浏览所有可用来源的技能。",
+      "searchMine": "搜索我的技能",
+      "searchInstalled": "搜索已安装技能",
+      "searchDiscoverable": "搜索可发现的技能",
+      "browseCategory": "按类别浏览",
+      "filterInstalled": "筛选已安装技能。",
+      "filterDiscoverable": "筛选可发现的技能。",
+      "categories": "类别",
+      "all": "全部",
+      "catalog": "目录",
+      "bundled": "内置",
+      "controls": "技能控件",
+      "sort": "排序",
+      "source": "来源",
+      "allSources": "全部来源",
+      "scan": "扫描项目工作区中的技能",
+      "newFolder": "新建文件夹",
+      "select": "选择",
+      "new": "新建",
+      "create": "创建新技能",
+      "importGithub": "从 GitHub 导入",
+      "manageSources": "管理来源",
+      "importPath": "从路径或 URL 导入",
+      "importProject": "从项目导入技能",
+      "sortOptions": {
+        "agents": "使用 Agent 最多",
+        "stars": "星标最多",
+        "forks": "分叉最多",
+        "recent": "最近更新",
+        "alphabetical": "按字母排序"
+      }
     }
   },
   "agentNavigation": {
@@ -1340,7 +1635,6 @@
       "noMatchingTasks": "没有匹配的任务。",
       "noSubtasks": "暂无子任务。",
       "loadingUsageLimit": "正在加载用量限制",
-      "retry": "重试",
       "policyUnavailable": "执行策略不可用，请刷新重试。",
       "waitingWorkspace": "正在等待工作区",
       "waitingProvider": "正在等待服务提供方",
@@ -2180,7 +2474,7 @@
     "toolbarAriaLabel": "连接器操作",
     "searchConnectors": "搜索连接器",
     "searchConnectorsPlaceholder": "搜索连接器……",
-    "selectOrganizationToManage": "请选择组织以管理连接器。",
+    "selectOrganizationToManage": "请选择组织以管理应用。",
     "loadEveryConnector": "加载所有连接器",
     "refreshGatewayFailed": "无法刷新网关，当前显示最近一次获取的账户。",
     "loadAiDefaults": "加载 AI 账户默认设置",
@@ -2234,7 +2528,6 @@
     "cloudUnavailable": "无法连接 Paperclip Cloud",
     "connectionDeleted": "连接已删除",
     "deleteConnectionFailed": "删除连接失败",
-    "selectOrganizationToManage": "请选择组织以管理应用。",
     "openSignInFailed": "无法打开登录页面",
     "noConnections": "暂无连接。",
     "addFromApps": "请从{{apps}}中添加连接，为 Agent 提供所需工具。",
@@ -3463,7 +3756,7 @@
       "savedApiKeysAvailable_one": "有 {{count}} 个已保存的 API 密钥可用。",
       "savedApiKeysAvailable_other": "有 {{count}} 个已保存的 API 密钥可用。",
       "chooseSavedApiKey": "选择已保存的 API 密钥，或输入新的密钥",
-      "provideApiKey": "提供您的 {{provider}} API 密钥以完成连接",
+      "provideApiKey": "输入 {{provider}} API 密钥以连接",
       "apiKeyLabel": "API 密钥",
       "keyEnteredRetry": "密钥已输入，请重试连接。",
       "enterApiKeyHere": "在此输入 API 密钥",
@@ -3482,7 +3775,7 @@
       "providerConnectionFailed": "无法连接提供方。",
       "connectionType": "连接类型",
       "connectModelProvider": "连接模型提供方",
-      "advanced": "高级设置",
+      "advanced": "高级",
       "waitingForAuth": "等待授权……",
       "waitingForCode": "等待验证码",
       "aiConnection": "AI 连接",
@@ -3545,7 +3838,6 @@
       "existingProvider": "已有可用的提供商连接。",
       "chooseSavedModel": "为已保存的连接选择模型",
       "chooseSavedKey": "选择已保存的 API 密钥，或输入新的密钥",
-      "provideApiKey": "输入 {{provider}} API 密钥以连接",
       "apiKey": "API 密钥",
       "enterApiKey": "在此输入 API 密钥",
       "defaultAccount": "这将成为您的默认 {{provider}} 账户。",
@@ -3555,7 +3847,6 @@
       "gatewaySaved": "网关连接已保存。请选择模型，然后点击连接进行测试并完成 Agent 设置。",
       "differentApiKey": "改用其他 API 密钥",
       "noBrowserSignIn": "此环境不支持浏览器登录。请选择其他登录环境，或使用 API 密钥连接。",
-      "advanced": "高级",
       "useCompatibleApi": "使用 OpenAI 兼容 API / 中转 API",
       "compatibleApiTitle": "连接 OpenAI 兼容 API / 中转 API",
       "compatibleApiDescription": "填写中转服务或兼容提供方的接口地址、API 密钥和模型 ID。",
@@ -3568,7 +3859,6 @@
       "prompt": "提示词：",
       "authFailedSubscription": "如果认证失败，请在上方浏览器中连接订阅，或改用 API 密钥。",
       "authFailedProvider": "如果需要登录，请先在上方连接提供商，然后重试。",
-      "retry": "重试",
       "retrySignIn": "重试登录",
       "testing": "正在测试…",
       "submitCode": "提交验证码",
@@ -3578,7 +3868,6 @@
       "signInTo": "登录 {{provider}}",
       "connect": "连接",
       "next": "下一步",
-      "signInToProvider": "登录 {{provider}}",
       "thenReturn": "，然后返回此处",
       "thenEnterCode": "，然后返回此处输入授权码",
       "byProvidingCode": "，并在下方输入授权码",

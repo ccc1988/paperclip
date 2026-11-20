@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ClassicWorkspaceSetting } from "@/components/ClassicWorkspaceSetting";
 import { describeError } from "@/api/errors";
-import { useTranslation } from "@/i18n";
+import { getLocale, useTranslation } from "@/i18n";
 
 type WorktreeRunExecutionDisplayState =
   | { kind: "off" }
@@ -94,6 +94,7 @@ function ExperimentalToggleCard({
   managed?: ManagedSettingMetadata;
   ariaLabel: string;
 }) {
+  const { t } = useTranslation();
   const { hidden: hiddenSettings } = useHiddenSettings();
   const isManaged = managed?.managed === true;
   if (hiddenSettings.has(experimentalSettingKey(settingKey))) return null;
@@ -102,11 +103,11 @@ function ExperimentalToggleCard({
       <div className="flex items-start justify-between gap-4">
         <div className="space-y-1.5">
           <div className="flex flex-wrap items-center gap-2">
-            <h3 className="text-sm font-semibold">{title}</h3>
+            <h3 className="text-sm font-semibold">{t(`settingsPages.experimental.cards.${settingKey}.title`, { defaultValue: title })}</h3>
             {isManaged ? <ManagedByCloudBadge /> : null}
           </div>
-          <p className="max-w-2xl text-sm text-muted-foreground">{description}</p>
-          {footnote ? <p className="max-w-2xl text-xs text-muted-foreground">{footnote}</p> : null}
+          <p className="max-w-2xl text-sm text-muted-foreground">{t(`settingsPages.experimental.cards.${settingKey}.description`, { defaultValue: description })}</p>
+          {footnote ? <p className="max-w-2xl text-xs text-muted-foreground">{t(`settingsPages.experimental.cards.${settingKey}.footnote`, { defaultValue: String(footnote) })}</p> : null}
         </div>
         <ToggleSwitch
           checked={checked}
@@ -115,7 +116,7 @@ function ExperimentalToggleCard({
             onCheckedChange(next);
           }}
           disabled={disabled || isManaged}
-          aria-label={ariaLabel}
+          aria-label={getLocale() === "en" ? ariaLabel : t("settingsPages.experimental.toggle", { title: t(`settingsPages.experimental.cards.${settingKey}.title`, { defaultValue: title }) })}
         />
       </div>
     </Card>

@@ -77,9 +77,10 @@ function governanceOptions(field: GovernanceField, t: typeof translate): {
  * still renders a complete, truthful label instead of falling back to a lie.
  */
 export function governanceValueLabel(field: GovernanceField, value: GovernanceSelectValue): string {
+  const policy = value === GOVERNANCE_UNSET ? null : normalizeIssueThreadInteractionResolverPolicy(value);
   return value === GOVERNANCE_UNSET
     ? translate(field === "cap" ? "settingsPages.governance.noCap" : "settingsPages.governance.anyoneDefault")
-    : translate(`settingsPages.governance.policy.${value}`);
+    : translate(`settingsPages.governance.policy.${policy}`);
 }
 
 /**
@@ -264,7 +265,7 @@ export function InteractionGovernancePanel({
                 <GovernanceSelect
                   field="defaultPolicy"
                   testId={`governance-${kind}-default`}
-                  ariaLabel={`Default resolver audience for ${kindLabel}`}
+                  ariaLabel={t("settingsPages.governance.defaultAudienceFor", { kind: kindLabel })}
                   mobileLabel={t("settingsPages.governance.defaultPolicy")}
                   value={toGovernanceSelectValue(entry.defaultPolicy)}
                   disabled={isPending}
@@ -273,7 +274,7 @@ export function InteractionGovernancePanel({
                 <GovernanceSelect
                   field="cap"
                   testId={`governance-${kind}-cap`}
-                  ariaLabel={`Resolver cap for ${kindLabel}`}
+                  ariaLabel={t("settingsPages.governance.capFor", { kind: kindLabel })}
                   mobileLabel={t("settingsPages.governance.cap")}
                   value={toGovernanceSelectValue(entry.cap)}
                   disabled={isPending}

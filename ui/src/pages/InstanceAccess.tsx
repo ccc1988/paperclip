@@ -178,7 +178,7 @@ export function InstanceAccess() {
                   ) : null}
                 </div>
                 <div className="mt-2 text-xs text-muted-foreground">
-                  {user.activeCompanyMembershipCount} active organization memberships
+                  {t("settingsPages.access.membershipCount", { count: user.activeCompanyMembershipCount })}
                 </div>
               </button>
             ))}
@@ -193,7 +193,7 @@ export function InstanceAccess() {
           ) : userAccessView.kind === "error" ? (
             <QueryErrorState
               error={userAccessQuery.error}
-              action="load user access"
+              action={t("settingsPages.access.loadUserAccess")}
               onRetry={userAccessView.retry}
               retrying={userAccessView.isFetching}
             />
@@ -269,7 +269,7 @@ export function InstanceAccess() {
                       <div>
                         <div className="font-medium">{membership.companyName || membership.companyId}</div>
                         <div className="text-muted-foreground">
-                          {membership.membershipRole || "unset"} • {membership.status}
+                          {membership.membershipRole ? t(`companyAccess.roles.${membership.membershipRole}`, { defaultValue: membership.membershipRole }) : t("companyAccess.roleUnset")} • {t(`companyAccess.status.${membership.status}`, { defaultValue: membership.status })}
                         </div>
                       </div>
                       <div className="text-xs text-muted-foreground">

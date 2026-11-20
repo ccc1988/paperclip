@@ -80,6 +80,7 @@ import {
   deliveryModeLabel,
 } from "../lib/secret-delivery";
 import { queryKeys } from "../lib/queryKeys";
+import { useTranslation } from "@/i18n";
 import { EmptyState } from "../components/EmptyState";
 import { QueryErrorState, useQueryView } from "@/components/QueryView";
 import { Button } from "@/components/ui/button";
@@ -725,6 +726,7 @@ export function getAwsManagedPathPreview(input: {
 }
 
 export function Secrets() {
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const { selectedCompanyId } = useCompany();
   const { setBreadcrumbs } = useBreadcrumbs();
@@ -811,8 +813,8 @@ export function Secrets() {
   const [newFolderError, setNewFolderError] = useState<string | null>(null);
 
   useEffect(() => {
-    setBreadcrumbs([{ label: "Secrets" }]);
-  }, [setBreadcrumbs]);
+    setBreadcrumbs([{ label: t("settingsSidebar.secrets") }]);
+  }, [setBreadcrumbs, t]);
 
   const secretsQuery = useQuery({
     queryKey: selectedCompanyId
@@ -2191,7 +2193,7 @@ export function Secrets() {
 
   if (!selectedCompanyId) {
     return (
-      <div className="p-6 text-sm text-muted-foreground">Select an organization to manage secrets.</div>
+      <div className="p-6 text-sm text-muted-foreground">{t("settingsPages.secrets.selectOrganization")}</div>
     );
   }
 
@@ -2202,7 +2204,7 @@ export function Secrets() {
         <div className="flex items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <KeyRound className="h-5 w-5 text-muted-foreground" />
-            <h1 className="text-lg font-semibold">Secrets</h1>
+            <h1 className="text-lg font-semibold">{t("settingsSidebar.secrets")}</h1>
           </div>
           <div className="flex items-center gap-2">
             <DropdownMenu>

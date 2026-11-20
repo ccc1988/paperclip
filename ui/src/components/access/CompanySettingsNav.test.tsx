@@ -5,6 +5,7 @@ import { flushSync } from "react-dom";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { queryKeys } from "@/lib/queryKeys";
+import { i18n } from "@/i18n";
 import { CompanySettingsNav, getCompanySettingsTab } from "./CompanySettingsNav";
 
 let currentPathname = "/company/settings";
@@ -115,6 +116,22 @@ describe("CompanySettingsNav", () => {
     await act(async () => { renderNav(root, undefined, undefined, false); });
     expect(pageTabBarMock.mock.calls.at(-1)?.[0]?.items).toContainEqual({ value: "connections", label: "Connections" });
     await act(async () => { root.unmount(); });
+  });
+
+  it("shows Chinese labels for first-level settings tabs when Chinese is selected", async () => {
+    const root = createRoot(container);
+    try {
+      await i18n.changeLanguage("zh-CN");
+      await act(async () => { renderNav(root); });
+      expect(pageTabBarMock.mock.calls.at(-1)?.[0]?.items).toEqual(expect.arrayContaining([
+        { value: "general", label: "常规" },
+        { value: "secrets", label: "密钥" },
+        { value: "instance-experimental", label: "实验功能" },
+      ]));
+    } finally {
+      await act(async () => { root.unmount(); });
+      await i18n.changeLanguage("en");
+    }
   });
 
   it("renders the active tab and navigates when a different tab is selected", async () => {

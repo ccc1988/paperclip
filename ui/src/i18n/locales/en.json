@@ -29,8 +29,8 @@
     "done": "Done",
     "retry": "Retry",
     "stepOf": "Step {{step}} of {{total}}",
-    "step": "Step {{step}}"
-    ,"ready": "Ready",
+    "step": "Step {{step}}",
+    "ready": "Ready",
     "notReady": "Not ready",
     "active": "Active",
     "none": "None"
@@ -197,28 +197,88 @@
   "errors": {
     "actionFailed": "Couldn't {{action}}",
     "codes": {
-      "tenant_app_unavailable": { "title": "Reconnecting to Paperclip", "body": "Paperclip is restarting or updating. Please try again in a moment." },
-      "tenant_app_starting": { "title": "Paperclip is starting", "body": "Paperclip is starting up. Please try again in a few seconds." },
-      "WORKER_UNAVAILABLE": { "title": "Plugin unavailable", "body": "This plugin is restarting. Please try again in a moment." },
-      "TIMEOUT": { "title": "Request timed out", "body": "This took too long to respond. Please try again in a moment." },
-      "queued_comment_revision_conflict": { "title": "Queue changed", "body": "The queue changed in another session. Your edit is still here; save again to apply it to the latest queue." },
-      "queued_comment_stale_queue": { "title": "Queue changed", "body": "The queue changed in another session. Your edit is still here; save again to apply it to the latest queue." },
-      "queued_comment_stale_target": { "title": "Queued message changed", "body": "This queued message was already sent or removed. Your text is still here; you can queue it as a new message." },
-      "queued_comment_not_pending": { "title": "Queued message changed", "body": "This queued message was already sent or removed. Your text is still here; you can queue it as a new message." },
-      "interaction_audience_denied": { "title": "You can’t respond to this card", "body": "You are not in this card's resolver audience." },
-      "interaction_forbidden": { "title": "You can’t respond to this card", "body": "You do not have permission to respond to this card." },
-      "interaction_settled": { "title": "Already handled", "body": "This request is no longer waiting for a decision." },
-      "interaction_submit_failed": { "title": "Couldn't submit", "body": "Couldn't submit. Try again." }
+      "tenant_app_unavailable": {
+        "title": "Reconnecting to Paperclip",
+        "body": "Paperclip is restarting or updating. Please try again in a moment."
+      },
+      "tenant_app_starting": {
+        "title": "Paperclip is starting",
+        "body": "Paperclip is starting up. Please try again in a few seconds."
+      },
+      "WORKER_UNAVAILABLE": {
+        "title": "Plugin unavailable",
+        "body": "This plugin is restarting. Please try again in a moment."
+      },
+      "TIMEOUT": {
+        "title": "Request timed out",
+        "body": "This took too long to respond. Please try again in a moment."
+      },
+      "queued_comment_revision_conflict": {
+        "title": "Queue changed",
+        "body": "The queue changed in another session. Your edit is still here; save again to apply it to the latest queue."
+      },
+      "queued_comment_stale_queue": {
+        "title": "Queue changed",
+        "body": "The queue changed in another session. Your edit is still here; save again to apply it to the latest queue."
+      },
+      "queued_comment_stale_target": {
+        "title": "Queued message changed",
+        "body": "This queued message was already sent or removed. Your text is still here; you can queue it as a new message."
+      },
+      "queued_comment_not_pending": {
+        "title": "Queued message changed",
+        "body": "This queued message was already sent or removed. Your text is still here; you can queue it as a new message."
+      },
+      "interaction_audience_denied": {
+        "title": "You can’t respond to this card",
+        "body": "You are not in this card's resolver audience."
+      },
+      "interaction_forbidden": {
+        "title": "You can’t respond to this card",
+        "body": "You do not have permission to respond to this card."
+      },
+      "interaction_settled": {
+        "title": "Already handled",
+        "body": "This request is no longer waiting for a decision."
+      },
+      "interaction_submit_failed": {
+        "title": "Couldn't submit",
+        "body": "Couldn't submit. Try again."
+      }
     },
     "kinds": {
-      "transient": { "title": "Connection interrupted", "body": "Paperclip is temporarily unavailable. Please try again in a moment." },
-      "auth": { "title": "Signed out", "body": "Your session has ended. Sign in again to continue." },
-      "forbidden": { "title": "Not allowed", "body": "You don’t have permission to do that." },
-      "not_found": { "title": "Not found", "body": "This item doesn’t exist or was moved." },
-      "conflict": { "title": "Out of date", "body": "This changed since you loaded it. Refresh and try again." },
-      "invalid": { "title": "Check your input", "body": "Some details aren’t valid. Review them and try again." },
-      "aborted": { "title": "Cancelled", "body": "The request was cancelled." },
-      "unknown": { "title": "Something went wrong", "body": "An unexpected error occurred. Please try again." }
+      "transient": {
+        "title": "Connection interrupted",
+        "body": "Paperclip is temporarily unavailable. Please try again in a moment."
+      },
+      "auth": {
+        "title": "Signed out",
+        "body": "Your session has ended. Sign in again to continue."
+      },
+      "forbidden": {
+        "title": "Not allowed",
+        "body": "You don’t have permission to do that."
+      },
+      "not_found": {
+        "title": "Not found",
+        "body": "This item doesn’t exist or was moved."
+      },
+      "conflict": {
+        "title": "Out of date",
+        "body": "This changed since you loaded it. Refresh and try again."
+      },
+      "invalid": {
+        "title": "Check your input",
+        "body": "Some details aren’t valid. Review them and try again."
+      },
+      "aborted": {
+        "title": "Cancelled",
+        "body": "The request was cancelled."
+      },
+      "unknown": {
+        "title": "Something went wrong",
+        "body": "An unexpected error occurred. Please try again."
+      }
     }
   },
   "nav": {
@@ -387,17 +447,24 @@
       "daily": "Daily",
       "weekly": "Weekly",
       "monthly": "Monthly",
+      "days": "{{count}} days",
+      "weeks": "{{count}} weeks",
+      "months": "{{count}} months",
       "feedbackTitle": "AI feedback sharing",
       "feedbackDescription": "Control whether thumbs up and thumbs down votes can send the voted AI output to Paperclip Labs. Votes are always saved locally.",
       "terms": "Read our terms of service",
       "feedbackPrompt": "No default is saved yet. The next thumbs up or thumbs down choice will ask once and then save the answer here.",
+      "feedbackDevHint": "To retest the first-use prompt in local dev, reset feedbackDataSharingPreference in instance_settings.general to prompt. Unset and prompt both mean no default has been chosen yet.",
       "alwaysAllow": "Always allow",
       "alwaysAllowDescription": "Share voted AI outputs automatically.",
       "dontAllow": "Don't allow",
       "dontAllowDescription": "Keep voted AI outputs local only.",
       "signOut": "Sign out",
       "signOutDescription": "Sign out of this Paperclip instance. You will be redirected to the login page.",
-      "signingOut": "Signing out..."
+      "signingOut": "Signing out...",
+      "localTrustedBadge": "Local trusted",
+      "authenticatedPublicBadge": "Authenticated public",
+      "authenticatedPrivateBadge": "Authenticated private"
     },
     "access": {
       "instanceSettings": "Instance settings",
@@ -417,7 +484,9 @@
       "organizationAccess": "Organization access",
       "organizationDescription": "Toggle organization membership for this user. New access defaults to an active operator membership.",
       "saveOrganization": "Save organization access",
-      "currentMemberships": "Current memberships"
+      "currentMemberships": "Current memberships",
+      "membershipCount": "{{count}} active organization memberships",
+      "loadUserAccess": "load user access"
     },
     "observability": {
       "title": "Agent observability",
@@ -453,8 +522,8 @@
       "disableExport": "Disable export",
       "removeConfiguration": "Remove configuration",
       "loading": "Loading agent observability…",
-      "loadFailed": "Agent observability settings could not be loaded."
-      ,"refreshFailed": "Saved settings could not be refreshed. Your draft is unchanged."
+      "loadFailed": "Agent observability settings could not be loaded.",
+      "refreshFailed": "Saved settings could not be refreshed. Your draft is unchanged."
     },
     "governance": {
       "title": "Interaction governance",
@@ -462,6 +531,8 @@
       "kindLabel": "Kind",
       "defaultPolicy": "Default policy",
       "cap": "Cap",
+      "defaultAudienceFor": "Default resolver audience for {{kind}}",
+      "capFor": "Resolver cap for {{kind}}",
       "anyoneDefault": "Anyone (default)",
       "noCap": "No cap",
       "defaultOpen": "New cards are open — the board or any agent can respond, including the one that asked.",
@@ -471,6 +542,7 @@
       "capNotCreator": "Even a card that asks for Anyone is narrowed to exclude its creator.",
       "capHumanOnly": "Every card of this kind waits for a person, whatever it asked for.",
       "policy": {
+        "anyone": "Anyone",
         "not_creator": "Anyone except creator",
         "human_only": "Human only"
       },
@@ -495,14 +567,237 @@
       "warningDescription": "These features are opt-in and come with no compatibility guarantees. They may change, break, or be removed without notice. Avoid relying on them for critical or production workflows.",
       "sectionTitle": "Experimental features",
       "sectionDescription": "Optional product features that are still being evaluated.",
-      "developerTitle": "Developer mode",
-      "developerDescription": "Features intended for local development and Paperclip maintainers.",
+      "developerTitle": "Paperclip Developer Mode",
+      "developerDescription": "Internal tools for developing, testing, and debugging Paperclip.",
       "executionSuppressed": "Execution is suppressed — effectively off.",
       "instanceMismatch": "This setting was armed in a different instance and copied here, so no tasks run automatically.",
       "missingCutoff": "This setting is missing its activation cutoff, so no tasks run automatically.",
       "rearmExecution": "Toggle it off and back on to arm execution for tasks created here.",
       "legacyTitle": "Legacy",
-      "legacyDescription": "These features are going to be removed."
+      "legacyDescription": "These features are going to be removed.",
+      "toggle": "Toggle {{title}}",
+      "cards": {
+        "enableResponsibilities": {
+          "title": "Areas & Responsibilities dashboard",
+          "description": "Replace the classic dashboard with one built around the areas you care about and the responsibilities you own in each. An agent can interview you to create it, and you can undo any change.",
+          "footnote": "Turning this off brings back the classic dashboard. Your areas and responsibilities are kept."
+        },
+        "enableAwsConnector": {
+          "title": "AWS connector",
+          "description": "Let agents work in AWS through AWS's hosted MCP server, with short-lived credentials made for each connection.",
+          "footnote": "Off by default. While off, the AWS connector cannot be set up or run."
+        },
+        "enableBetaSkills": {
+          "title": "Beta skills",
+          "description": "Allow agents to pin beta releases of the Paperclip core skill. Disabling this returns every agent to the default live skill without removing saved pins."
+        },
+        "enableBuiltInAgents": {
+          "title": "Built-in Agents",
+          "description": "Show Paperclip-managed built-in agent surfaces, including built-in roster badges, the Built-in agents tab, and built-in agent setup controls."
+        },
+        "enableCases": {
+          "title": "Cases",
+          "description": "Durable work products (blog posts, tweet storms…) that tasks create and iterate on. Adds the Cases tab and the agent case API.",
+          "footnote": "Turning Cases off hides the tab and blocks the case API; existing case data is kept."
+        },
+        "enableChatConnectors": {
+          "title": "Chat connectors",
+          "description": "Connect agents to Slack, Discord, Microsoft Teams, and Telegram conversations.",
+          "footnote": "Turning this off hides experimental chat setup and connected-task controls. Existing chat connections keep running. AgentMail, GitHub review bots, and tool connectors are controlled separately."
+        },
+        "enableCombinedInboxTasks": {
+          "title": "Combined Inbox + Task List",
+          "description": "In the Classic workspace, fold Inbox into Tasks. One Tasks row carries the unread badge, and a Views menu reaches every personal and organization task view.",
+          "footnote": "Coordinator always includes personal views in Tasks. For Classic, turning this off restores its separate Inbox. No data changes."
+        },
+        "enableConferenceRoomChat": {
+          "title": "Conference Room Chat",
+          "description": "Adds a Conference Room — one chat where you and your whole team work together — plus the live activity feed and the redesigned onboarding. Also restyles task threads as chat bubbles. Turn off anytime to restore the classic UI."
+        },
+        "enableLegacyComposerSubmit": {
+          "title": "Command/Ctrl+Enter to Submit",
+          "description": "Restore the previous keyboard shortcut for task replies and new tasks: Command/Ctrl+Enter submits, and Enter adds a new line.",
+          "footnote": "Off by default: Enter submits, and Shift+Enter adds a new line."
+        },
+        "enableDecisions": {
+          "title": "Decisions",
+          "description": "Show the Decisions item in the main sidebar — the attention home that surfaces the tasks awaiting your input — while the surface is still being evaluated."
+        },
+        "enableMcpTasks": {
+          "title": "Durable app actions (MCP Tasks)",
+          "description": "Let connected apps run long actions, such as CI runs or deploys, as tasks Paperclip keeps track of. If an action outlasts a call, a restart, or a deploy, the agent collects the result later and the work is never started twice.",
+          "footnote": "Applies to apps that support MCP Tasks. Turning this off stops new tasks; apps then answer as before."
+        },
+        "enableEnvironments": {
+          "title": "Enable Environments",
+          "description": "Show environment management in company settings and allow project and agent environment assignment controls."
+        },
+        "enableExternalObjects": {
+          "title": "Enable External Objects",
+          "description": "Detect external URLs in issues and show resolved status for pull requests, tickets, and other referenced work objects."
+        },
+        "enableIsolatedWorkspaces": {
+          "title": "Enable Isolated Workspaces",
+          "description": "Show execution workspace controls in project configuration and allow isolated workspace behavior for new and existing task runs."
+        },
+        "enableFastResponses": {
+          "title": "Experimental fast responses",
+          "description": "Allow short acknowledgements while agents begin work. Configure them in Settings → Connections."
+        },
+        "enableExperimentalFileViewer": {
+          "title": "Experimental File Viewer",
+          "description": "Show task detail controls for browsing and previewing workspace files relative to a task."
+        },
+        "enableFirstTaskPlanProposal": {
+          "title": "First task: propose with a plan document",
+          "description": "When the user's first request is a single task, the chief of staff writes a short plan document and a checkbox card instead of a one-card confirmation. Applies to organizations created after the toggle is flipped."
+        },
+        "enableGitHubReviewBots": {
+          "title": "GitHub review bots",
+          "description": "Connect agents to GitHub with their own App identity to review pull requests and respond to issues.",
+          "footnote": "Independent of Chat connectors. Turning this off hides setup and management; existing bots keep running. GitHub tool connections stay available."
+        },
+        "enableGoogleWorkspaceConnector": {
+          "title": "Google Workspace connector (Paperclip)",
+          "description": "Show the built-in Google Workspace connector for Gmail, Drive, and Calendar while Google verification is pending.",
+          "footnote": "Off by default. While off, Google apps are offered through Composio and Arcade instead, and the built-in connector cannot be set up or run."
+        },
+        "enableGrokBot": {
+          "title": "Grok Bot",
+          "description": "Connect an existing Grok Bot as an agent. Verify routine delivery and an authenticated reply before assigning work.",
+          "footnote": "Requires Paperclip Runner and authenticated public HTTPS. Usage is not reported. Turning this off blocks Grok calls and new dispatch."
+        },
+        "enableMemoryConnectors": {
+          "title": "Memory connectors",
+          "description": "Connect Mem0, Zep, Supermemory, Cognee, and Honcho for long-term memory and context.",
+          "footnote": "Turning this off hides setup for these connectors. Existing connections keep running."
+        },
+        "enableMuse": {
+          "title": "Muse — Personal agent",
+          "description": "Connect your personal Meta Muse. Pair it, detect its receiver, and verify an independent background reply before assigning tasks.",
+          "footnote": "Requires Paperclip Runner and an authenticated instance with a public HTTPS URL. Turning this off blocks new work; cleanup and stop evidence remain available. Provider usage and cost are unavailable."
+        },
+        "enableOpenAiDot": {
+          "title": "OpenAI Dot",
+          "description": "Add OpenAI Dot as a standalone agent choice. Pair your Dot and verify event delivery before assigning work.",
+          "footnote": "Requires an authenticated instance with a public HTTPS URL. Turning this off blocks Dot calls and new work; saved connections are kept."
+        },
+        "enableNativeRunner": {
+          "title": "Paperclip Runner",
+          "description": "Allow agents to select Paperclip Runner, including authenticated runner ingress when a sandbox requires it. First-run setup offers qualified GitHub Copilot. Turning this off hides the choice without affecting existing native runs."
+        },
+        "enableSimplifiedEnglishInteractions": {
+          "title": "Simplified English Interactions",
+          "description": "Instruct agents to write user interactions (plan confirmations, questions, suggested tasks, checkbox prompts) in ASD-STE100 Simplified Technical English, with brief context on what information the decision needs and what happens for each choice."
+        },
+        "enableStatusCards": {
+          "title": "Status Cards",
+          "description": "Enable the experimental shared status-card board and its gated API. Existing card data is kept when this is disabled.",
+          "footnote": "Enabling Status Cards also enables Summaries."
+        },
+        "enableStreamlinedUi": {
+          "title": "Streamlined UI",
+          "description": "Use the simplified main sidebar, shared Tasks and Inbox presentation, focused task detail layout, and contextual navigation across Agents, Routines, Skills, and Settings.",
+          "footnote": "Turning this off restores the legacy shell and navigation. Task and page data are unchanged."
+        },
+        "enableSummaries": {
+          "title": "Summaries",
+          "description": "Show Summarizer-generated status slots on project and workspace pages, with on-demand refresh and revision history. Existing summary data is kept when this is disabled.",
+          "footnote": "Status Cards requires Summaries. Disabling Summaries also disables Status Cards."
+        },
+        "enableIsolatedWorkspacesByDefault": {
+          "title": "Use Isolated Workspaces By Default",
+          "description": "Treat a project that has no execution workspace policy of its own as if it selected isolated workspaces, so its tasks get a per-task worktree instead of sharing the project checkout. A project that carries its own policy keeps it."
+        },
+        "autoRestartDevServerWhenIdle": {
+          "title": "Auto-Restart Dev Server When Idle",
+          "description": "In `pnpm dev:once`, wait for all queued and running local agent runs to finish, then restart the server automatically when backend changes or migrations make the current boot stale."
+        },
+        "enableManagedSandboxOnly": {
+          "title": "Managed Environment Only",
+          "description": "Hide the local environment and run all agents in the platform-managed environment."
+        },
+        "enablePaperclipDeveloperMode": {
+          "title": "Paperclip Developer Mode",
+          "description": "Show internal Paperclip maintainer tools and observability links, including Honeycomb trace queries on run pages."
+        },
+        "enableServerInfoDebugView": {
+          "title": "Server Info Debug View",
+          "description": "Show a \"Server\" section in the account drawer with the current server restart time and running commit."
+        },
+        "enableSmokeLab": {
+          "title": "Smoke Lab",
+          "description": "Add a \"Smoke Lab\" tab under Apps → Developer and an \"Integration smoke\" card on the dashboard for exercising every integration path against deterministic local fixtures (fake OAuth provider + loopback MCP servers). Private (non-public) deployments only."
+        },
+        "enableIssuePlanDecompositions": {
+          "title": "Task Plan Decomposition",
+          "description": "Show accepted-plan decomposition history on task detail pages. Intended for debugging and validating subtask creation behavior while the presentation is still being refined."
+        },
+        "enableClassicTaskInterface": {
+          "title": "Classic Task Interface",
+          "description": "Restores the previous task detail page: the page-level header with inline description editing, the plain comment thread, and the fixed Properties sidebar. Chat-only features — streaming activity folding, inline plan and question cards, the three-mode composer — are unavailable in the classic view.",
+          "footnote": "Switching takes effect immediately. No task data is affected."
+        },
+        "enableGoalsSidebarLink": {
+          "title": "Goals Sidebar Link",
+          "description": "Restore the Goals item in the main sidebar while the goals surface is being evaluated."
+        }
+      }
+    },
+    "secrets": {
+      "selectOrganization": "Select an organization to manage secrets."
+    },
+    "portability": {
+      "organization": "Organization",
+      "packageFiles": "Package files",
+      "whatToInclude": "What to include",
+      "importCompleted": "Import completed",
+      "importComplete": "Import complete",
+      "skillImportResults": "Skill import results",
+      "activateImported": "Activate imported agents and routines",
+      "resumeImport": "Resume watching import",
+      "importSource": "Import source"
+    },
+    "skills": {
+      "views": "Skills views",
+      "installed": "Installed",
+      "discover": "Discover",
+      "authored": "My Skills",
+      "installedSkills": "Installed skills",
+      "discoverSkills": "Discover skills",
+      "authoredDescription": "Skills you can open, edit and test in Studio.",
+      "installedDescription": "Skills available to this organization.",
+      "discoverDescription": "Browse skills from every available source.",
+      "searchMine": "Search my skills",
+      "searchInstalled": "Search installed skills",
+      "searchDiscoverable": "Search discoverable skills",
+      "browseCategory": "Browse by category",
+      "filterInstalled": "Filter installed skills.",
+      "filterDiscoverable": "Filter discoverable skills.",
+      "categories": "Categories",
+      "all": "All",
+      "catalog": "Catalog",
+      "bundled": "Bundled",
+      "controls": "Skills controls",
+      "sort": "Sort",
+      "source": "Source",
+      "allSources": "All sources",
+      "scan": "Scan project workspaces for skills",
+      "newFolder": "New folder",
+      "select": "Select",
+      "new": "New",
+      "create": "Create new skill",
+      "importGithub": "Import from GitHub",
+      "manageSources": "Manage sources",
+      "importPath": "Import from path or URL",
+      "importProject": "Import skills from project",
+      "sortOptions": {
+        "agents": "Most agents",
+        "stars": "Most stars",
+        "forks": "Most forks",
+        "recent": "Recently updated",
+        "alphabetical": "Alphabetical"
+      }
     }
   },
   "agentNavigation": {
@@ -1340,7 +1635,6 @@
       "noMatchingTasks": "No matching tasks.",
       "noSubtasks": "No subtasks yet.",
       "loadingUsageLimit": "Loading usage limit",
-      "retry": "Retry",
       "policyUnavailable": "Execution policy unavailable. Refresh to try again.",
       "waitingWorkspace": "Waiting for workspace",
       "waitingProvider": "Waiting for the provider",
@@ -2180,7 +2474,7 @@
     "toolbarAriaLabel": "Connector controls",
     "searchConnectors": "Search connectors",
     "searchConnectorsPlaceholder": "Search connectors…",
-    "selectOrganizationToManage": "Select an organization to manage connectors.",
+    "selectOrganizationToManage": "Select an organization to manage apps.",
     "loadEveryConnector": "load every connector",
     "refreshGatewayFailed": "Couldn’t refresh the gateway. Last known accounts are shown.",
     "loadAiDefaults": "load AI account defaults",
@@ -2234,7 +2528,6 @@
     "cloudUnavailable": "Couldn’t reach Paperclip Cloud",
     "connectionDeleted": "Connection deleted",
     "deleteConnectionFailed": "Couldn't delete the connection",
-    "selectOrganizationToManage": "Select an organization to manage apps.",
     "openSignInFailed": "Couldn’t open sign-in",
     "noConnections": "No connections yet.",
     "addFromApps": "Add one from {{apps}} to give your agents the tools they need.",
@@ -3545,7 +3838,6 @@
       "existingProvider": "An existing provider connection is available.",
       "chooseSavedModel": "Choose a model for your saved connection",
       "chooseSavedKey": "Choose a saved API key or enter a new one",
-      "provideApiKey": "Provide your {{provider}} API key to connect",
       "apiKey": "API key",
       "enterApiKey": "Enter API key here",
       "defaultAccount": "This will be your default {{provider}} account.",
@@ -3555,7 +3847,6 @@
       "gatewaySaved": "Gateway connection saved. Choose a model, then Connect to test it and finish setting up your agent.",
       "differentApiKey": "Use a different API key",
       "noBrowserSignIn": "This environment does not support browser sign-in. Choose another sign-in environment or connect with an API key.",
-      "advanced": "Advanced",
       "useCompatibleApi": "Use OpenAI-compatible API / relay API",
       "compatibleApiTitle": "Connect an OpenAI-compatible API / relay API",
       "compatibleApiDescription": "Enter the endpoint, API key, and model ID for your relay or compatible provider.",
@@ -3568,7 +3859,6 @@
       "prompt": "Prompt:",
       "authFailedSubscription": "If authentication fails, connect your subscription in the browser above or use an API key.",
       "authFailedProvider": "If login is required, connect the provider above and retry.",
-      "retry": "Retry",
       "retrySignIn": "Retry sign-in",
       "testing": "Testing…",
       "submitCode": "Submit code",
@@ -3578,7 +3868,6 @@
       "signInTo": "Sign in to {{provider}}",
       "connect": "Connect",
       "next": "Next",
-      "signInToProvider": "Sign in to {{provider}}",
       "thenReturn": " then return here",
       "thenEnterCode": " then come back and enter authorization code",
       "byProvidingCode": " by providing the authorization code below",

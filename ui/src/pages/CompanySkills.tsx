@@ -1,5 +1,6 @@
 import { SkillsNavigationTabs } from "@/components/skill-studio/SkillsNavigationTabs";
 import { SkillsToolbar, type DiscoverySort } from "@/components/skill-studio/SkillsToolbar";
+import { useTranslation } from "@/i18n";
 import { SkillBinaryFile } from "../components/SkillBinaryFile";
 import { skillFileLinkHref } from "@/lib/skill-file-links";
 import { SkillSourceProvenance } from "../components/SkillSourceProvenance";
@@ -999,6 +1000,7 @@ function CategoryNav({
   active: string | null;
   onSelect: (slug: string | null) => void;
 }) {
+  const { t } = useTranslation();
   return (
     <nav className="flex flex-col gap-0.5 px-2">
       <button
@@ -1009,7 +1011,7 @@ function CategoryNav({
           active == null ? "bg-accent/60 font-medium text-foreground" : "text-muted-foreground",
         )}
       >
-        <span>All</span>
+        <span>{t("settingsPages.skills.all")}</span>
         <span className="text-xs text-muted-foreground">{total}</span>
       </button>
       {categories.map((category) => (
@@ -1137,15 +1139,16 @@ export function DiscoveryGrid({
   /** Category/folder navigation stays available in production, but the Streamlined UI relies on search and scrolling. */
   showBrowseRails?: boolean;
 }) {
+  const { t } = useTranslation();
   const installedView = tab === "installed";
   const authoredView = collectionView === "authored";
-  const viewTitle = authoredView ? "My Skills" : installedView ? "Installed skills" : "Discover skills";
+  const viewTitle = authoredView ? t("settingsPages.skills.authored") : installedView ? t("settingsPages.skills.installedSkills") : t("settingsPages.skills.discoverSkills");
   const viewDescription = authoredView
-    ? "Skills you can open, edit and test in Studio."
+    ? t("settingsPages.skills.authoredDescription")
     : installedView
-    ? "Skills available to this organization."
-    : "Browse skills from every available source.";
-  const searchLabel = authoredView ? "Search my skills" : installedView ? "Search installed skills" : "Search discoverable skills";
+    ? t("settingsPages.skills.installedDescription")
+    : t("settingsPages.skills.discoverDescription");
+  const searchLabel = authoredView ? t("settingsPages.skills.searchMine") : installedView ? t("settingsPages.skills.searchInstalled") : t("settingsPages.skills.searchDiscoverable");
   // Source filter (github / skills.sh / local / …) lives in the grid so it
   // narrows whatever the parent already filtered by tab/category/search (PAP-10907 E).
   const [sourceBadgeFilter, setSourceBadgeFilter] = useState<string>("all");
@@ -1219,13 +1222,13 @@ export function DiscoveryGrid({
       {showBrowseRails ? (
         <aside className={cn("hidden w-60 shrink-0 flex-col overflow-hidden border-r border-border md:flex", showFolderRail && "md:hidden")}>
           <div className="border-b border-border px-4 py-4">
-            <h2 className="text-sm font-semibold text-foreground">Browse by category</h2>
+            <h2 className="text-sm font-semibold text-foreground">{t("settingsPages.skills.browseCategory")}</h2>
             <p className="text-xs text-muted-foreground">
-              Filter {installedView ? "installed" : "discoverable"} skills.
+              {installedView ? t("settingsPages.skills.filterInstalled") : t("settingsPages.skills.filterDiscoverable")}
             </p>
           </div>
           <div className="px-4 pb-1 pt-3 text-(length:--text-micro) font-medium uppercase tracking-wide text-muted-foreground">
-            Categories
+            {t("settingsPages.skills.categories")}
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto pb-4">
             <CategoryNav
@@ -3947,6 +3950,7 @@ function SkillPane({
 }
 
 export function CompanySkills({ collectionView }: { collectionView?: "authored" } = {}) {
+  const { t } = useTranslation();
   const { "*": routePath } = useParams<{ "*": string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -5412,11 +5416,11 @@ export function CompanySkills({ collectionView }: { collectionView?: "authored" 
         {!streamlinedUiEnabled ? (
           <div className="px-4 pt-4">
             <Tabs value={legacyDiscoveryTab} onValueChange={(value) => setLegacyDiscoveryTab(value as "all" | "installed" | "catalog" | "bundled")}>
-              <TabsList variant="line" aria-label="Skills view">
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="installed">Installed</TabsTrigger>
-                <TabsTrigger value="catalog">Catalog</TabsTrigger>
-                <TabsTrigger value="bundled">Bundled</TabsTrigger>
+              <TabsList variant="line" aria-label={t("settingsPages.skills.views")}>
+                <TabsTrigger value="all">{t("settingsPages.skills.all")}</TabsTrigger>
+                <TabsTrigger value="installed">{t("settingsPages.skills.installed")}</TabsTrigger>
+                <TabsTrigger value="catalog">{t("settingsPages.skills.catalog")}</TabsTrigger>
+                <TabsTrigger value="bundled">{t("settingsPages.skills.bundled")}</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
