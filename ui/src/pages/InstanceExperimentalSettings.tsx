@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ClassicWorkspaceSetting } from "@/components/ClassicWorkspaceSetting";
 import { describeError } from "@/api/errors";
+import { useTranslation } from "@/i18n";
 
 type WorktreeRunExecutionDisplayState =
   | { kind: "off" }
@@ -122,6 +123,7 @@ function ExperimentalToggleCard({
 }
 
 export function InstanceExperimentalSettings() {
+  const { t } = useTranslation();
   const { setBreadcrumbs } = useBreadcrumbs();
   const queryClient = useQueryClient();
   const { hidden: hiddenSettings } = useHiddenSettings();
@@ -129,10 +131,10 @@ export function InstanceExperimentalSettings() {
 
   useEffect(() => {
     setBreadcrumbs([
-      { label: "Settings", href: "/company/settings" },
-      { label: "Experimental" },
+      { label: t("settingsSidebar.title"), href: "/company/settings" },
+      { label: t("settingsSidebar.experimental") },
     ]);
-  }, [setBreadcrumbs]);
+  }, [setBreadcrumbs, t]);
 
   const experimentalQuery = useQuery({
     queryKey: queryKeys.instance.experimentalSettings,
@@ -184,7 +186,7 @@ export function InstanceExperimentalSettings() {
     return (
       <div className="max-w-6xl space-y-6">
         <ClassicWorkspaceSetting key="personal-workspace" />
-        <div className="text-sm text-muted-foreground">Loading experimental settings...</div>
+        <div className="text-sm text-muted-foreground">{t("settingsPages.experimental.loading")}</div>
       </div>
     );
   }
@@ -194,7 +196,7 @@ export function InstanceExperimentalSettings() {
 <div className="max-w-6xl space-y-6"><ClassicWorkspaceSetting key="personal-workspace" />      <QueryErrorState
         size="page"
         error={experimentalQuery.error}
-        action="load experimental settings"
+        action={t("settingsPages.experimental.loadAction")}
         onRetry={experimentalView.retry}
         retrying={experimentalView.isFetching}
       />
@@ -267,10 +269,10 @@ export function InstanceExperimentalSettings() {
       <div className="space-y-2">
         <div className="flex items-center gap-2">
           <FlaskConical className="h-5 w-5 text-muted-foreground" />
-          <h1 className="text-lg font-semibold">Experimental</h1>
+          <h1 className="text-lg font-semibold">{t("settingsSidebar.experimental")}</h1>
         </div>
         <p className="text-sm text-muted-foreground">
-          Opt into features that are still being evaluated before they become default behavior.
+          {t("settingsPages.experimental.description")}
         </p>
       </div>
 
@@ -283,10 +285,9 @@ export function InstanceExperimentalSettings() {
         <div className="flex items-start gap-3">
           <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" />
           <div className="space-y-1 text-sm">
-            <p className="font-medium text-foreground">Experimental features may break at any time.</p>
+            <p className="font-medium text-foreground">{t("settingsPages.experimental.warningTitle")}</p>
             <p className="text-muted-foreground">
-              These features are opt-in and come with no compatibility guarantees. They may change, break, or be
-              removed without notice. Avoid relying on them for critical or production workflows.
+              {t("settingsPages.experimental.warningDescription")}
             </p>
           </div>
         </div>
@@ -301,10 +302,10 @@ export function InstanceExperimentalSettings() {
       <section className="space-y-3" aria-labelledby="experimental-features-heading">
         <div className="space-y-1">
           <h2 id="experimental-features-heading" className="text-sm font-semibold">
-            Experimental features
+            {t("settingsPages.experimental.sectionTitle")}
           </h2>
           <p className="text-sm text-muted-foreground">
-            Optional product features that are still being evaluated.
+            {t("settingsPages.experimental.sectionDescription")}
           </p>
         </div>
 
@@ -674,10 +675,10 @@ export function InstanceExperimentalSettings() {
         <section className="space-y-3" aria-labelledby="developer-mode-heading">
           <div className="space-y-1">
             <h2 id="developer-mode-heading" className="text-sm font-semibold">
-              Paperclip Developer Mode
+              {t("settingsPages.experimental.developerTitle")}
             </h2>
             <p className="text-sm text-muted-foreground">
-              Internal tools for developing, testing, and debugging Paperclip.
+              {t("settingsPages.experimental.developerDescription")}
             </p>
           </div>
 
@@ -763,12 +764,12 @@ export function InstanceExperimentalSettings() {
                   <div className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/5 px-3 py-2 text-sm">
                     <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-700" />
                     <div className="space-y-0.5">
-                      <p className="font-medium text-foreground">Execution is suppressed — effectively off.</p>
+                    <p className="font-medium text-foreground">{t("settingsPages.experimental.executionSuppressed")}</p>
                       <p className="text-muted-foreground">
                         {worktreeRunExecutionState.reason === "instance_mismatch"
-                          ? "This setting was armed in a different instance and copied here, so no tasks run automatically."
-                          : "This setting is missing its activation cutoff, so no tasks run automatically."}{" "}
-                        Toggle it off and back on to arm execution for tasks created here.
+                          ? t("settingsPages.experimental.instanceMismatch")
+                          : t("settingsPages.experimental.missingCutoff")}{" "}
+                        {t("settingsPages.experimental.rearmExecution")}
                       </p>
                     </div>
                   </div>
@@ -820,9 +821,9 @@ export function InstanceExperimentalSettings() {
         <section className="space-y-3" aria-labelledby="legacy-heading">
           <div className="space-y-1">
             <h2 id="legacy-heading" className="text-sm font-semibold">
-              Legacy
+              {t("settingsPages.experimental.legacyTitle")}
             </h2>
-            <p className="text-sm text-muted-foreground">These features are going to be removed.</p>
+            <p className="text-sm text-muted-foreground">{t("settingsPages.experimental.legacyDescription")}</p>
           </div>
 
           <ExperimentalToggleCard
